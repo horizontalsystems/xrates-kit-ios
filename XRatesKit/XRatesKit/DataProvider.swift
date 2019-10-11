@@ -40,7 +40,8 @@ extension DataProvider: IDataProvider {
 
     func chartPoints(coinCode: String, currencyCode: String, chartType: ChartType) -> [ChartPoint] {
         let chartStatList = storage.chartStatList(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType)
-        if let last = chartStatList.last, last.timestamp < 0 {
+        let last = chartStatList.last
+        if last == nil /* need start chart sync if expired or nil || last?.timestamp < 0 */ {
             chartStatsSyncer.syncChartStats(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType)
         }
 

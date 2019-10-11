@@ -1,8 +1,6 @@
 import RxSwift
 
 public class XRatesKit {
-    private let disposeBag = DisposeBag()
-
     private let storage: ILatestRateStorage
     private var dataSource: IXRatesDataSource
     private let dataProvider: IDataProvider
@@ -64,7 +62,7 @@ extension XRatesKit {
         dataProvider.historicalRate(coinCode: coinCode, currencyCode: currencyCode, date: date)
     }
 
-    public func chartStats(coinCode: String, currencyCode: String, chartType: ChartType) -> [ChartPoint]? {
+    public func chartStats(coinCode: String, currencyCode: String, chartType: ChartType) -> [ChartPoint] {
         dataProvider.chartPoints(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType)
     }
 

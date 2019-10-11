@@ -33,15 +33,28 @@ class ViewController: UIViewController {
 
     @IBAction func refresh() {
         xRatesKit.refresh()
+        printChartData()
 
         xRatesKit.historicalRate(coinCode: "BTC", currencyCode: "RUB", date: Date(timeIntervalSinceNow: 0))
             .observeOn(MainScheduler.instance)
             .subscribe(onSuccess: { decimal in
                 let oldText = self.textView?.text ?? ""
-                self.textView?.text = oldText + "\(decimal)"
+                self.textView?.text = oldText + "\(decimal)\n"
         }, onError: { error in
-            print("historical error: \(error)")
+            print("historical error: \(error) \n")
         }).disposed(by: disposeBag)
+    }
+
+    private func printChartData() {
+        let chartData = xRatesKit.chartStats(coinCode: "BTC", currencyCode: "USD", chartType: .day)
+
+        print("db data: \n \(chartData.map { "\(Date(timeIntervalSince1970: $0.timestamp)) - \(($0.value))" }.joined(separator: "\n"))")
+        xRatesKit.chartStatsObservable(coinCode: "BTC", currencyCode: "USD", chartType: .day)
+                .observeOn(MainScheduler.instance)
+                .subscribe(onNext: { chartData in
+                    print("subject data: \n \(chartData.map { "\(Date(timeIntervalSince1970: $0.timestamp)) - \(($0.value))" }.joined(separator: "\n"))")
+                })
+                .disposed(by: disposeBag)
     }
 
     private func fetchNew(rate: RateInfo) {
