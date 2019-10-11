@@ -14,8 +14,9 @@ class XRatesKitTests: QuickSpec {
         let mockDataSource = MockIXRatesDataSource()
         let mockSyncScheduler = MockISyncScheduler()
         let mockHistoricalRateManager = MockIHistoricalRateManager()
+        let mockChartStatsManager = MockIChartStatsManager()
 
-        let kit = XRatesKit(storage: mockStorage, dataSource: mockDataSource, syncScheduler: mockSyncScheduler, historicalRateManager: mockHistoricalRateManager)
+        let kit = XRatesKit(storage: mockStorage, dataSource: mockDataSource, syncScheduler: mockSyncScheduler, historicalRateManager: mockHistoricalRateManager, chartStatsManager: mockChartStatsManager)
 
         beforeEach {
             stub(mockSyncScheduler) { mock in

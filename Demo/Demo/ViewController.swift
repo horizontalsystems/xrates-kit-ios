@@ -10,7 +10,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var textView: UITextView?
 
     private let dateFormatter = DateFormatter()
-    private let xRatesKit = XRatesKit.instance(minLogLevel: .verbose)
+    private let xRatesKit = XRatesKit.instance(currencyCode: "USD", minLogLevel: .verbose)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,20 +18,21 @@ class ViewController: UIViewController {
         dateFormatter.locale = Locale.current
         dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MMM d, hh:mm:ss")
 
-        xRatesKit.start(coinsCodes: coinCodes, currencyCode: baseCurrencyCode)
+        xRatesKit.update(coinCodes: coinCodes)
+        for coinCode in coinCodes {
+            xRatesKit.latestRateObservable(coinCode: coinCode, currencyCode: baseCurrencyCode)
+                    .observeOn(MainScheduler.instance)
+                    .subscribe(onNext: { [weak self] rate in
+                        self?.fetchNew(rate: rate)
+                    })
+                    .disposed(by: disposeBag)
+        }
+
         initialTextView()
-
-        xRatesKit.rateSubject
-                .observeOn(MainScheduler.instance)
-                .subscribe(onNext: { [weak self] rate in
-                    self?.fetchNew(rate: rate)
-                })
-                .disposed(by: disposeBag)
-
     }
 
     @IBAction func refresh() {
-//        xRatesKit.refresh()
+        xRatesKit.refresh()
 
         xRatesKit.historicalRate(coinCode: "BTC", currencyCode: "RUB", date: Date(timeIntervalSinceNow: 0))
             .observeOn(MainScheduler.instance)
@@ -51,7 +52,7 @@ class ViewController: UIViewController {
     private func initialTextView() {
         textView?.text = "Initial State: \n"
         for coinCode in coinCodes {
-            if let rate = xRatesKit.latestRate(coinCode: coinCode, currency: baseCurrencyCode) {
+            if let rate = xRatesKit.latestRate(coinCode: coinCode, currencyCode: baseCurrencyCode) {
                 fetchNew(rate: rate)
             }
         }

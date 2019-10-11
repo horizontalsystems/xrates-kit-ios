@@ -1,18 +1,22 @@
 import RxSwift
 
+enum SyncEventState {
+    case fire
+    case stop
+}
+
 class SyncScheduler: ISyncScheduler {
     private var disposeBag: DisposeBag?
-    var delegate: ISyncSchedulerDelegate?
+    let eventSubject = PublishSubject<SyncEventState>()
 
     private let schedulerType: SchedulerType
     private let timeInterval: Int
     private let retryInterval: Int
 
-    init(timeInterval: Int, retryInterval: Int, schedulerType: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .background), delegate: ISyncSchedulerDelegate? = nil) {
+    init(timeInterval: Int, retryInterval: Int, schedulerType: SchedulerType = ConcurrentDispatchQueueScheduler(qos: .background)) {
         self.timeInterval = timeInterval
         self.retryInterval = retryInterval
         self.schedulerType = schedulerType
-        self.delegate = delegate
     }
 
     private func start(delay time: Int) {
@@ -20,7 +24,7 @@ class SyncScheduler: ISyncScheduler {
 
         Observable<Int>.timer(.seconds(time), scheduler: schedulerType)
                 .subscribe(onNext: { [weak self] _ in
-                    self?.delegate?.onFire()
+                    self?.eventSubject.onNext(.fire)
                 })
                 .disposed(by: disposeBag)
 
@@ -33,7 +37,7 @@ class SyncScheduler: ISyncScheduler {
 
     func stop() {
         self.disposeBag = DisposeBag()
-        self.delegate?.onStop()
+        self.eventSubject.onNext(.stop)
     }
 
 }

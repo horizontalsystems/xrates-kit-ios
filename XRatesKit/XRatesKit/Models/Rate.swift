@@ -20,11 +20,6 @@ class Rate: Record {
         super.init()
     }
 
-    var expired: Bool {
-        let diff = Date().timeIntervalSince1970 - date.timeIntervalSince1970
-        return diff > Rate.latestRateFallbackThreshold
-    }
-
     override open class var databaseTableName: String {
         "rate"
     }

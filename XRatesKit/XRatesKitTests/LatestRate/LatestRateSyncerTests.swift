@@ -39,23 +39,26 @@ class LatestRateSyncerTests: QuickSpec {
                     when(mock.currencyCode.get).thenReturn(currencyCode)
                 }
             }
-            it("ignores double call sync when first request not finished yet") {
-                let publisher = PublishSubject<[Rate]>()
+            it("ignores first signals when double call sync") {
+                let publisher1 = PublishSubject<[Rate]>()
+                let publisher2 = PublishSubject<[Rate]>()
                 stub(mockLatestRateProvider) { mock in
-                    when(mock.getLatestRates(coinCodes: coinCodes, currencyCode: currencyCode)).thenReturn(publisher.asObservable())
+                    when(mock.getLatestRates(coinCodes: coinCodes, currencyCode: currencyCode)).thenReturn(publisher1.asObservable()).thenReturn(publisher2.asObservable())
                 }
 
                 syncer.sync()
                 syncer.sync()
 
-                verify(mockDataSource, times(1)).coinCodes.get()
-                verify(mockDataSource, times(1)).currencyCode.get()
-                verify(mockLatestRateProvider, times(1)).getLatestRates(coinCodes: coinCodes, currencyCode: currencyCode)
+                publisher1.onCompleted()
+
+                verify(mockDataSource, times(2)).coinCodes.get()
+                verify(mockDataSource, times(2)).currencyCode.get()
+                verify(mockLatestRateProvider, times(2)).getLatestRates(coinCodes: coinCodes, currencyCode: currencyCode)
 
                 verify(mockCompletionDelegate, never()).onSuccess()
                 verify(mockCompletionDelegate, never()).onFail()
 
-                publisher.onCompleted()
+                publisher2.onCompleted()
             }
             it("throws error an return onFail, dispose observable to ability next calls") {
                 let publisher = PublishSubject<[Rate]>()

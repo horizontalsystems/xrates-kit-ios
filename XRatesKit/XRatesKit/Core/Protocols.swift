@@ -11,6 +11,13 @@ protocol IHistoricalRateStorage {
     func save(rate: Rate)
 }
 
+protocol IChartStatsStorage {
+    func marketStats(coinCodes: [String], currencyCode: String) -> [MarketStats]
+    func save(marketStats: MarketStats)
+    func chartStatList(coinCode: String, currencyCode: String, chartType: ChartType) -> [ChartStats]
+    func save(chartStatList: [ChartStats])
+}
+
 protocol ILatestRateSyncer {
     var delegate: ILatestRateSyncerDelegate? { get set }
     func sync()
@@ -33,6 +40,19 @@ protocol IHistoricalRateProvider {
     func getHistoricalRate(coinCode: String, currencyCode: String, date: Date) -> Single<Rate>
 }
 
+protocol IChartStatsSyncer {
+    func syncChartStats(coinCode: String, currencyCode: String, chartType: ChartType)
+}
+
+protocol IChartStatsManagerDelegate: class {
+    func didUpdate(chartStatList: [ChartStats], coinCode: String, currencyCode: String, chartType: ChartType)
+}
+
+protocol IChartStatsProvider {
+    func getChartStats(coinCode: String, currencyCode: String, chartType: ChartType) -> Single<[ChartStats]>
+    func getMarketStats(coinCodes: [String], currencyCode: String) -> Single<[MarketStats]>
+}
+
 protocol ILatestRateProviderDelegate: class {
     func didReceive(rate: Rate)
     func didSuccess()
@@ -45,15 +65,10 @@ protocol IXRatesDataSource {
 }
 
 protocol ISyncScheduler {
-    var delegate: ISyncSchedulerDelegate? { get set }
+    var eventSubject: PublishSubject<SyncEventState> { get }
 
     func start()
     func stop()
-}
-
-protocol ISyncSchedulerDelegate: class {
-    func onFire()
-    func onStop()
 }
 
 protocol ICompletionDelegate: class {
@@ -67,5 +82,28 @@ protocol ICurrentDateProvider {
 
 protocol ICryptoCompareFactory {
     func latestRate(coinCode: String, currencyCode: String, response: CryptoCompareLatestRateResponse) -> Rate?
+    func marketStats(coinCode: String, currencyCode: String, response: CryptoCompareMarketInfoResponse) -> MarketStats?
     func historicalRate(coinCode: String, currencyCode: String, date: Date, value: Decimal) -> Rate
+}
+
+protocol IDataProviderFactory {
+    func rateInfo(_ rate: Rate) -> RateInfo
+    func chartPoint(_ chartStats: ChartStats) -> ChartPoint
+    func chartPoint(timestamp: TimeInterval, value: Decimal) -> ChartPoint
+}
+
+protocol ISubjectsHolder {
+    var activeChartStatsKeys: [ChartStatsSubjectKey] { get }
+    var latestRateSubjects: [RateSubjectKey: PublishSubject<RateInfo>] { get }
+    var chartStatsSubjects: [ChartStatsSubjectKey: PublishSubject<[ChartPoint]>] { get }
+
+    func clear()
+    func latestRateObservable(coinCode: String, currencyCode: String) -> Observable<RateInfo>
+    func chartStatsObservable(coinCode: String, currencyCode: String, chartType: ChartType) -> Observable<[ChartPoint]>
+}
+
+protocol IDataProvider {
+    func latestRate(coinCode: String, currencyCode: String) -> RateInfo?
+    func historicalRate(coinCode: String, currencyCode: String, date: Date) -> Single<Decimal>
+    func chartPoints(coinCode: String, currencyCode: String, chartType: ChartType) -> [ChartPoint]
 }

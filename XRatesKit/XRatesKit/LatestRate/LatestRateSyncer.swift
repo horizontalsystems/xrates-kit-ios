@@ -17,6 +17,15 @@ class LatestRateSyncer {
         self.dataSource = dataSource
     }
 
+    func subscribe(scheduler: ISyncScheduler) {
+        scheduler.eventSubject.asObservable().subscribe(onNext: { [weak self] eventType in
+            switch eventType {
+            case .fire: self?.sync()
+            case .stop: self?.cancel()
+            }
+        }).disposed(by: disposeBag)
+    }
+
     private func update(rates: [Rate]) {
         rates.forEach { delegate?.didUpdate(rate: $0) }
         storage.save(rates: rates)
@@ -32,7 +41,9 @@ class LatestRateSyncer {
 extension LatestRateSyncer: ILatestRateSyncer {
 
     func sync() {
-        guard disposable == nil else {
+        disposeRequest()
+
+        guard !dataSource.coinCodes.isEmpty else {
             return
         }
         disposable = latestRateProvider.getLatestRates(coinCodes: dataSource.coinCodes, currencyCode: dataSource.currencyCode)
@@ -50,20 +61,7 @@ extension LatestRateSyncer: ILatestRateSyncer {
     }
 
     func cancel() {
-        disposable?.dispose()
-        disposable = nil
-    }
-
-}
-
-extension LatestRateSyncer: ISyncSchedulerDelegate {
-
-    func onFire() {
-        sync()
-    }
-
-    func onStop() {
-        cancel()
+        disposeRequest()
     }
 
 }
