@@ -12,7 +12,7 @@ def common_pods
   pod 'RxSwift', '~> 5.0'
   pod 'Alamofire', '~> 4.0'
   pod 'GRDB.swift', '~> 4.0'
-  pod 'ObjectMapper'
+  pod 'ObjectMapper', '~> 3.5'
 end
 
 target :XRatesKit do
