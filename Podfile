@@ -10,7 +10,6 @@ project 'Demo/Demo'
 
 def common_pods
   pod 'RxSwift', '~> 5.0'
-  pod 'RxGRDB'
   pod 'Alamofire', '~> 4.0'
   pod 'GRDB.swift', '~> 4.0'
   pod 'ObjectMapper'
@@ -23,6 +22,8 @@ end
 
 target :Demo do
   project 'Demo/Demo'
+
+  pod 'SnapKit'
   common_pods
 end
 

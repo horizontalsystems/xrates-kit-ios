@@ -9,11 +9,11 @@ class CryptoCompareFactory {
 
 extension CryptoCompareFactory: ICryptoCompareFactory {
 
-    func latestRate(coinCode: String, currencyCode: String, response: CryptoCompareLatestRateResponse) -> Rate? {
+    func latestRate(coinCode: String, currencyCode: String, response: CryptoCompareLatestRateResponse) -> RateResponse? {
         guard let currencyResponseMap = response.values[coinCode], let rateValue = currencyResponseMap.values[currencyCode] else {
             return nil
         }
-        return Rate(coinCode: coinCode, currencyCode: currencyCode, value: rateValue, date: dateProvider.currentDate, isLatest: true)
+        return RateResponse(coinCode: coinCode, value: rateValue)
     }
 
     func marketStats(coinCode: String, currencyCode: String, response: CryptoCompareMarketInfoResponse) -> MarketStats? {
@@ -23,8 +23,8 @@ extension CryptoCompareFactory: ICryptoCompareFactory {
         return MarketStats(coinCode: coinCode, currencyCode: currencyCode, date: dateProvider.currentDate, volume: marketInfoValue.volume, marketCap: marketInfoValue.marketCap, supply: marketInfoValue.supply)
     }
 
-    func historicalRate(coinCode: String, currencyCode: String, date: Date, value: Decimal) -> Rate {
-        Rate(coinCode: coinCode, currencyCode: currencyCode, value: value, date: date, isLatest: false)
+    func historicalRate(coinCode: String, currencyCode: String, date: Date, value: Decimal) -> RateResponse {
+        RateResponse(coinCode: coinCode, value: value)
     }
 
 }

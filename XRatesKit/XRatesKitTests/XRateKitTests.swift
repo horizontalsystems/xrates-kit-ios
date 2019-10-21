@@ -16,7 +16,7 @@ class XRatesKitTests: QuickSpec {
         let mockHistoricalRateManager = MockIHistoricalRateManager()
         let mockChartStatsManager = MockIChartStatsManager()
 
-        let kit = XRatesKit(storage: mockStorage, dataSource: mockDataSource, syncScheduler: mockSyncScheduler, historicalRateManager: mockHistoricalRateManager, chartStatsManager: mockChartStatsManager)
+        let kit = XRatesKit(storage: mockStorage, dataSource: mockDataSource, latestRateScheduler: mockSyncScheduler, historicalRateManager: mockHistoricalRateManager, chartStatsManager: mockChartStatsManager)
 
         beforeEach {
             stub(mockSyncScheduler) { mock in
@@ -33,7 +33,7 @@ class XRatesKitTests: QuickSpec {
 
         let coinCodes = ["A", "B"]
         let currencyCode = "C"
-        let latestRate = Rate.mock(coinCode: coinCodes[0], currencyCode: currencyCode, isLatest: true)
+        let latestRate = LatestRate.mock(coinCode: coinCodes[0], currencyCode: currencyCode, isLatest: true)
 
         describe("#start") {
             it("set coins and calls scheduler's start") {
@@ -70,7 +70,7 @@ class XRatesKitTests: QuickSpec {
         }
         describe("#historicalRate") {
             it("gets historical rate for coin from historical manager") {
-                let rate = Rate.mock(coinCode: coinCodes[0], currencyCode: currencyCode, date: Date(), isLatest: false)
+                let rate = LatestRate.mock(coinCode: coinCodes[0], currencyCode: currencyCode, date: Date(), isLatest: false)
                 let single = PublishSubject<Decimal>().asSingle()
                 stub(mockHistoricalRateManager) { mock in
                     when(mock.getHistoricalRate(coinCode: rate.coinCode, currencyCode: rate.currencyCode, date: equal(to: rate.date))).thenReturn(single)
@@ -87,7 +87,7 @@ class XRatesKitTests: QuickSpec {
                 stub(mockDataSource) { mock in
                     when(mock.coinCodes.set(equal(to: newCoinCodes))).thenDoNothing()
                 }
-                kit.update(coinCodes: newCoinCodes)
+                kit.set(coinCodes: newCoinCodes)
 
                 verify(mockDataSource).coinCodes.set(equal(to: newCoinCodes))
                 verify(mockSyncScheduler).start()
@@ -99,7 +99,7 @@ class XRatesKitTests: QuickSpec {
                 stub(mockDataSource) { mock in
                     when(mock.currencyCode.set(equal(to: newCurrencyCode))).thenDoNothing()
                 }
-                kit.update(currencyCode: newCurrencyCode)
+                kit.set(currencyCode: newCurrencyCode)
 
                 verify(mockDataSource).currencyCode.set(equal(to: newCurrencyCode))
                 verify(mockSyncScheduler).start()
@@ -112,7 +112,7 @@ class XRatesKitTests: QuickSpec {
                 }
             }
             it("check emmit rate to publisher") {
-                var calledRate: RateInfo?
+                var calledRate: Rate?
                 kit.rateSubject
                         .observeOn(MainScheduler.instance)
                         .subscribe(onNext: { latestRate in
@@ -122,7 +122,7 @@ class XRatesKitTests: QuickSpec {
 
                 kit.didUpdate(rate: latestRate)
                 self.waitForMainQueue()
-                expect(calledRate).to(equal(RateInfo(latestRate)))
+                expect(calledRate).to(equal(Rate(latestRate)))
             }
         }
     }

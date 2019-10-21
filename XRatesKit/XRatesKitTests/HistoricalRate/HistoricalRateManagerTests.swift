@@ -20,7 +20,7 @@ class HistoricalRateManagerTests: QuickSpec {
             reset(mockProvider)
         }
 
-        let rate = Rate.mock(coinCode: "A", currencyCode: "B", value: 10, date: Date(), isLatest: false)
+        let rate = LatestRate.mock(coinCode: "A", currencyCode: "B", value: 10, date: Date(), isLatest: false)
         describe("#getHistoricalRate") {
             it("gets rate from db and return rate value as single") {
                 stub(mockStorage) { mock in
@@ -28,7 +28,7 @@ class HistoricalRateManagerTests: QuickSpec {
                 }
 
                 var dbRateValue: Decimal?
-                manager.getHistoricalRate(coinCode: rate.coinCode, currencyCode: rate.currencyCode, date: rate.date)
+                manager.historicalRateSingle(coinCode: rate.coinCode, currencyCode: rate.currencyCode, date: rate.date)
                     .subscribe(onSuccess: { decimal in
                         dbRateValue = decimal
                     })
@@ -38,7 +38,7 @@ class HistoricalRateManagerTests: QuickSpec {
                 expect(dbRateValue).to(equal(rate.value))
             }
             it("gets rate from provider, save to db and return value as single") {
-                let single = PublishSubject<Rate>()
+                let single = PublishSubject<LatestRate>()
                 stub(mockStorage) { mock in
                     when(mock.rate(coinCode: rate.coinCode, currencyCode: rate.currencyCode, date: equal(to: rate.date))).thenReturn(nil)
                     when(mock.save(rate: equal(to: rate))).thenDoNothing()
@@ -48,7 +48,7 @@ class HistoricalRateManagerTests: QuickSpec {
                 }
 
                 var providerRateValue: Decimal?
-                manager.getHistoricalRate(coinCode: rate.coinCode, currencyCode: rate.currencyCode, date: rate.date)
+                manager.historicalRateSingle(coinCode: rate.coinCode, currencyCode: rate.currencyCode, date: rate.date)
                         .subscribe(onSuccess: { decimal in
                             providerRateValue = decimal
                         })

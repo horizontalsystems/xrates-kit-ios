@@ -7,6 +7,19 @@ public enum ChartType: Int, CaseIterable {
     case halfYear
     case year
 
+    var expirationInterval: TimeInterval {
+        let multiplier: TimeInterval
+
+        switch resource {
+        case "histominute": multiplier = 60 
+        case "histohour": multiplier = 60 * 60 
+        case "histoday": multiplier = 24 * 60 * 60
+        default: multiplier = 60
+        }
+
+        return TimeInterval(interval) * multiplier
+    }
+
     var interval: Int {
         switch self {
         case .day: return 30

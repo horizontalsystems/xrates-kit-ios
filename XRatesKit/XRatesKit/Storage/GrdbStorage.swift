@@ -1,6 +1,5 @@
 import GRDB
 import RxSwift
-import RxGRDB
 
 class GrdbStorage {
     private let dbPool: DatabasePool
@@ -18,22 +17,52 @@ class GrdbStorage {
     var migrator: DatabaseMigrator {
         var migrator = DatabaseMigrator()
 
-        migrator.registerMigration("createRate") { db in
-            try db.create(table: Rate.databaseTableName) { t in
-                t.column(Rate.Columns.coinCode.name, .text).notNull()
-                t.column(Rate.Columns.currencyCode.name, .text).notNull()
-                t.column(Rate.Columns.value.name, .text).notNull()
-                t.column(Rate.Columns.date.name, .double).notNull()
-                t.column(Rate.Columns.isLatest.name, .boolean).notNull()
+        migrator.registerMigration("createLatestRates") { db in
+            try db.create(table: LatestRate.databaseTableName) { t in
+                t.column(LatestRate.Columns.coinCode.name, .text).notNull()
+                t.column(LatestRate.Columns.currencyCode.name, .text).notNull()
+                t.column(LatestRate.Columns.value.name, .text).notNull()
+                t.column(LatestRate.Columns.date.name, .double).notNull()
 
                 t.primaryKey([
-                    Rate.Columns.coinCode.name,
-                    Rate.Columns.currencyCode.name,
-                    Rate.Columns.date.name,
-                    Rate.Columns.isLatest.name
+                    LatestRate.Columns.coinCode.name,
+                    LatestRate.Columns.currencyCode.name,
                 ], onConflict: .replace)
             }
         }
+
+        migrator.registerMigration("createHistoricalRates") { db in
+            try db.create(table: HistoricalRate.databaseTableName) { t in
+                t.column(HistoricalRate.Columns.coinCode.name, .text).notNull()
+                t.column(HistoricalRate.Columns.currencyCode.name, .text).notNull()
+                t.column(HistoricalRate.Columns.value.name, .text).notNull()
+                t.column(HistoricalRate.Columns.date.name, .double).notNull()
+
+                t.primaryKey([
+                    HistoricalRate.Columns.coinCode.name,
+                    HistoricalRate.Columns.currencyCode.name,
+                    HistoricalRate.Columns.date.name,
+                ], onConflict: .replace)
+            }
+        }
+
+        migrator.registerMigration("createChartPoints") { db in
+            try db.create(table: ChartPointRecord.databaseTableName) { t in
+                t.column(ChartPointRecord.Columns.coinCode.name, .text).notNull()
+                t.column(ChartPointRecord.Columns.currencyCode.name, .text).notNull()
+                t.column(ChartPointRecord.Columns.chartType.name, .integer).notNull()
+                t.column(ChartPointRecord.Columns.date.name, .double).notNull()
+                t.column(ChartPointRecord.Columns.value.name, .text).notNull()
+
+                t.primaryKey([
+                    ChartPointRecord.Columns.coinCode.name,
+                    ChartPointRecord.Columns.currencyCode.name,
+                    ChartPointRecord.Columns.chartType.name,
+                    ChartPointRecord.Columns.date.name,
+                ], onConflict: .replace)
+            }
+        }
+
         migrator.registerMigration("createMarketStats") { db in
             try db.create(table: MarketStats.databaseTableName) { t in
                 t.column(MarketStats.Columns.coinCode.name, .text).notNull()
@@ -49,21 +78,7 @@ class GrdbStorage {
                 ], onConflict: .replace)
             }
         }
-        migrator.registerMigration("createChartStats") { db in
-            try db.create(table: ChartStats.databaseTableName) { t in
-                t.column(ChartStats.Columns.coinCode.name, .text).notNull()
-                t.column(ChartStats.Columns.currencyCode.name, .text).notNull()
-                t.column(ChartStats.Columns.chartType.name, .integer).notNull()
-                t.column(ChartStats.Columns.timestamp.name, .double).notNull()
-                t.column(ChartStats.Columns.value.name, .text).notNull()
 
-                t.primaryKey([
-                    ChartStats.Columns.coinCode.name,
-                    ChartStats.Columns.currencyCode.name,
-                    ChartStats.Columns.chartType.name,
-                ], onConflict: .replace)
-            }
-        }
         return migrator
     }
 
@@ -71,16 +86,21 @@ class GrdbStorage {
 
 extension GrdbStorage: ILatestRateStorage {
 
-    func latestRate(coinCode: String, currencyCode: String) -> Rate? {
+    func latestRate(key: RateKey) -> LatestRate? {
         try! dbPool.read { db in
-            try Rate.filter(Rate.Columns.coinCode == coinCode && Rate.Columns.currencyCode == currencyCode && Rate.Columns.isLatest == true).fetchOne(db)
+            try LatestRate.filter(LatestRate.Columns.coinCode == key.coinCode && LatestRate.Columns.currencyCode == key.currencyCode).fetchOne(db)
         }
     }
 
-    func save(rates: [Rate]) {
-        _ = try? dbPool.write { db in
-            for rate in rates {
-                try Rate.filter(Rate.Columns.coinCode == rate.coinCode && Rate.Columns.currencyCode == rate.currencyCode && Rate.Columns.isLatest == true).deleteAll(db)
+    func latestRatesSortedByDate(coinCodes: [String], currencyCode: String) -> [LatestRate] {
+        try! dbPool.read { db in
+            try LatestRate.filter(coinCodes.contains(LatestRate.Columns.coinCode) && LatestRate.Columns.currencyCode == currencyCode).order(LatestRate.Columns.date).fetchAll(db)
+        }
+    }
+
+    func save(latestRates: [LatestRate]) {
+        _ = try! dbPool.write { db in
+            for rate in latestRates {
                 try rate.insert(db)
             }
         }
@@ -90,47 +110,56 @@ extension GrdbStorage: ILatestRateStorage {
 
 extension GrdbStorage: IHistoricalRateStorage {
 
-    func rate(coinCode: String, currencyCode: String, date: Date) -> Rate? {
+    func rate(coinCode: String, currencyCode: String, date: Date) -> HistoricalRate? {
         try! dbPool.read { db in
-            try Rate.filter(Rate.Columns.coinCode == coinCode && Rate.Columns.currencyCode == currencyCode && Rate.Columns.date == date && Rate.Columns.isLatest == false).fetchOne(db)
+            try HistoricalRate.filter(HistoricalRate.Columns.coinCode == coinCode && HistoricalRate.Columns.currencyCode == currencyCode && HistoricalRate.Columns.date == date).fetchOne(db)
         }
     }
 
-    func save(rate: Rate) {
-        _ = try? dbPool.write { db in
-            try rate.insert(db)
+    func save(historicalRate: HistoricalRate) {
+        _ = try! dbPool.write { db in
+            try historicalRate.insert(db)
         }
     }
 
 }
 
-extension GrdbStorage: IChartStatsStorage {
+extension GrdbStorage: IChartPointStorage {
 
-    func marketStats(coinCodes: [String], currencyCode: String) -> [MarketStats] {
-        let codesForQuery = coinCodes.map { "'\($0)'" }.joined(separator: ",")
-        return try! dbPool.read { db in
-            try MarketStats.fetchAll(db, sql: "SELECT * FROM market_stats WHERE coinCode IN (\(codesForQuery)) AND currencyCode = '\(currencyCode)'")
-        }
-    }
+//    func marketStats(coinCodes: [String], currencyCode: String) -> [MarketStats] {
+//        let codesForQuery = coinCodes.map { "'\($0)'" }.joined(separator: ",")
+//        return try! dbPool.read { db in
+//            try MarketStats.fetchAll(db, sql: "SELECT * FROM market_stats WHERE coinCode IN (\(codesForQuery)) AND currencyCode = '\(currencyCode)'")
+//        }
+//    }
+//
+//    func save(marketStats: MarketStats) {
+//        _ = try! dbPool.write { db in
+//            try marketStats.insert(db)
+//        }
+//    }
 
-    func save(marketStats: MarketStats) {
-        _ = try? dbPool.write { db in
-            try marketStats.insert(db)
-        }
-    }
-
-    func chartStatList(coinCode: String, currencyCode: String, chartType: ChartType) -> [ChartStats] {
+    func chartPointRecords(key: ChartPointKey) -> [ChartPointRecord] {
         try! dbPool.read { db in
-            try ChartStats.filter(ChartStats.Columns.coinCode == coinCode && ChartStats.Columns.currencyCode == currencyCode && ChartStats.Columns.chartType == chartType.rawValue)
-                    .order(ChartStats.Columns.timestamp).fetchAll(db)
+            try ChartPointRecord
+                    .filter(ChartPointRecord.Columns.coinCode == key.coinCode && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.chartType.rawValue)
+                    .order(ChartPointRecord.Columns.date).fetchAll(db)
         }
     }
 
-    func save(chartStatList: [ChartStats]) {
-        _ = try? dbPool.write { db in
-            for chartStats in chartStatList {
-                try chartStats.insert(db)
+    func save(chartPointRecords: [ChartPointRecord]) {
+        _ = try! dbPool.write { db in
+            for record in chartPointRecords {
+                try record.insert(db)
             }
+        }
+    }
+
+    func deleteChartPointRecords(key: ChartPointKey) {
+        _ = try! dbPool.write { db in
+            try ChartPointRecord
+                    .filter(ChartPointRecord.Columns.coinCode == key.coinCode && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.chartType.rawValue)
+                    .deleteAll(db)
         }
     }
 
