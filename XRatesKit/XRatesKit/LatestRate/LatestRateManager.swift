@@ -6,21 +6,9 @@ class LatestRateManager {
     private let storage: ILatestRateStorage
     private let expirationInterval: TimeInterval
 
-    private var subjects = [RateKey: PublishSubject<Rate>]()
-
     init(storage: ILatestRateStorage, expirationInterval: TimeInterval) {
         self.storage = storage
         self.expirationInterval = expirationInterval
-    }
-
-    private func subject(key: RateKey) -> PublishSubject<Rate> {
-        if let subject = subjects[key] {
-            return subject
-        }
-
-        let subject = PublishSubject<Rate>()
-        subjects[key] = subject
-        return subject
     }
 
     private func rateInfo(rate: LatestRate) -> Rate {
@@ -51,10 +39,6 @@ extension LatestRateManager: ILatestRateManager {
 
     func latestRate(key: RateKey) -> Rate? {
         storage.latestRate(key: key).map { rateInfo(rate: $0) }
-    }
-
-    func latestRateObservable(key: RateKey) -> Observable<Rate> {
-        subject(key: key).asObservable()
     }
 
     func handleUpdated(rates: [LatestRate]) {

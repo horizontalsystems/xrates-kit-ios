@@ -2,12 +2,17 @@ import RxSwift
 
 class ChartPointSyncManager {
     private let schedulerFactory: ChartPointSchedulerFactory
+    private let chartPointManager: IChartPointManager
+    private let latestRateSyncManager: ILatestRateSyncManager
 
     private var subjects = [ChartPointKey: PublishSubject<[ChartPoint]>]()
     private var schedulers = [ChartPointKey: ChartPointScheduler]()
+    private var latestRateDisposables = [ChartPointKey: Disposable]()
 
-    init(schedulerFactory: ChartPointSchedulerFactory) {
+    init(schedulerFactory: ChartPointSchedulerFactory, chartPointManager: IChartPointManager, latestRateSyncManager: ILatestRateSyncManager) {
         self.schedulerFactory = schedulerFactory
+        self.chartPointManager = chartPointManager
+        self.latestRateSyncManager = latestRateSyncManager
     }
 
     private func subject(key: ChartPointKey) -> PublishSubject<[ChartPoint]> {
@@ -27,6 +32,15 @@ class ChartPointSyncManager {
 
         let scheduler = schedulerFactory.scheduler(key: key)
         schedulers[key] = scheduler
+
+        let disposable = latestRateSyncManager.latestRateObservable(key: RateKey(coinCode: key.coinCode, currencyCode: key.currencyCode))
+                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+                .subscribe(onNext: { [weak self] latestRate in
+                    self?.chartPointManager.handleUpdated(latestRate: latestRate, key: key)
+                })
+
+        latestRateDisposables[key] = disposable
+
         return scheduler
     }
 
@@ -37,6 +51,8 @@ class ChartPointSyncManager {
 
         subjects[key] = nil
         schedulers[key] = nil
+        latestRateDisposables[key]?.dispose()
+        latestRateDisposables[key] = nil
     }
 
 }

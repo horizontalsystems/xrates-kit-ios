@@ -70,6 +70,7 @@ protocol IChartPointManager {
     func lastSyncDate(key: ChartPointKey) -> Date?
     func chartPoints(key: ChartPointKey) -> [ChartPoint]
     func handleUpdated(chartPoints: [ChartPoint], key: ChartPointKey)
+    func handleUpdated(latestRate: Rate, key: ChartPointKey)
 }
 
 protocol IChartPointManagerDelegate: AnyObject {
