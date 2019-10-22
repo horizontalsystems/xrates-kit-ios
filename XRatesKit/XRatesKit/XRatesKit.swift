@@ -39,8 +39,8 @@ extension XRatesKit {
         latestRateSyncManager.latestRateObservable(key: RateKey(coinCode: coinCode, currencyCode: currencyCode))
     }
 
-    public func historicalRate(coinCode: String, currencyCode: String, date: Date) -> Single<Decimal> {
-        historicalRateManager.historicalRateSingle(coinCode: coinCode, currencyCode: currencyCode, date: date)
+    public func historicalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
+        historicalRateManager.historicalRateSingle(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)
     }
 
     public func chartInfo(coinCode: String, currencyCode: String, chartType: ChartType) -> ChartInfo? {

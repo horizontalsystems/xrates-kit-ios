@@ -31,8 +31,8 @@ class CryptoCompareProvider {
         }
     }
 
-    private func historicalRateUrl(coinCode: String, currencyCode: String, historicalType: HistoricalType, date: Date) -> String {
-        "\(baseUrl)/data/v2/\(historicalType.rawValue)?fsym=\(coinCode)&tsym=\(currencyCode)&limit=1&toTs=\(Int(date.timeIntervalSince1970))"
+    private func historicalRateUrl(coinCode: String, currencyCode: String, historicalType: HistoricalType, timestamp: TimeInterval) -> String {
+        "\(baseUrl)/data/v2/\(historicalType.rawValue)?fsym=\(coinCode)&tsym=\(currencyCode)&limit=1&toTs=\(Int(timestamp))"
     }
 
     private func marketInfoUrl(coinCodes: [String], currencyCode: String) -> String {
@@ -67,9 +67,9 @@ extension CryptoCompareProvider: ILatestRateProvider {
 
 extension CryptoCompareProvider: IHistoricalRateProvider {
 
-    func getHistoricalRate(coinCode: String, currencyCode: String, date: Date) -> Single<RateResponse> {
-        let hourUrlString = historicalRateUrl(coinCode: coinCode, currencyCode: currencyCode, historicalType: .hour, date: date)
-        let minuteUrlString = historicalRateUrl(coinCode: coinCode, currencyCode: currencyCode, historicalType: .minute, date: date)
+    func getHistoricalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<RateResponse> {
+        let hourUrlString = historicalRateUrl(coinCode: coinCode, currencyCode: currencyCode, historicalType: .hour, timestamp: timestamp)
+        let minuteUrlString = historicalRateUrl(coinCode: coinCode, currencyCode: currencyCode, historicalType: .minute, timestamp: timestamp)
 
         let minuteSingle: Single<CryptoCompareHistoricalRateResponse> = networkManager.single(urlString: minuteUrlString, httpMethod: .get, timoutInterval: timeoutInterval)
         let hourSingle: Single<CryptoCompareHistoricalRateResponse> = networkManager.single(urlString: hourUrlString, httpMethod: .get, timoutInterval: timeoutInterval)
@@ -78,14 +78,14 @@ extension CryptoCompareProvider: IHistoricalRateProvider {
             guard let rateValue = response.rateValue else {
                 return Single.error(XRatesErrors.HistoricalRate.noValueForMinute)
             }
-            let rate = self.cryptoCompareFactory.historicalRate(coinCode: coinCode, currencyCode: currencyCode, date: date, value: rateValue)
+            let rate = self.cryptoCompareFactory.historicalRate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp, value: rateValue)
             return Single.just(rate)
         }.catchError { _ in
             hourSingle.flatMap { response -> Single<RateResponse> in
                 guard let rateValue = response.rateValue else {
                     return Single.error(XRatesErrors.HistoricalRate.noValueForHour)
                 }
-                let rate = self.cryptoCompareFactory.historicalRate(coinCode: coinCode, currencyCode: currencyCode, date: date, value: rateValue)
+                let rate = self.cryptoCompareFactory.historicalRate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp, value: rateValue)
                 return Single.just(rate)
             }
         }

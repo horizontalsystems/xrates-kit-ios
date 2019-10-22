@@ -3,7 +3,7 @@ import RxSwift
 // Latest Rates
 
 protocol ILatestRateManager {
-    func lastSyncDate(coinCodes: [String], currencyCode: String) -> Date?
+    func lastSyncTimestamp(coinCodes: [String], currencyCode: String) -> TimeInterval?
     func latestRate(key: RateKey) -> Rate?
     func handleUpdated(rates: [LatestRate])
     func notifyExpiredRates(coinCodes: [String], currencyCode: String)
@@ -19,7 +19,7 @@ protocol ILatestRateProvider: class {
 
 protocol ILatestRateStorage {
     func latestRate(key: RateKey) -> LatestRate?
-    func latestRatesSortedByDate(coinCodes: [String], currencyCode: String) -> [LatestRate]
+    func latestRatesSortedByTimestamp(coinCodes: [String], currencyCode: String) -> [LatestRate]
     func save(latestRates: [LatestRate])
 }
 
@@ -36,7 +36,7 @@ protocol ILatestRateScheduler {
 }
 
 protocol ILatestRateSchedulerProvider {
-    var lastSyncDate: Date? { get }
+    var lastSyncTimestamp: TimeInterval? { get }
     var expirationInterval: TimeInterval { get }
     var retryInterval: TimeInterval { get }
     var syncSingle: Single<Void> { get }
@@ -52,22 +52,22 @@ protocol ILatestRateProviderDelegate: class {
 // Historical Rates
 
 protocol IHistoricalRateManager {
-    func historicalRateSingle(coinCode: String, currencyCode: String, date: Date) -> Single<Decimal>
+    func historicalRateSingle(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal>
 }
 
 protocol IHistoricalRateProvider {
-    func getHistoricalRate(coinCode: String, currencyCode: String, date: Date) -> Single<RateResponse>
+    func getHistoricalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<RateResponse>
 }
 
 protocol IHistoricalRateStorage {
-    func rate(coinCode: String, currencyCode: String, date: Date) -> HistoricalRate?
+    func rate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> HistoricalRate?
     func save(historicalRate: HistoricalRate)
 }
 
 // Chart Points
 
 protocol IChartInfoManager {
-    func lastSyncDate(key: ChartPointKey) -> Date?
+    func lastSyncTimestamp(key: ChartPointKey) -> TimeInterval?
     func chartInfo(key: ChartPointKey) -> ChartInfo?
     func handleUpdated(chartPoints: [ChartPoint], key: ChartPointKey)
     func handleUpdated(latestRate: Rate, key: ChartPointKey)
@@ -82,7 +82,7 @@ protocol IChartPointProvider {
 }
 
 protocol IChartPointStorage {
-    func chartPointRecords(key: ChartPointKey, fromDate: Date) -> [ChartPointRecord]
+    func chartPointRecords(key: ChartPointKey, fromTimestamp: TimeInterval) -> [ChartPointRecord]
     func save(chartPointRecords: [ChartPointRecord])
     func deleteChartPointRecords(key: ChartPointKey)
 }
@@ -97,7 +97,7 @@ protocol IChartPointsScheduler {
 
 protocol IChartPointSchedulerProvider {
     var logKey: String { get }
-    var lastSyncDate: Date? { get }
+    var lastSyncTimestamp: TimeInterval? { get }
     var expirationInterval: TimeInterval { get }
     var retryInterval: TimeInterval { get }
     var syncSingle: Single<Void> { get }
@@ -117,5 +117,5 @@ protocol ICurrentDateProvider {
 protocol ICryptoCompareFactory {
     func latestRate(coinCode: String, currencyCode: String, response: CryptoCompareLatestRateResponse) -> RateResponse?
     func marketStats(coinCode: String, currencyCode: String, response: CryptoCompareMarketInfoResponse) -> MarketStats?
-    func historicalRate(coinCode: String, currencyCode: String, date: Date, value: Decimal) -> RateResponse
+    func historicalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval, value: Decimal) -> RateResponse
 }

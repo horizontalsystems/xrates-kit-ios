@@ -21,7 +21,7 @@ class LatestRateSchedulerProvider {
     private func handle(rateResponses: [RateResponse]) {
         let rates = coinCodes.map { coinCode -> LatestRate in
             let value = rateResponses.first(where: { $0.coinCode == coinCode })?.value ?? 0
-            return LatestRate(coinCode: coinCode, currencyCode: currencyCode, value: value, date: Date())
+            return LatestRate(coinCode: coinCode, currencyCode: currencyCode, value: value, timestamp: Date().timeIntervalSince1970)
         }
 
         manager.handleUpdated(rates: rates)
@@ -31,8 +31,8 @@ class LatestRateSchedulerProvider {
 
 extension LatestRateSchedulerProvider: ILatestRateSchedulerProvider {
 
-    var lastSyncDate: Date? {
-        manager.lastSyncDate(coinCodes: coinCodes, currencyCode: currencyCode)
+    var lastSyncTimestamp: TimeInterval? {
+        manager.lastSyncTimestamp(coinCodes: coinCodes, currencyCode: currencyCode)
     }
 
     var syncSingle: Single<Void> {

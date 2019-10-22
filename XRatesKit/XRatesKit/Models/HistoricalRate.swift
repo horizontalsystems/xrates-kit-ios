@@ -3,12 +3,12 @@ import GRDB
 class HistoricalRate: Record {
     let key: RateKey
     let value: Decimal
-    let date: Date
+    let timestamp: TimeInterval
 
-    init(coinCode: String, currencyCode: String, value: Decimal, date: Date) {
+    init(coinCode: String, currencyCode: String, value: Decimal, timestamp: TimeInterval) {
         self.key = RateKey(coinCode: coinCode, currencyCode: currencyCode)
         self.value = value
-        self.date = date
+        self.timestamp = timestamp
 
         super.init()
     }
@@ -18,13 +18,13 @@ class HistoricalRate: Record {
     }
 
     enum Columns: String, ColumnExpression {
-        case coinCode, currencyCode, value, date
+        case coinCode, currencyCode, value, timestamp
     }
 
     required init(row: Row) {
         key = RateKey(coinCode: row[Columns.coinCode], currencyCode: row[Columns.currencyCode])
         value = row[Columns.value]
-        date = row[Columns.date]
+        timestamp = row[Columns.timestamp]
 
         super.init(row: row)
     }
@@ -33,7 +33,7 @@ class HistoricalRate: Record {
         container[Columns.coinCode] = key.coinCode
         container[Columns.currencyCode] = key.currencyCode
         container[Columns.value] = value
-        container[Columns.date] = date
+        container[Columns.timestamp] = timestamp
     }
 
 }
@@ -41,7 +41,7 @@ class HistoricalRate: Record {
 extension HistoricalRate: CustomStringConvertible {
 
     var description: String {
-        "HistoricalRate [coinCode: \(key.coinCode); currencyCode: \(key.currencyCode); value: \(value); date: \(date)]"
+        "HistoricalRate [coinCode: \(key.coinCode); currencyCode: \(key.currencyCode); value: \(value); timestamp: \(timestamp)]"
     }
 
 }
@@ -49,7 +49,7 @@ extension HistoricalRate: CustomStringConvertible {
 extension HistoricalRate: Equatable {
 
     static func ==(lhs: HistoricalRate, rhs: HistoricalRate) -> Bool {
-        lhs.key == rhs.key && lhs.value == rhs.value && lhs.date == rhs.date
+        lhs.key == rhs.key && lhs.value == rhs.value && lhs.timestamp == rhs.timestamp
     }
 
 }

@@ -79,7 +79,7 @@ class ViewController: UIViewController {
     }
 
     @objc func onTapHistorical() {
-        xRatesKit.historicalRate(coinCode: "BTC", currencyCode: "USD", date: Date(timeIntervalSinceNow: 0))
+        xRatesKit.historicalRate(coinCode: "BTC", currencyCode: "USD", timestamp: Date().timeIntervalSince1970)
                 .observeOn(MainScheduler.instance)
                 .subscribe(onSuccess: { value in
                     print("Did fetch Historical Rate: \(value)")
@@ -144,7 +144,7 @@ class ViewController: UIViewController {
             if let rate = latestRates[coinCode] {
                 text += "\(rate.expired ? "⛔" : "✅")\n"
                 text += "   • \(rate.value)\n"
-                text += "   • \(dateFormatter.string(from: rate.date))\n"
+                text += "   • \(format(timestamp: rate.timestamp))\n"
             } else {
                 text += "n/a\n"
             }
@@ -157,16 +157,20 @@ class ViewController: UIViewController {
         if let chartInfo = chartInfo {
             text += "Chart Info:\n"
             text += "Diff: \(chartInfo.diff.map { "\($0)" } ?? "n/a")\n"
-            text += "Start Date: \(dateFormatter.string(from: chartInfo.startDate))\n"
-            text += "End Date: \(dateFormatter.string(from: chartInfo.endDate))\n"
+            text += "Start Date: \(format(timestamp: chartInfo.startTimestamp))\n"
+            text += "End Date: \(format(timestamp: chartInfo.endTimestamp))\n"
 
             for point in chartInfo.points {
-                let formattedDate = dateFormatter.string(from: point.date)
-                text += "   \(formattedDate): \(point.value)\n"
+                text += "   \(format(timestamp: point.timestamp)): \(point.value)\n"
             }
         }
 
         textView.text = text
+    }
+
+    private func format(timestamp: TimeInterval) -> String {
+        let date = Date(timeIntervalSince1970: timestamp)
+        return dateFormatter.string(from: date)
     }
 
 }

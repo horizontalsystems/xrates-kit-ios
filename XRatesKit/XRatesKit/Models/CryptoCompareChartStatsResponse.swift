@@ -11,7 +11,7 @@ struct CryptoCompareChartStatsResponse: ImmutableMappable {
 
             if let timestamp = rateData["time"] as? Int, let open = rateData["open"] as? Double, let close = rateData["close"] as? Double {
                 let rateValue = NSNumber(value: (open + close) / 2).decimalValue
-                chartPoints.append(ChartPoint(date: Date(timeIntervalSince1970: TimeInterval(timestamp)), value: rateValue))
+                chartPoints.append(ChartPoint(timestamp: TimeInterval(timestamp), value: rateValue))
             }
         }
 

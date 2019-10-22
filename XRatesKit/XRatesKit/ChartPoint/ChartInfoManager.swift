@@ -18,29 +18,30 @@ class ChartInfoManager {
 
         let firstPoint = chartPoints[0]
 
-        let lastPointDiffInterval = Date().timeIntervalSince1970 - lastPoint.date.timeIntervalSince1970
+        let currentTimestamp = Date().timeIntervalSince1970
+        let lastPointDiffInterval = currentTimestamp - lastPoint.timestamp
 
         guard lastPointDiffInterval < key.chartType.expirationInterval else {
             // expired chart info, not adding latest rate point
             return ChartInfo(
                     points: chartPoints,
-                    startDate: firstPoint.date,
-                    endDate: Date(),
+                    startTimestamp: firstPoint.timestamp,
+                    endTimestamp: currentTimestamp,
                     diff: nil
             )
         }
 
-        guard let latestRate = latestRate, latestRate.date > lastPoint.date else {
+        guard let latestRate = latestRate, latestRate.timestamp > lastPoint.timestamp else {
             // non-expired chart info without latest rate
             return ChartInfo(
                     points: chartPoints,
-                    startDate: firstPoint.date,
-                    endDate: lastPoint.date,
+                    startTimestamp: firstPoint.timestamp,
+                    endTimestamp: lastPoint.timestamp,
                     diff: nil
             )
         }
 
-        let chartPointsWithLatestRate = chartPoints + [ChartPoint(date: latestRate.date, value: latestRate.value)]
+        let chartPointsWithLatestRate = chartPoints + [ChartPoint(timestamp: latestRate.timestamp, value: latestRate.value)]
         var diff: Decimal? = nil
 
         if !latestRate.expired {
@@ -49,8 +50,8 @@ class ChartInfoManager {
 
         return ChartInfo(
                 points: chartPointsWithLatestRate,
-                startDate: firstPoint.date,
-                endDate: latestRate.date,
+                startTimestamp: firstPoint.timestamp,
+                endTimestamp: latestRate.timestamp,
                 diff: diff
         )
     }
@@ -61,9 +62,9 @@ class ChartInfoManager {
     }
 
     private func storedChartPoints(key: ChartPointKey) -> [ChartPoint] {
-        let currentTimeInterval = Date().timeIntervalSince1970
-        let fromTimeInterval = currentTimeInterval - key.chartType.rangeInterval
-        let chartPointRecords = storage.chartPointRecords(key: key, fromDate: Date(timeIntervalSince1970: fromTimeInterval))
+        let currentTimestamp = Date().timeIntervalSince1970
+        let fromTimestamp = currentTimestamp - key.chartType.rangeInterval
+        let chartPointRecords = storage.chartPointRecords(key: key, fromTimestamp: fromTimestamp)
         return chartPointRecords.map { $0.chartPoint }
     }
 
@@ -71,8 +72,8 @@ class ChartInfoManager {
 
 extension ChartInfoManager: IChartInfoManager {
 
-    func lastSyncDate(key: ChartPointKey) -> Date? {
-        storedChartPoints(key: key).last?.date
+    func lastSyncTimestamp(key: ChartPointKey) -> TimeInterval? {
+        storedChartPoints(key: key).last?.timestamp
     }
 
     func chartInfo(key: ChartPointKey) -> ChartInfo? {

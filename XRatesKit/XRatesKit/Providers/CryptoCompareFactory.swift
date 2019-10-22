@@ -23,7 +23,7 @@ extension CryptoCompareFactory: ICryptoCompareFactory {
         return MarketStats(coinCode: coinCode, currencyCode: currencyCode, date: dateProvider.currentDate, volume: marketInfoValue.volume, marketCap: marketInfoValue.marketCap, supply: marketInfoValue.supply)
     }
 
-    func historicalRate(coinCode: String, currencyCode: String, date: Date, value: Decimal) -> RateResponse {
+    func historicalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval, value: Decimal) -> RateResponse {
         RateResponse(coinCode: coinCode, value: value)
     }
 

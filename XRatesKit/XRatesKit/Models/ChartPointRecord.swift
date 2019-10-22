@@ -17,12 +17,12 @@ class ChartPointRecord: Record {
     }
 
     enum Columns: String, ColumnExpression {
-        case coinCode, currencyCode, chartType, date, value
+        case coinCode, currencyCode, chartType, timestamp, value
     }
 
     required init(row: Row) {
         key = ChartPointKey(coinCode: row[Columns.coinCode], currencyCode: row[Columns.currencyCode], chartType: ChartType(rawValue: row[Columns.chartType]) ?? .day)
-        chartPoint = ChartPoint(date: row[Columns.date], value: row[Columns.value])
+        chartPoint = ChartPoint(timestamp: row[Columns.timestamp], value: row[Columns.value])
 
         super.init(row: row)
     }
@@ -31,7 +31,7 @@ class ChartPointRecord: Record {
         container[Columns.coinCode] = key.coinCode
         container[Columns.currencyCode] = key.currencyCode
         container[Columns.chartType] = key.chartType.rawValue
-        container[Columns.date] = chartPoint.date
+        container[Columns.timestamp] = chartPoint.timestamp
         container[Columns.value] = chartPoint.value
     }
 

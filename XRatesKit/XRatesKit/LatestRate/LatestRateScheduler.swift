@@ -89,7 +89,8 @@ class LatestRateScheduler {
             return
         }
 
-        if let lastSuccessSyncDate = provider.lastSyncDate, Date().timeIntervalSince1970 - lastSuccessSyncDate.timeIntervalSince1970 < provider.expirationInterval {
+        let currentTimestamp = Date().timeIntervalSince1970
+        if let lastSuccessSyncTimestamp = provider.lastSyncTimestamp, currentTimestamp - lastSuccessSyncTimestamp < provider.expirationInterval {
             return
         }
 
@@ -102,8 +103,9 @@ class LatestRateScheduler {
     private func autoSchedule() {
         var delay: TimeInterval = 0
 
-        if let lastSyncDate = provider.lastSyncDate {
-            let diff = Date().timeIntervalSince1970 - lastSyncDate.timeIntervalSince1970
+        if let lastSyncTimestamp = provider.lastSyncTimestamp {
+            let currentTimestamp = Date().timeIntervalSince1970
+            let diff = currentTimestamp - lastSyncTimestamp
             delay = max(0, provider.expirationInterval - bufferInterval - diff)
         }
 

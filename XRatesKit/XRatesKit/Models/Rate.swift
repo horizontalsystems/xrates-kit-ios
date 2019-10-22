@@ -2,18 +2,18 @@ import Foundation
 
 public struct Rate {
     public let value: Decimal
-    public let date: Date
+    public let timestamp: TimeInterval
 
     private let expirationInterval: TimeInterval
 
     init(rateRecord: LatestRate, expirationInterval: TimeInterval) {
         self.expirationInterval = expirationInterval
         self.value = rateRecord.value
-        self.date = rateRecord.date
+        self.timestamp = rateRecord.timestamp
     }
 
     public var expired: Bool {
-        Date().timeIntervalSince1970 - date.timeIntervalSince1970 > expirationInterval
+        Date().timeIntervalSince1970 - timestamp > expirationInterval
     }
 
 }
@@ -21,7 +21,7 @@ public struct Rate {
 extension Rate: Equatable {
 
     static public func ==(lhs: Rate, rhs: Rate) -> Bool {
-        lhs.value == rhs.value && lhs.date == rhs.date
+        lhs.value == rhs.value && lhs.timestamp == rhs.timestamp
     }
 
 }

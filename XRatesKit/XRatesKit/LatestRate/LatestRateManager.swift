@@ -25,8 +25,8 @@ class LatestRateManager {
 
 extension LatestRateManager: ILatestRateManager {
 
-    func lastSyncDate(coinCodes: [String], currencyCode: String) -> Date? {
-        let rates = storage.latestRatesSortedByDate(coinCodes: coinCodes, currencyCode: currencyCode)
+    func lastSyncTimestamp(coinCodes: [String], currencyCode: String) -> TimeInterval? {
+        let rates = storage.latestRatesSortedByTimestamp(coinCodes: coinCodes, currencyCode: currencyCode)
 
         // not all rates for coin codes are stored in database - force sync required
         guard rates.count == coinCodes.count else {
@@ -34,7 +34,7 @@ extension LatestRateManager: ILatestRateManager {
         }
 
         // return date of the most expired stored rate
-        return rates.first?.date
+        return rates.first?.timestamp
     }
 
     func latestRate(key: RateKey) -> Rate? {
@@ -47,7 +47,7 @@ extension LatestRateManager: ILatestRateManager {
     }
 
     func notifyExpiredRates(coinCodes: [String], currencyCode: String) {
-        let rates = storage.latestRatesSortedByDate(coinCodes: coinCodes, currencyCode: currencyCode)
+        let rates = storage.latestRatesSortedByTimestamp(coinCodes: coinCodes, currencyCode: currencyCode)
         notify(rates: rates)
     }
 

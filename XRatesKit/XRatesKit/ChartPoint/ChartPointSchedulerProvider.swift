@@ -26,8 +26,8 @@ extension ChartPointSchedulerProvider: IChartPointSchedulerProvider {
         "\(key)"
     }
 
-    var lastSyncDate: Date? {
-        manager.lastSyncDate(key: key)
+    var lastSyncTimestamp: TimeInterval? {
+        manager.lastSyncTimestamp(key: key)
     }
 
     var expirationInterval: TimeInterval {

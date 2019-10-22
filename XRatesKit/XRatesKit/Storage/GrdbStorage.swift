@@ -22,7 +22,7 @@ class GrdbStorage {
                 t.column(LatestRate.Columns.coinCode.name, .text).notNull()
                 t.column(LatestRate.Columns.currencyCode.name, .text).notNull()
                 t.column(LatestRate.Columns.value.name, .text).notNull()
-                t.column(LatestRate.Columns.date.name, .double).notNull()
+                t.column(LatestRate.Columns.timestamp.name, .double).notNull()
 
                 t.primaryKey([
                     LatestRate.Columns.coinCode.name,
@@ -36,12 +36,12 @@ class GrdbStorage {
                 t.column(HistoricalRate.Columns.coinCode.name, .text).notNull()
                 t.column(HistoricalRate.Columns.currencyCode.name, .text).notNull()
                 t.column(HistoricalRate.Columns.value.name, .text).notNull()
-                t.column(HistoricalRate.Columns.date.name, .double).notNull()
+                t.column(HistoricalRate.Columns.timestamp.name, .double).notNull()
 
                 t.primaryKey([
                     HistoricalRate.Columns.coinCode.name,
                     HistoricalRate.Columns.currencyCode.name,
-                    HistoricalRate.Columns.date.name,
+                    HistoricalRate.Columns.timestamp.name,
                 ], onConflict: .replace)
             }
         }
@@ -51,14 +51,14 @@ class GrdbStorage {
                 t.column(ChartPointRecord.Columns.coinCode.name, .text).notNull()
                 t.column(ChartPointRecord.Columns.currencyCode.name, .text).notNull()
                 t.column(ChartPointRecord.Columns.chartType.name, .integer).notNull()
-                t.column(ChartPointRecord.Columns.date.name, .double).notNull()
+                t.column(ChartPointRecord.Columns.timestamp.name, .double).notNull()
                 t.column(ChartPointRecord.Columns.value.name, .text).notNull()
 
                 t.primaryKey([
                     ChartPointRecord.Columns.coinCode.name,
                     ChartPointRecord.Columns.currencyCode.name,
                     ChartPointRecord.Columns.chartType.name,
-                    ChartPointRecord.Columns.date.name,
+                    ChartPointRecord.Columns.timestamp.name,
                 ], onConflict: .replace)
             }
         }
@@ -92,9 +92,12 @@ extension GrdbStorage: ILatestRateStorage {
         }
     }
 
-    func latestRatesSortedByDate(coinCodes: [String], currencyCode: String) -> [LatestRate] {
+    func latestRatesSortedByTimestamp(coinCodes: [String], currencyCode: String) -> [LatestRate] {
         try! dbPool.read { db in
-            try LatestRate.filter(coinCodes.contains(LatestRate.Columns.coinCode) && LatestRate.Columns.currencyCode == currencyCode).order(LatestRate.Columns.date).fetchAll(db)
+            try LatestRate
+                    .filter(coinCodes.contains(LatestRate.Columns.coinCode) && LatestRate.Columns.currencyCode == currencyCode)
+                    .order(LatestRate.Columns.timestamp)
+                    .fetchAll(db)
         }
     }
 
@@ -110,9 +113,11 @@ extension GrdbStorage: ILatestRateStorage {
 
 extension GrdbStorage: IHistoricalRateStorage {
 
-    func rate(coinCode: String, currencyCode: String, date: Date) -> HistoricalRate? {
+    func rate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> HistoricalRate? {
         try! dbPool.read { db in
-            try HistoricalRate.filter(HistoricalRate.Columns.coinCode == coinCode && HistoricalRate.Columns.currencyCode == currencyCode && HistoricalRate.Columns.date == date).fetchOne(db)
+            try HistoricalRate
+                    .filter(HistoricalRate.Columns.coinCode == coinCode && HistoricalRate.Columns.currencyCode == currencyCode && HistoricalRate.Columns.timestamp == timestamp)
+                    .fetchOne(db)
         }
     }
 
@@ -139,12 +144,12 @@ extension GrdbStorage: IChartPointStorage {
 //        }
 //    }
 
-    func chartPointRecords(key: ChartPointKey, fromDate: Date) -> [ChartPointRecord] {
+    func chartPointRecords(key: ChartPointKey, fromTimestamp: TimeInterval) -> [ChartPointRecord] {
         try! dbPool.read { db in
             try ChartPointRecord
                     .filter(ChartPointRecord.Columns.coinCode == key.coinCode && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.chartType.rawValue)
-                    .filter(ChartPointRecord.Columns.date > fromDate)
-                    .order(ChartPointRecord.Columns.date).fetchAll(db)
+                    .filter(ChartPointRecord.Columns.timestamp >= fromTimestamp)
+                    .order(ChartPointRecord.Columns.timestamp).fetchAll(db)
         }
     }
 

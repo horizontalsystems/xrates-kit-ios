@@ -73,12 +73,12 @@ class XRatesKitTests: QuickSpec {
                 let rate = LatestRate.mock(coinCode: coinCodes[0], currencyCode: currencyCode, date: Date(), isLatest: false)
                 let single = PublishSubject<Decimal>().asSingle()
                 stub(mockHistoricalRateManager) { mock in
-                    when(mock.getHistoricalRate(coinCode: rate.coinCode, currencyCode: rate.currencyCode, date: equal(to: rate.date))).thenReturn(single)
+                    when(mock.getHistoricalRate(coinCode: rate.coinCode, currencyCode: rate.currencyCode, date: equal(to: rate.timestamp))).thenReturn(single)
                 }
 
-                _ = kit.historicalRate(coinCode: rate.coinCode, currencyCode: rate.currencyCode, date: rate.date)
+                _ = kit.historicalRate(coinCode: rate.coinCode, currencyCode: rate.currencyCode, timestamp: rate.timestamp)
 
-                verify(mockHistoricalRateManager).getHistoricalRate(coinCode: rate.coinCode, currencyCode: rate.currencyCode, date: equal(to: rate.date))
+                verify(mockHistoricalRateManager).getHistoricalRate(coinCode: rate.coinCode, currencyCode: rate.currencyCode, date: equal(to: rate.timestamp))
             }
         }
         describe("#update coin codes") {

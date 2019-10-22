@@ -32,8 +32,9 @@ class ChartPointScheduler {
     private func autoSchedule(minDelay: TimeInterval = 0) {
         var delay: TimeInterval = 0
 
-        if let lastSyncDate = provider.lastSyncDate {
-            let diff = Date().timeIntervalSince1970 - lastSyncDate.timeIntervalSince1970
+        if let lastSyncTimestamp = provider.lastSyncTimestamp {
+            let currentTimestamp = Date().timeIntervalSince1970
+            let diff = currentTimestamp - lastSyncTimestamp
             delay = max(0, provider.expirationInterval - diff)
         }
 

@@ -13,14 +13,14 @@ class HistoricalRateManager {
 
 extension HistoricalRateManager: IHistoricalRateManager {
 
-    func historicalRateSingle(coinCode: String, currencyCode: String, date: Date) -> Single<Decimal> {
-        if let dbRate = storage.rate(coinCode: coinCode, currencyCode: currencyCode, date: date) {
+    func historicalRateSingle(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
+        if let dbRate = storage.rate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp) {
             return Single.just(dbRate.value)
         }
 
-        return provider.getHistoricalRate(coinCode: coinCode, currencyCode: currencyCode, date: date)
+        return provider.getHistoricalRate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)
                 .do(onSuccess: { [weak self] rateResponse in
-                    let rate = HistoricalRate(coinCode: coinCode, currencyCode: currencyCode, value: rateResponse.value, date: date)
+                    let rate = HistoricalRate(coinCode: coinCode, currencyCode: currencyCode, value: rateResponse.value, timestamp: timestamp)
                     self?.storage.save(historicalRate: rate)
                 })
                 .map { rate -> Decimal in

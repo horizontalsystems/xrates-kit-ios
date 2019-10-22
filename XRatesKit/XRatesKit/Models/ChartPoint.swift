@@ -1,11 +1,11 @@
 import Foundation
 
 public struct ChartPoint {
-    public let date: Date
+    public let timestamp: TimeInterval
     public let value: Decimal
 
-    init(date: Date, value: Decimal) {
-        self.date = date
+    init(timestamp: TimeInterval, value: Decimal) {
+        self.timestamp = timestamp
         self.value = value
     }
 }
@@ -13,7 +13,7 @@ public struct ChartPoint {
 extension ChartPoint: Equatable {
 
     public static func ==(lhs: ChartPoint, rhs: ChartPoint) -> Bool {
-        lhs.date == rhs.date && lhs.value == rhs.value
+        lhs.timestamp == rhs.timestamp && lhs.value == rhs.value
     }
 
 }

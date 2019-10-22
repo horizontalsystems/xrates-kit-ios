@@ -2,7 +2,7 @@ import Foundation
 
 public struct ChartInfo {
     public let points: [ChartPoint]
-    public let startDate: Date
-    public let endDate: Date
+    public let startTimestamp: TimeInterval
+    public let endTimestamp: TimeInterval
     public var diff: Decimal?
 }
