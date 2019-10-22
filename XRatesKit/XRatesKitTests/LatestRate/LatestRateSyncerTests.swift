@@ -15,7 +15,7 @@ class LatestRateSyncerTests: QuickSpec {
         let mockStorage = MockILatestRateStorage()
         let mockDataSource = MockIXRatesDataSource()
 
-        let syncer = LatestRateSyncer(latestRateProvider: mockLatestRateProvider, storage: mockStorage, dataSource: mockDataSource)
+        let syncer = LatestRateSchedulerProvider(latestRateProvider: mockLatestRateProvider, storage: mockStorage, dataSource: mockDataSource)
         syncer.delegate = mockDelegate
         syncer.completionDelegate = mockCompletionDelegate
 
@@ -40,8 +40,8 @@ class LatestRateSyncerTests: QuickSpec {
                 }
             }
             it("ignores first signals when double call sync") {
-                let publisher1 = PublishSubject<[Rate]>()
-                let publisher2 = PublishSubject<[Rate]>()
+                let publisher1 = PublishSubject<[LatestRate]>()
+                let publisher2 = PublishSubject<[LatestRate]>()
                 stub(mockLatestRateProvider) { mock in
                     when(mock.getLatestRates(coinCodes: coinCodes, currencyCode: currencyCode)).thenReturn(publisher1.asObservable()).thenReturn(publisher2.asObservable())
                 }
@@ -61,7 +61,7 @@ class LatestRateSyncerTests: QuickSpec {
                 publisher2.onCompleted()
             }
             it("throws error an return onFail, dispose observable to ability next calls") {
-                let publisher = PublishSubject<[Rate]>()
+                let publisher = PublishSubject<[LatestRate]>()
                 stub(mockLatestRateProvider) { mock in
                     when(mock.getLatestRates(coinCodes: coinCodes, currencyCode: currencyCode)).thenReturn(publisher.asObservable())
                 }
@@ -83,8 +83,8 @@ class LatestRateSyncerTests: QuickSpec {
                 publisher.onCompleted()
             }
             it("adds rates to storage, call delegate didUpdate for each rate, call onSuccess on completed") {
-                let publisher = PublishSubject<[Rate]>()
-                let rates = coinCodes.map { Rate.mock(coinCode: $0) }
+                let publisher = PublishSubject<[LatestRate]>()
+                let rates = coinCodes.map { LatestRate.mock(coinCode: $0) }
                 stub(mockLatestRateProvider) { mock in
                     when(mock.getLatestRates(coinCodes: coinCodes, currencyCode: currencyCode)).thenReturn(publisher.asObservable())
                 }

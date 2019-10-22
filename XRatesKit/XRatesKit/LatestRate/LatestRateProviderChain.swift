@@ -13,17 +13,16 @@ class LatestRateProviderChain: ILatestRateProvider {
         concreteProviders.append(latestRateProvider)
     }
 
-    func getLatestRates(coinCodes: [String], currencyCode: String) -> Observable<[Rate]> {
-        print("getLatestRates")
+    func getLatestRates(coinCodes: [String], currencyCode: String) -> Single<[RateResponse]> {
         return latestRates(providers: concreteProviders, coinCodes: coinCodes, currencyCode: currencyCode)
     }
 
-    private func latestRates(providers: [ILatestRateProvider], coinCodes: [String], currencyCode: String) -> Observable<[Rate]> {
+    private func latestRates(providers: [ILatestRateProvider], coinCodes: [String], currencyCode: String) -> Single<[RateResponse]> {
         guard let provider = providers.first else {
-            return Observable.error(XRatesErrors.LatestRateProvider.allProvidersReturnError)
+            return Single.error(XRatesErrors.LatestRateProvider.allProvidersReturnError)
         }
         let leftProviders = Array(providers.dropFirst())
-        return provider.getLatestRates(coinCodes: coinCodes, currencyCode: currencyCode).catchError { [unowned self] (error: Error) -> Observable<[Rate]> in
+        return provider.getLatestRates(coinCodes: coinCodes, currencyCode: currencyCode).catchError { [unowned self] (error: Error) -> Single<[RateResponse]> in
             self.latestRates(providers: leftProviders, coinCodes: coinCodes, currencyCode: currencyCode)
         }
     }

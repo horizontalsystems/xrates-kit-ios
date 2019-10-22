@@ -25,14 +25,14 @@ class CryptoCompareProvider {
             return "\(baseUrl)/data/pricemulti?fsyms=\(coinList)&tsyms=\(currencyCode)"
     }
 
-    private func getRates(coinCodes: [String], currencyCode: String, response: CryptoCompareLatestRateResponse) -> [Rate] {
+    private func getRates(coinCodes: [String], currencyCode: String, response: CryptoCompareLatestRateResponse) -> [RateResponse] {
         coinCodes.compactMap { coinCode in
             self.cryptoCompareFactory.latestRate(coinCode: coinCode, currencyCode: currencyCode, response: response)
         }
     }
 
-    private func historicalRateUrl(coinCode: String, currencyCode: String, historicalType: HistoricalType, date: Date) -> String {
-        "\(baseUrl)/data/v2/\(historicalType.rawValue)?fsym=\(coinCode)&tsym=\(currencyCode)&limit=1&toTs=\(Int(date.timeIntervalSince1970))"
+    private func historicalRateUrl(coinCode: String, currencyCode: String, historicalType: HistoricalType, timestamp: TimeInterval) -> String {
+        "\(baseUrl)/data/v2/\(historicalType.rawValue)?fsym=\(coinCode)&tsym=\(currencyCode)&limit=1&toTs=\(Int(timestamp))"
     }
 
     private func marketInfoUrl(coinCodes: [String], currencyCode: String) -> String {
@@ -46,47 +46,46 @@ class CryptoCompareProvider {
         }
     }
 
-    private func chartStatsUrl(coinCode: String, currencyCode: String, chartType: ChartType) -> String {
-        "\(baseUrl)/data/v2/\(chartType.resource)?fsym=\(coinCode)&tsym=\(currencyCode)&limit=\(chartType.pointCount)&aggregate=\(chartType.interval)"
+    private func chartStatsUrl(key: ChartPointKey) -> String {
+        "\(baseUrl)/data/v2/\(key.chartType.resource)?fsym=\(key.coinCode)&tsym=\(key.currencyCode)&limit=\(key.chartType.pointCount)&aggregate=\(key.chartType.interval)"
     }
 
 }
 
 extension CryptoCompareProvider: ILatestRateProvider {
 
-    func getLatestRates(coinCodes: [String], currencyCode: String) -> Observable<[Rate]> {
+    func getLatestRates(coinCodes: [String], currencyCode: String) -> Single<[RateResponse]> {
         let urlString = latestRateUrl(coinCodes: coinCodes, currencyCode: currencyCode)
 
         return networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: self.timeoutInterval)
-                    .map { (response: CryptoCompareLatestRateResponse) -> [Rate] in
+                    .map { [unowned self] (response: CryptoCompareLatestRateResponse) -> [RateResponse] in
                         self.getRates(coinCodes: coinCodes, currencyCode: currencyCode, response: response)
                     }
-                    .asObservable()
     }
 
 }
 
 extension CryptoCompareProvider: IHistoricalRateProvider {
 
-    func getHistoricalRate(coinCode: String, currencyCode: String, date: Date) -> Single<Rate> {
-        let hourUrlString = historicalRateUrl(coinCode: coinCode, currencyCode: currencyCode, historicalType: .hour, date: date)
-        let minuteUrlString = historicalRateUrl(coinCode: coinCode, currencyCode: currencyCode, historicalType: .minute, date: date)
+    func getHistoricalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<RateResponse> {
+        let hourUrlString = historicalRateUrl(coinCode: coinCode, currencyCode: currencyCode, historicalType: .hour, timestamp: timestamp)
+        let minuteUrlString = historicalRateUrl(coinCode: coinCode, currencyCode: currencyCode, historicalType: .minute, timestamp: timestamp)
 
         let minuteSingle: Single<CryptoCompareHistoricalRateResponse> = networkManager.single(urlString: minuteUrlString, httpMethod: .get, timoutInterval: timeoutInterval)
         let hourSingle: Single<CryptoCompareHistoricalRateResponse> = networkManager.single(urlString: hourUrlString, httpMethod: .get, timoutInterval: timeoutInterval)
 
-        return minuteSingle.flatMap { response -> Single<Rate> in
+        return minuteSingle.flatMap { response -> Single<RateResponse> in
             guard let rateValue = response.rateValue else {
                 return Single.error(XRatesErrors.HistoricalRate.noValueForMinute)
             }
-            let rate = self.cryptoCompareFactory.historicalRate(coinCode: coinCode, currencyCode: currencyCode, date: date, value: rateValue)
+            let rate = self.cryptoCompareFactory.historicalRate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp, value: rateValue)
             return Single.just(rate)
         }.catchError { _ in
-            hourSingle.flatMap { response -> Single<Rate> in
+            hourSingle.flatMap { response -> Single<RateResponse> in
                 guard let rateValue = response.rateValue else {
                     return Single.error(XRatesErrors.HistoricalRate.noValueForHour)
                 }
-                let rate = self.cryptoCompareFactory.historicalRate(coinCode: coinCode, currencyCode: currencyCode, date: date, value: rateValue)
+                let rate = self.cryptoCompareFactory.historicalRate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp, value: rateValue)
                 return Single.just(rate)
             }
         }
@@ -95,14 +94,14 @@ extension CryptoCompareProvider: IHistoricalRateProvider {
 
 }
 
-extension CryptoCompareProvider: IChartStatsProvider {
+extension CryptoCompareProvider: IChartPointProvider {
 
-    func getChartStats(coinCode: String, currencyCode: String, chartType: ChartType) -> Single<[ChartStats]> {
-        let urlString = chartStatsUrl(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType)
+    func chartPointsSingle(key: ChartPointKey) -> Single<[ChartPoint]> {
+        let urlString = chartStatsUrl(key: key)
 
-        return networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: self.timeoutInterval)
-                .map { (response: CryptoCompareChartStatsResponse) -> [ChartStats] in
-                    response.chartPoints.map { ChartStats(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType, timestamp: $0.timestamp, value: $0.value) }
+        return networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: timeoutInterval)
+                .map { (response: CryptoCompareChartStatsResponse) -> [ChartPoint] in
+                    response.chartPoints
                 }
     }
 

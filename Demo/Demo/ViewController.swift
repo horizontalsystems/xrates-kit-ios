@@ -1,85 +1,176 @@
 import UIKit
-import XRatesKit
 import RxSwift
+import SnapKit
+import XRatesKit
 
 class ViewController: UIViewController {
     private let disposeBag = DisposeBag()
-    private let coinCodes = ["BTC", "ETH", "BNB"]//, "GNT", "GUSD", "GTO", "HOT", "HT", "IDEX", "IDXM", "IQ", "KCS", "KNC"]
-    private let baseCurrencyCode = "USD"
+    private var chartDisposeBag = DisposeBag()
 
-    @IBOutlet weak var textView: UITextView?
+    private let coinCodes = ["BTC", "ETH", "BNB", "AURA"]//, "GNT", "GUSD", "GTO", "HOT", "HT", "IDEX", "IDXM", "IQ", "KCS", "KNC"]
+    private let currencyCode = "USD"
+
+    private var latestRates = [String: Rate]()
+    private var chartInfo: ChartInfo?
+    private var chartOn = false
+
+    private let textView = UITextView()
 
     private let dateFormatter = DateFormatter()
-    private let xRatesKit = XRatesKit.instance(currencyCode: "USD", minLogLevel: .verbose)
+    private let xRatesKit: XRatesKit
+
+    init() {
+        dateFormatter.locale = Locale.current
+        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MMM d, hh:mm:ss")
+
+        xRatesKit = XRatesKit.instance(currencyCode: currencyCode, minLogLevel: .verbose)
+
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        dateFormatter.locale = Locale.current
-        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MMM d, hh:mm:ss")
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Fetch Historical", style: .plain, target: self, action: #selector(onTapHistorical))
 
-        xRatesKit.update(coinCodes: coinCodes)
+        textView.font = .systemFont(ofSize: 14)
+        textView.textContainerInset = UIEdgeInsets(top: 20, left: 15, bottom: 20, right: 15)
+
+        view.addSubview(textView)
+        textView.snp.makeConstraints { maker in
+            maker.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
+        }
+
+        let refreshButton = UIButton()
+        refreshButton.setTitle("Refresh", for: .normal)
+        refreshButton.setTitleColor(.darkGray, for: .normal)
+        refreshButton.addTarget(self, action: #selector(onTapRefresh), for: .touchUpInside)
+
+        view.addSubview(refreshButton)
+        refreshButton.snp.makeConstraints { maker in
+            maker.centerX.equalToSuperview()
+            maker.bottom.equalTo(view.safeAreaLayoutGuide)
+            maker.top.equalTo(textView.snp.bottom)
+            maker.height.equalTo(100)
+        }
+
+        syncChartButton()
+        fillInitialData()
+
+        xRatesKit.set(coinCodes: coinCodes)
+
         for coinCode in coinCodes {
-            xRatesKit.latestRateObservable(coinCode: coinCode, currencyCode: baseCurrencyCode)
+            xRatesKit.latestRateObservable(coinCode: coinCode, currencyCode: currencyCode)
                     .observeOn(MainScheduler.instance)
                     .subscribe(onNext: { [weak self] rate in
-                        self?.fetchNew(rate: rate)
+                        self?.latestRates[coinCode] = rate
+                        self?.updateTextView()
                     })
                     .disposed(by: disposeBag)
         }
-
-        initialTextView()
     }
 
-    @IBAction func refresh() {
+    @objc func onTapRefresh() {
         xRatesKit.refresh()
-        printChartData()
-
-        xRatesKit.historicalRate(coinCode: "BTC", currencyCode: "RUB", date: Date(timeIntervalSinceNow: 0))
-            .observeOn(MainScheduler.instance)
-            .subscribe(onSuccess: { decimal in
-                let oldText = self.textView?.text ?? ""
-                self.textView?.text = oldText + "\(decimal)\n"
-        }, onError: { error in
-            print("historical error: \(error) \n")
-        }).disposed(by: disposeBag)
     }
 
-    private func printChartData() {
-        let chartData = xRatesKit.chartStats(coinCode: "BTC", currencyCode: "USD", chartType: .day)
-
-        print("db data: \n \(chartData.map { "\(Date(timeIntervalSince1970: $0.timestamp)) - \(($0.value))" }.joined(separator: "\n"))")
-        xRatesKit.chartStatsObservable(coinCode: "BTC", currencyCode: "USD", chartType: .day)
+    @objc func onTapHistorical() {
+        xRatesKit.historicalRate(coinCode: "BTC", currencyCode: "USD", timestamp: Date().timeIntervalSince1970)
                 .observeOn(MainScheduler.instance)
-                .subscribe(onNext: { chartData in
-                    print("subject data: \n \(chartData.map { "\(Date(timeIntervalSince1970: $0.timestamp)) - \(($0.value))" }.joined(separator: "\n"))")
+                .subscribe(onSuccess: { value in
+                    print("Did fetch Historical Rate: \(value)")
+                }, onError: { error in
+                    print("Historical Rate fetch error: \(error.localizedDescription)")
                 })
                 .disposed(by: disposeBag)
     }
 
-    private func fetchNew(rate: RateInfo) {
-        let oldText = textView?.text ?? ""
-        textView?.text = oldText + format(title: dateFormatter.string(from: Date()) + " : ", rate: rate)
+    @objc func onTapChart() {
+        if chartOn {
+            chartOn = false
+            onChartOff()
+        } else {
+            chartOn = true
+            onChartOn()
+        }
+
+        syncChartButton()
+        updateTextView()
     }
 
-    private func initialTextView() {
-        textView?.text = "Initial State: \n"
+    private func syncChartButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: chartOn ? "Chart ON" : "Chart OFF", style: .plain, target: self, action: #selector(onTapChart))
+    }
+
+    private func onChartOn() {
+        let coinCode = "BTC"
+        let currencyCode = "USD"
+        let chartType: ChartType = .day
+
+        chartInfo = xRatesKit.chartInfo(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType)
+
+        xRatesKit.chartInfoObservable(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType)
+                .observeOn(MainScheduler.instance)
+                .subscribe(onNext: { [weak self] chartInfo in
+                    self?.chartInfo = chartInfo
+                    self?.updateTextView()
+                })
+                .disposed(by: chartDisposeBag)
+    }
+
+    private func onChartOff() {
+        chartInfo = nil
+        chartDisposeBag = DisposeBag()
+    }
+
+    private func fillInitialData() {
         for coinCode in coinCodes {
-            if let rate = xRatesKit.latestRate(coinCode: coinCode, currencyCode: baseCurrencyCode) {
-                fetchNew(rate: rate)
+            latestRates[coinCode] = xRatesKit.latestRate(coinCode: coinCode, currencyCode: currencyCode)
+        }
+
+        updateTextView()
+    }
+
+    private func updateTextView() {
+        var text = ""
+
+        for coinCode in coinCodes {
+            text += "\(coinCode): "
+
+            if let rate = latestRates[coinCode] {
+                text += "\(rate.expired ? "⛔" : "✅")\n"
+                text += "   • \(rate.value)\n"
+                text += "   • \(format(timestamp: rate.timestamp))\n"
+            } else {
+                text += "n/a\n"
+            }
+
+            text += "\n"
+        }
+
+        text += "\n"
+
+        if let chartInfo = chartInfo {
+            text += "Chart Info:\n"
+            text += "Diff: \(chartInfo.diff.map { "\($0)" } ?? "n/a")\n"
+            text += "Start Date: \(format(timestamp: chartInfo.startTimestamp))\n"
+            text += "End Date: \(format(timestamp: chartInfo.endTimestamp))\n"
+
+            for point in chartInfo.points {
+                text += "   \(format(timestamp: point.timestamp)): \(point.value)\n"
             }
         }
-        textView?.text += "======================\n"
+
+        textView.text = text
     }
 
-    private func format(title: String, rate: RateInfo?) -> String {
-        guard let rate = rate else {
-            return "No rate!"
-        }
-        return "[\(title)]\n" +
-                "Date: \(dateFormatter.string(from: rate.date))\n" +
-                "Value: \(rate.value)\n" +
-                "CoinCode: \(rate.coinCode), currencyCode: \(rate.currencyCode)\n\n"
+    private func format(timestamp: TimeInterval) -> String {
+        let date = Date(timeIntervalSince1970: timestamp)
+        return dateFormatter.string(from: date)
     }
 
 }

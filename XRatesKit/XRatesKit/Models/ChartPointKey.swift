@@ -1,10 +1,10 @@
-struct ChartStatsSubjectKey {
+struct ChartPointKey {
     let coinCode: String
     let currencyCode: String
     let chartType: ChartType
 }
 
-extension ChartStatsSubjectKey: Hashable {
+extension ChartPointKey: Hashable {
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(coinCode)
@@ -12,8 +12,16 @@ extension ChartStatsSubjectKey: Hashable {
         hasher.combine(chartType)
     }
 
-    public static func ==(lhs: ChartStatsSubjectKey, rhs: ChartStatsSubjectKey) -> Bool {
+    public static func ==(lhs: ChartPointKey, rhs: ChartPointKey) -> Bool {
         lhs.coinCode == rhs.coinCode && lhs.currencyCode == rhs.currencyCode && lhs.chartType == rhs.chartType
+    }
+
+}
+
+extension ChartPointKey: CustomStringConvertible {
+
+    public var description: String {
+        "[\(coinCode); \(currencyCode); \(chartType)]"
     }
 
 }

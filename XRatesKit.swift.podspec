@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
   spec.name = 'XRatesKit.swift'
   spec.module_name = 'XRatesKit'
-  spec.version = '0.2'
+  spec.version = '0.3'
   spec.summary = 'Kit provide latest rates for coins, chart data and historical data for different coins and currencies'
   spec.description = <<-DESC
                        Kit provide latest rates for coins, chart data and historical data for different coins and currencies uses different providers.
@@ -21,6 +21,5 @@ Pod::Spec.new do |spec|
   spec.dependency 'RxSwift', '~> 5.0'
   spec.dependency 'Alamofire', '~> 4.0'
   spec.dependency 'GRDB.swift', '~> 4.0'
-  spec.dependency 'RxGRDB', '~> 0.17'
   spec.dependency 'ObjectMapper', '~> 3.5'
 end
