@@ -20,6 +20,10 @@ public enum ChartType: Int, CaseIterable {
         return TimeInterval(interval) * multiplier
     }
 
+    var rangeInterval: TimeInterval {
+        expirationInterval * TimeInterval(interval * pointCount)
+    }
+
     var interval: Int {
         switch self {
         case .day: return 30

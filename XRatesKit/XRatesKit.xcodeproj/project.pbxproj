@@ -10,6 +10,7 @@
 		11B3500F3471FFB9EB3D2A5C /* LatestRateSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B358AA60E3FB21DF85385D /* LatestRateSyncManager.swift */; };
 		11B350106AC68090C00601F2 /* CryptoCompareFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B359A3BD4A79B3BA038CB1 /* CryptoCompareFactory.swift */; };
 		11B3504C8719D8945110E449 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B3528366BAE735FEAD5CB2 /* Protocols.swift */; };
+		11B3518913F33DF80CFDCDEB /* ChartInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B3567E958C2B106E74581A /* ChartInfo.swift */; };
 		11B352C11E0D6812A7975130 /* LatestRateScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B359ADE25089AA6FE0DE1F /* LatestRateScheduler.swift */; };
 		11B35323DBDDE63EBEDCE15E /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B350E65863F0C372568BA3 /* NetworkManager.swift */; };
 		11B354860414114CEC5F9897 /* RateResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B3582443B0C7BB5FD1F8C3 /* RateResponse.swift */; };
@@ -23,8 +24,8 @@
 		11B35DA72ABEFDE6DAED4309 /* ChartPointScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B3581BBD54E8F939735CF6 /* ChartPointScheduler.swift */; };
 		11B35DAC10BC9EA947F25664 /* LatestRateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B35042E53CB77CADD408E1 /* LatestRateManager.swift */; };
 		11B35DADA2B52B038DA747A5 /* LatestRateSchedulerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B359C50A73B973FF56E574 /* LatestRateSchedulerFactory.swift */; };
-		11B35F0C1DC08DE8FCE5E148 /* ChartPointSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B359421885F99DA76A9C41 /* ChartPointSyncManager.swift */; };
-		11B35F6E8CA648C83DE1FC9D /* ChartPointManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B35B3320C00CFFBA79D1CE /* ChartPointManager.swift */; };
+		11B35F0C1DC08DE8FCE5E148 /* ChartInfoSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B359421885F99DA76A9C41 /* ChartInfoSyncManager.swift */; };
+		11B35F6E8CA648C83DE1FC9D /* ChartInfoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B35B3320C00CFFBA79D1CE /* ChartInfoManager.swift */; };
 		4A160B4E396C587013DC2701 /* Pods_XRatesKitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 343290BBDC505A5C675C688E /* Pods_XRatesKitTests.framework */; };
 		58AAA170BE2865E26D5512F9 /* CryptoCompareMarketInfoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA0445F5737EA92527411 /* CryptoCompareMarketInfoResponse.swift */; };
 		58AAA2E56755E90DCDA1D5A9 /* CurrentDateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAF7EA3CE1FFE1C75B46B /* CurrentDateProvider.swift */; };
@@ -73,17 +74,18 @@
 		11B351C5710C9335E0DE037F /* GrdbStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GrdbStorage.swift; sourceTree = "<group>"; };
 		11B3528366BAE735FEAD5CB2 /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		11B35471CEEEB5F94EC054C1 /* XRatesKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XRatesKit.swift; sourceTree = "<group>"; };
+		11B3567E958C2B106E74581A /* ChartInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartInfo.swift; sourceTree = "<group>"; };
 		11B3581BBD54E8F939735CF6 /* ChartPointScheduler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartPointScheduler.swift; sourceTree = "<group>"; };
 		11B3582443B0C7BB5FD1F8C3 /* RateResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RateResponse.swift; sourceTree = "<group>"; };
 		11B358AA60E3FB21DF85385D /* LatestRateSyncManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LatestRateSyncManager.swift; sourceTree = "<group>"; };
-		11B359421885F99DA76A9C41 /* ChartPointSyncManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartPointSyncManager.swift; sourceTree = "<group>"; };
+		11B359421885F99DA76A9C41 /* ChartInfoSyncManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartInfoSyncManager.swift; sourceTree = "<group>"; };
 		11B3594F3568B6D06564A16E /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		11B359A3BD4A79B3BA038CB1 /* CryptoCompareFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CryptoCompareFactory.swift; sourceTree = "<group>"; };
 		11B359ADE25089AA6FE0DE1F /* LatestRateScheduler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LatestRateScheduler.swift; sourceTree = "<group>"; };
 		11B359C50A73B973FF56E574 /* LatestRateSchedulerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LatestRateSchedulerFactory.swift; sourceTree = "<group>"; };
 		11B35A26116F63BFEA8EF2A8 /* HistoricalRate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoricalRate.swift; sourceTree = "<group>"; };
 		11B35ABDC998B00472E4DD54 /* ReachabilityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReachabilityManager.swift; sourceTree = "<group>"; };
-		11B35B3320C00CFFBA79D1CE /* ChartPointManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartPointManager.swift; sourceTree = "<group>"; };
+		11B35B3320C00CFFBA79D1CE /* ChartInfoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartInfoManager.swift; sourceTree = "<group>"; };
 		11B35D0C465A0F12BB0FDF44 /* ChartPointSchedulerProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartPointSchedulerProvider.swift; sourceTree = "<group>"; };
 		11B35F9BC30DA1537D9BAA35 /* ChartPointSchedulerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartPointSchedulerFactory.swift; sourceTree = "<group>"; };
 		1545D7B3EB910B2451D8DF6F /* Pods_XRatesKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_XRatesKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -163,6 +165,7 @@
 				58AAA1020542F1430E9A62DC /* ChartPointRecord.swift */,
 				11B3582443B0C7BB5FD1F8C3 /* RateResponse.swift */,
 				11B35A26116F63BFEA8EF2A8 /* HistoricalRate.swift */,
+				11B3567E958C2B106E74581A /* ChartInfo.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -197,9 +200,9 @@
 		58AAA032193222117A9E64EA /* ChartPoint */ = {
 			isa = PBXGroup;
 			children = (
-				11B35B3320C00CFFBA79D1CE /* ChartPointManager.swift */,
+				11B35B3320C00CFFBA79D1CE /* ChartInfoManager.swift */,
 				11B35F9BC30DA1537D9BAA35 /* ChartPointSchedulerFactory.swift */,
-				11B359421885F99DA76A9C41 /* ChartPointSyncManager.swift */,
+				11B359421885F99DA76A9C41 /* ChartInfoSyncManager.swift */,
 				11B35D0C465A0F12BB0FDF44 /* ChartPointSchedulerProvider.swift */,
 				11B3581BBD54E8F939735CF6 /* ChartPointScheduler.swift */,
 			);
@@ -550,10 +553,10 @@
 				58AAA3B2956BC40C6213B8C6 /* ChartPointRecord.swift in Sources */,
 				11B354860414114CEC5F9897 /* RateResponse.swift in Sources */,
 				11B357D1C4ED3A4FA134E773 /* ReachabilityManager.swift in Sources */,
-				11B35F6E8CA648C83DE1FC9D /* ChartPointManager.swift in Sources */,
+				11B35F6E8CA648C83DE1FC9D /* ChartInfoManager.swift in Sources */,
 				11B358EFB246838F9A39EB0A /* ChartPointSchedulerFactory.swift in Sources */,
 				11B35DAC10BC9EA947F25664 /* LatestRateManager.swift in Sources */,
-				11B35F0C1DC08DE8FCE5E148 /* ChartPointSyncManager.swift in Sources */,
+				11B35F0C1DC08DE8FCE5E148 /* ChartInfoSyncManager.swift in Sources */,
 				11B3500F3471FFB9EB3D2A5C /* LatestRateSyncManager.swift in Sources */,
 				11B35DADA2B52B038DA747A5 /* LatestRateSchedulerFactory.swift in Sources */,
 				11B35A65A6520411E8C4F23F /* HistoricalRate.swift in Sources */,
@@ -561,6 +564,7 @@
 				11B350106AC68090C00601F2 /* CryptoCompareFactory.swift in Sources */,
 				11B3579E70DE7167B7A45465 /* ChartPointSchedulerProvider.swift in Sources */,
 				11B35DA72ABEFDE6DAED4309 /* ChartPointScheduler.swift in Sources */,
+				11B3518913F33DF80CFDCDEB /* ChartInfo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

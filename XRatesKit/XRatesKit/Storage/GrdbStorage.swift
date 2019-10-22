@@ -139,10 +139,11 @@ extension GrdbStorage: IChartPointStorage {
 //        }
 //    }
 
-    func chartPointRecords(key: ChartPointKey) -> [ChartPointRecord] {
+    func chartPointRecords(key: ChartPointKey, fromDate: Date) -> [ChartPointRecord] {
         try! dbPool.read { db in
             try ChartPointRecord
                     .filter(ChartPointRecord.Columns.coinCode == key.coinCode && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.chartType.rawValue)
+                    .filter(ChartPointRecord.Columns.date > fromDate)
                     .order(ChartPointRecord.Columns.date).fetchAll(db)
         }
     }

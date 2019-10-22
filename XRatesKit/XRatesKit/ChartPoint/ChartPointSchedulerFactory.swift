@@ -1,13 +1,13 @@
 import Foundation
 
 class ChartPointSchedulerFactory {
-    private let manager: IChartPointManager
+    private let manager: IChartInfoManager
     private let provider: IChartPointProvider
     private let reachabilityManager: IReachabilityManager
     private let retryInterval: TimeInterval
     private var logger: Logger?
 
-    init(manager: IChartPointManager, provider: IChartPointProvider, reachabilityManager: IReachabilityManager, retryInterval: TimeInterval, logger: Logger? = nil) {
+    init(manager: IChartInfoManager, provider: IChartPointProvider, reachabilityManager: IReachabilityManager, retryInterval: TimeInterval, logger: Logger? = nil) {
         self.manager = manager
         self.provider = provider
         self.reachabilityManager = reachabilityManager

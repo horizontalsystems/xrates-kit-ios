@@ -11,7 +11,7 @@ class ViewController: UIViewController {
     private let currencyCode = "USD"
 
     private var latestRates = [String: Rate]()
-    private var chartPoints = [ChartPoint]()
+    private var chartInfo: ChartInfo?
     private var chartOn = false
 
     private let textView = UITextView()
@@ -111,19 +111,19 @@ class ViewController: UIViewController {
         let currencyCode = "USD"
         let chartType: ChartType = .day
 
-        chartPoints = xRatesKit.chartPoints(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType)
+        chartInfo = xRatesKit.chartInfo(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType)
 
-        xRatesKit.chartPointsObservable(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType)
+        xRatesKit.chartInfoObservable(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType)
                 .observeOn(MainScheduler.instance)
-                .subscribe(onNext: { [weak self] chartPoints in
-                    self?.chartPoints = chartPoints
+                .subscribe(onNext: { [weak self] chartInfo in
+                    self?.chartInfo = chartInfo
                     self?.updateTextView()
                 })
                 .disposed(by: chartDisposeBag)
     }
 
     private func onChartOff() {
-        chartPoints = []
+        chartInfo = nil
         chartDisposeBag = DisposeBag()
     }
 
@@ -154,10 +154,13 @@ class ViewController: UIViewController {
 
         text += "\n"
 
-        if chartOn {
-            text += "Chart Points:\n"
+        if let chartInfo = chartInfo {
+            text += "Chart Info:\n"
+            text += "Diff: \(chartInfo.diff.map { "\($0)" } ?? "n/a")\n"
+            text += "Start Date: \(dateFormatter.string(from: chartInfo.startDate))\n"
+            text += "End Date: \(dateFormatter.string(from: chartInfo.endDate))\n"
 
-            for point in chartPoints {
+            for point in chartInfo.points {
                 let formattedDate = dateFormatter.string(from: point.date)
                 text += "   \(formattedDate): \(point.value)\n"
             }

@@ -4,14 +4,14 @@ public class XRatesKit {
     private let latestRateManager: ILatestRateManager
     private let latestRateSyncManager: ILatestRateSyncManager
     private let historicalRateManager: IHistoricalRateManager
-    private let chartPointManager: IChartPointManager
-    private let chartPointSyncManager: IChartPointSyncManager
+    private let chartInfoManager: IChartInfoManager
+    private let chartInfoSyncManager: IChartInfoSyncManager
 
-    init(latestRateManager: ILatestRateManager, latestRateSyncManager: ILatestRateSyncManager, historicalRateManager: IHistoricalRateManager, chartPointManager: IChartPointManager, chartPointSyncManager: IChartPointSyncManager) {
+    init(latestRateManager: ILatestRateManager, latestRateSyncManager: ILatestRateSyncManager, historicalRateManager: IHistoricalRateManager, chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager) {
         self.latestRateManager = latestRateManager
         self.latestRateSyncManager = latestRateSyncManager
-        self.chartPointManager = chartPointManager
-        self.chartPointSyncManager = chartPointSyncManager
+        self.chartInfoManager = chartInfoManager
+        self.chartInfoSyncManager = chartInfoSyncManager
         self.historicalRateManager = historicalRateManager
     }
 
@@ -43,12 +43,12 @@ extension XRatesKit {
         historicalRateManager.historicalRateSingle(coinCode: coinCode, currencyCode: currencyCode, date: date)
     }
 
-    public func chartPoints(coinCode: String, currencyCode: String, chartType: ChartType) -> [ChartPoint] {
-        chartPointManager.chartPoints(key: ChartPointKey(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType))
+    public func chartInfo(coinCode: String, currencyCode: String, chartType: ChartType) -> ChartInfo? {
+        chartInfoManager.chartInfo(key: ChartPointKey(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType))
     }
 
-    public func chartPointsObservable(coinCode: String, currencyCode: String, chartType: ChartType) -> Observable<[ChartPoint]> {
-        chartPointSyncManager.chartPointsObservable(key: ChartPointKey(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType))
+    public func chartInfoObservable(coinCode: String, currencyCode: String, chartType: ChartType) -> Observable<ChartInfo?> {
+        chartInfoSyncManager.chartInfoObservable(key: ChartPointKey(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType))
     }
 
 }
@@ -75,13 +75,13 @@ extension XRatesKit {
 
         let historicalRateManager = HistoricalRateManager(storage: storage, provider: cryptoCompareProvider)
 
-        let chartPointManager = ChartPointManager(storage: storage, latestRateManager: latestRateManager)
-        let chartPointSchedulerFactory = ChartPointSchedulerFactory(manager: chartPointManager, provider: cryptoCompareProvider, reachabilityManager: reachabilityManager, retryInterval: retryInterval, logger: logger)
-        let chartPointSyncManager = ChartPointSyncManager(schedulerFactory: chartPointSchedulerFactory, chartPointManager: chartPointManager, latestRateSyncManager: latestRateSyncManager)
+        let chartInfoManager = ChartInfoManager(storage: storage, latestRateManager: latestRateManager)
+        let chartPointSchedulerFactory = ChartPointSchedulerFactory(manager: chartInfoManager, provider: cryptoCompareProvider, reachabilityManager: reachabilityManager, retryInterval: retryInterval, logger: logger)
+        let chartInfoSyncManager = ChartInfoSyncManager(schedulerFactory: chartPointSchedulerFactory, chartInfoManager: chartInfoManager, latestRateSyncManager: latestRateSyncManager)
 
-        chartPointManager.delegate = chartPointSyncManager
+        chartInfoManager.delegate = chartInfoSyncManager
 
-        let kit = XRatesKit(latestRateManager: latestRateManager, latestRateSyncManager: latestRateSyncManager, historicalRateManager: historicalRateManager, chartPointManager: chartPointManager, chartPointSyncManager: chartPointSyncManager)
+        let kit = XRatesKit(latestRateManager: latestRateManager, latestRateSyncManager: latestRateSyncManager, historicalRateManager: historicalRateManager, chartInfoManager: chartInfoManager, chartInfoSyncManager: chartInfoSyncManager)
 
         return kit
     }

@@ -1,26 +1,26 @@
 import RxSwift
 
-class ChartPointSyncManager {
+class ChartInfoSyncManager {
     private let schedulerFactory: ChartPointSchedulerFactory
-    private let chartPointManager: IChartPointManager
+    private let chartInfoManager: IChartInfoManager
     private let latestRateSyncManager: ILatestRateSyncManager
 
-    private var subjects = [ChartPointKey: PublishSubject<[ChartPoint]>]()
+    private var subjects = [ChartPointKey: PublishSubject<ChartInfo?>]()
     private var schedulers = [ChartPointKey: ChartPointScheduler]()
     private var latestRateDisposables = [ChartPointKey: Disposable]()
 
-    init(schedulerFactory: ChartPointSchedulerFactory, chartPointManager: IChartPointManager, latestRateSyncManager: ILatestRateSyncManager) {
+    init(schedulerFactory: ChartPointSchedulerFactory, chartInfoManager: IChartInfoManager, latestRateSyncManager: ILatestRateSyncManager) {
         self.schedulerFactory = schedulerFactory
-        self.chartPointManager = chartPointManager
+        self.chartInfoManager = chartInfoManager
         self.latestRateSyncManager = latestRateSyncManager
     }
 
-    private func subject(key: ChartPointKey) -> PublishSubject<[ChartPoint]> {
+    private func subject(key: ChartPointKey) -> PublishSubject<ChartInfo?> {
         if let subject = subjects[key] {
             return subject
         }
 
-        let subject = PublishSubject<[ChartPoint]>()
+        let subject = PublishSubject<ChartInfo?>()
         subjects[key] = subject
         return subject
     }
@@ -36,7 +36,7 @@ class ChartPointSyncManager {
         let disposable = latestRateSyncManager.latestRateObservable(key: RateKey(coinCode: key.coinCode, currencyCode: key.currencyCode))
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
                 .subscribe(onNext: { [weak self] latestRate in
-                    self?.chartPointManager.handleUpdated(latestRate: latestRate, key: key)
+                    self?.chartInfoManager.handleUpdated(latestRate: latestRate, key: key)
                 })
 
         latestRateDisposables[key] = disposable
@@ -57,9 +57,9 @@ class ChartPointSyncManager {
 
 }
 
-extension ChartPointSyncManager: IChartPointSyncManager {
+extension ChartInfoSyncManager: IChartInfoSyncManager {
 
-    func chartPointsObservable(key: ChartPointKey) -> Observable<[ChartPoint]> {
+    func chartInfoObservable(key: ChartPointKey) -> Observable<ChartInfo?> {
         subject(key: key)
                 .do(onSubscribed: { [weak self] in
                     self?.scheduler(key: key).schedule()
@@ -70,10 +70,10 @@ extension ChartPointSyncManager: IChartPointSyncManager {
 
 }
 
-extension ChartPointSyncManager: IChartPointManagerDelegate {
+extension ChartInfoSyncManager: IChartInfoManagerDelegate {
 
-    func didUpdate(chartPoints: [ChartPoint], key: ChartPointKey) {
-        subjects[key]?.onNext(chartPoints)
+    func didUpdate(chartInfo: ChartInfo?, key: ChartPointKey) {
+        subjects[key]?.onNext(chartInfo)
     }
 
 }

@@ -66,15 +66,15 @@ protocol IHistoricalRateStorage {
 
 // Chart Points
 
-protocol IChartPointManager {
+protocol IChartInfoManager {
     func lastSyncDate(key: ChartPointKey) -> Date?
-    func chartPoints(key: ChartPointKey) -> [ChartPoint]
+    func chartInfo(key: ChartPointKey) -> ChartInfo?
     func handleUpdated(chartPoints: [ChartPoint], key: ChartPointKey)
     func handleUpdated(latestRate: Rate, key: ChartPointKey)
 }
 
-protocol IChartPointManagerDelegate: AnyObject {
-    func didUpdate(chartPoints: [ChartPoint], key: ChartPointKey)
+protocol IChartInfoManagerDelegate: AnyObject {
+    func didUpdate(chartInfo: ChartInfo?, key: ChartPointKey)
 }
 
 protocol IChartPointProvider {
@@ -82,13 +82,13 @@ protocol IChartPointProvider {
 }
 
 protocol IChartPointStorage {
-    func chartPointRecords(key: ChartPointKey) -> [ChartPointRecord]
+    func chartPointRecords(key: ChartPointKey, fromDate: Date) -> [ChartPointRecord]
     func save(chartPointRecords: [ChartPointRecord])
     func deleteChartPointRecords(key: ChartPointKey)
 }
 
-protocol IChartPointSyncManager {
-    func chartPointsObservable(key: ChartPointKey) -> Observable<[ChartPoint]>
+protocol IChartInfoSyncManager {
+    func chartInfoObservable(key: ChartPointKey) -> Observable<ChartInfo?>
 }
 
 protocol IChartPointsScheduler {

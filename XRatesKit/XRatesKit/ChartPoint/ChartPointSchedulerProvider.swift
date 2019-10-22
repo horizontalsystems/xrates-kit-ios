@@ -2,12 +2,12 @@ import RxSwift
 
 class ChartPointSchedulerProvider {
     private let key: ChartPointKey
-    private let manager: IChartPointManager
+    private let manager: IChartInfoManager
     private let provider: IChartPointProvider
 
     let retryInterval: TimeInterval
 
-    init(key: ChartPointKey, manager: IChartPointManager, provider: IChartPointProvider, retryInterval: TimeInterval) {
+    init(key: ChartPointKey, manager: IChartInfoManager, provider: IChartPointProvider, retryInterval: TimeInterval) {
         self.key = key
         self.manager = manager
         self.provider = provider
