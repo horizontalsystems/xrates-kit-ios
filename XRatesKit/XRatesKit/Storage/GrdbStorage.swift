@@ -144,7 +144,7 @@ extension GrdbStorage: IChartPointStorage {
 //        }
 //    }
 
-    func chartPointRecords(key: ChartPointKey, fromTimestamp: TimeInterval) -> [ChartPointRecord] {
+    func chartPointRecords(key: ChartInfoKey, fromTimestamp: TimeInterval) -> [ChartPointRecord] {
         try! dbPool.read { db in
             try ChartPointRecord
                     .filter(ChartPointRecord.Columns.coinCode == key.coinCode && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.chartType.rawValue)
@@ -161,7 +161,7 @@ extension GrdbStorage: IChartPointStorage {
         }
     }
 
-    func deleteChartPointRecords(key: ChartPointKey) {
+    func deleteChartPointRecords(key: ChartInfoKey) {
         _ = try! dbPool.write { db in
             try ChartPointRecord
                     .filter(ChartPointRecord.Columns.coinCode == key.coinCode && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.chartType.rawValue)

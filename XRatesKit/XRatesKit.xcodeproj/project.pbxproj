@@ -39,7 +39,7 @@
 		58AAA68F7D95B4B6A88DCDEE /* XRatesKitErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAAA7A2F003145DE644DB5 /* XRatesKitErrors.swift */; };
 		58AAA78DFEDA1BA9E79EFC5A /* ChartPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA7000467B7E0C542AFD1 /* ChartPoint.swift */; };
 		58AAA7FC0EDA6FE3C9781A3F /* CryptoCompareProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA032EB0C8644D31BAD22 /* CryptoCompareProvider.swift */; };
-		58AAA8C8331C780534540B0B /* ChartPointKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA40E66760E020940BD12 /* ChartPointKey.swift */; };
+		58AAA8C8331C780534540B0B /* ChartInfoKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA40E66760E020940BD12 /* ChartInfoKey.swift */; };
 		58AAA913B6E48FEDFDFB5C56 /* RateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA0CF3C17D35A3DB6F5B8 /* RateKey.swift */; };
 		58AAA9DE8984C2F91390508D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA65B00B3C5DB7740F775 /* Extensions.swift */; };
 		58AAAA0087CD0FEF62AADF84 /* MarketInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA1A7C880ED735DBC3D0A /* MarketInfo.swift */; };
@@ -102,7 +102,7 @@
 		58AAA1A7C880ED735DBC3D0A /* MarketInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketInfo.swift; sourceTree = "<group>"; };
 		58AAA38F458F2D142FC07B54 /* XRateKitTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XRateKitTests.swift; sourceTree = "<group>"; };
 		58AAA407A258164EFDC4B410 /* LatestRateSchedulerProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LatestRateSchedulerProvider.swift; sourceTree = "<group>"; };
-		58AAA40E66760E020940BD12 /* ChartPointKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartPointKey.swift; sourceTree = "<group>"; };
+		58AAA40E66760E020940BD12 /* ChartInfoKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartInfoKey.swift; sourceTree = "<group>"; };
 		58AAA4661BB5DD6AC532A221 /* Rate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rate.swift; sourceTree = "<group>"; };
 		58AAA54B6EAEB31D279C851C /* CryptoCompareChartStatsResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CryptoCompareChartStatsResponse.swift; sourceTree = "<group>"; };
 		58AAA57BC0223356B48B627A /* LatestRate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LatestRate.swift; sourceTree = "<group>"; };
@@ -159,7 +159,7 @@
 				58AAA1A7C880ED735DBC3D0A /* MarketInfo.swift */,
 				58AAAB6BE9114D8DAC808313 /* MarketStats.swift */,
 				58AAA0CF3C17D35A3DB6F5B8 /* RateKey.swift */,
-				58AAA40E66760E020940BD12 /* ChartPointKey.swift */,
+				58AAA40E66760E020940BD12 /* ChartInfoKey.swift */,
 				58AAA54B6EAEB31D279C851C /* CryptoCompareChartStatsResponse.swift */,
 				58AAA7000467B7E0C542AFD1 /* ChartPoint.swift */,
 				58AAA1020542F1430E9A62DC /* ChartPointRecord.swift */,
@@ -547,7 +547,7 @@
 				58AAAA0087CD0FEF62AADF84 /* MarketInfo.swift in Sources */,
 				58AAAB214DD2F494E60C538B /* MarketStats.swift in Sources */,
 				58AAA913B6E48FEDFDFB5C56 /* RateKey.swift in Sources */,
-				58AAA8C8331C780534540B0B /* ChartPointKey.swift in Sources */,
+				58AAA8C8331C780534540B0B /* ChartInfoKey.swift in Sources */,
 				58AAAF3EDAECC028DBB41267 /* CryptoCompareChartStatsResponse.swift in Sources */,
 				58AAA78DFEDA1BA9E79EFC5A /* ChartPoint.swift in Sources */,
 				58AAA3B2956BC40C6213B8C6 /* ChartPointRecord.swift in Sources */,

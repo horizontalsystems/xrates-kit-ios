@@ -46,7 +46,7 @@ class CryptoCompareProvider {
         }
     }
 
-    private func chartStatsUrl(key: ChartPointKey) -> String {
+    private func chartStatsUrl(key: ChartInfoKey) -> String {
         "\(baseUrl)/data/v2/\(key.chartType.resource)?fsym=\(key.coinCode)&tsym=\(key.currencyCode)&limit=\(key.chartType.pointCount)&aggregate=\(key.chartType.interval)"
     }
 
@@ -96,7 +96,7 @@ extension CryptoCompareProvider: IHistoricalRateProvider {
 
 extension CryptoCompareProvider: IChartPointProvider {
 
-    func chartPointsSingle(key: ChartPointKey) -> Single<[ChartPoint]> {
+    func chartPointsSingle(key: ChartInfoKey) -> Single<[ChartPoint]> {
         let urlString = chartStatsUrl(key: key)
 
         return networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: timeoutInterval)

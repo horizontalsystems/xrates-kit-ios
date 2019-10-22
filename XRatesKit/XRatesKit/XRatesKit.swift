@@ -44,11 +44,11 @@ extension XRatesKit {
     }
 
     public func chartInfo(coinCode: String, currencyCode: String, chartType: ChartType) -> ChartInfo? {
-        chartInfoManager.chartInfo(key: ChartPointKey(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType))
+        chartInfoManager.chartInfo(key: ChartInfoKey(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType))
     }
 
     public func chartInfoObservable(coinCode: String, currencyCode: String, chartType: ChartType) -> Observable<ChartInfo?> {
-        chartInfoSyncManager.chartInfoObservable(key: ChartPointKey(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType))
+        chartInfoSyncManager.chartInfoObservable(key: ChartInfoKey(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType))
     }
 
 }

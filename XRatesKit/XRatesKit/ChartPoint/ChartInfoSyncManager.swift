@@ -5,9 +5,9 @@ class ChartInfoSyncManager {
     private let chartInfoManager: IChartInfoManager
     private let latestRateSyncManager: ILatestRateSyncManager
 
-    private var subjects = [ChartPointKey: PublishSubject<ChartInfo?>]()
-    private var schedulers = [ChartPointKey: ChartPointScheduler]()
-    private var latestRateDisposables = [ChartPointKey: Disposable]()
+    private var subjects = [ChartInfoKey: PublishSubject<ChartInfo?>]()
+    private var schedulers = [ChartInfoKey: ChartPointScheduler]()
+    private var latestRateDisposables = [ChartInfoKey: Disposable]()
 
     init(schedulerFactory: ChartPointSchedulerFactory, chartInfoManager: IChartInfoManager, latestRateSyncManager: ILatestRateSyncManager) {
         self.schedulerFactory = schedulerFactory
@@ -15,7 +15,7 @@ class ChartInfoSyncManager {
         self.latestRateSyncManager = latestRateSyncManager
     }
 
-    private func subject(key: ChartPointKey) -> PublishSubject<ChartInfo?> {
+    private func subject(key: ChartInfoKey) -> PublishSubject<ChartInfo?> {
         if let subject = subjects[key] {
             return subject
         }
@@ -25,7 +25,7 @@ class ChartInfoSyncManager {
         return subject
     }
 
-    private func scheduler(key: ChartPointKey) -> ChartPointScheduler {
+    private func scheduler(key: ChartInfoKey) -> ChartPointScheduler {
         if let scheduler = schedulers[key] {
             return scheduler
         }
@@ -44,7 +44,7 @@ class ChartInfoSyncManager {
         return scheduler
     }
 
-    private func cleanUp(key: ChartPointKey) {
+    private func cleanUp(key: ChartInfoKey) {
         if let subject = subjects[key], subject.hasObservers {
             return
         }
@@ -59,7 +59,7 @@ class ChartInfoSyncManager {
 
 extension ChartInfoSyncManager: IChartInfoSyncManager {
 
-    func chartInfoObservable(key: ChartPointKey) -> Observable<ChartInfo?> {
+    func chartInfoObservable(key: ChartInfoKey) -> Observable<ChartInfo?> {
         subject(key: key)
                 .do(onSubscribed: { [weak self] in
                     self?.scheduler(key: key).schedule()
@@ -72,7 +72,7 @@ extension ChartInfoSyncManager: IChartInfoSyncManager {
 
 extension ChartInfoSyncManager: IChartInfoManagerDelegate {
 
-    func didUpdate(chartInfo: ChartInfo?, key: ChartPointKey) {
+    func didUpdate(chartInfo: ChartInfo?, key: ChartInfoKey) {
         subjects[key]?.onNext(chartInfo)
     }
 

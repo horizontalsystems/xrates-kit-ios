@@ -2,10 +2,10 @@ import Foundation
 import GRDB
 
 class ChartPointRecord: Record {
-    private let key: ChartPointKey
+    private let key: ChartInfoKey
     let chartPoint: ChartPoint
 
-    init(key: ChartPointKey, chartPoint: ChartPoint) {
+    init(key: ChartInfoKey, chartPoint: ChartPoint) {
         self.key = key
         self.chartPoint = chartPoint
 
@@ -21,7 +21,7 @@ class ChartPointRecord: Record {
     }
 
     required init(row: Row) {
-        key = ChartPointKey(coinCode: row[Columns.coinCode], currencyCode: row[Columns.currencyCode], chartType: ChartType(rawValue: row[Columns.chartType]) ?? .day)
+        key = ChartInfoKey(coinCode: row[Columns.coinCode], currencyCode: row[Columns.currencyCode], chartType: ChartType(rawValue: row[Columns.chartType]) ?? .day)
         chartPoint = ChartPoint(timestamp: row[Columns.timestamp], value: row[Columns.value])
 
         super.init(row: row)
