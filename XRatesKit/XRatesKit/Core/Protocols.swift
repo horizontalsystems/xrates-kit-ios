@@ -88,7 +88,7 @@ protocol IChartPointStorage {
 }
 
 protocol IChartInfoSyncManager {
-    func chartInfoObservable(key: ChartInfoKey) -> Observable<ChartInfo?>
+    func chartInfoObservable(key: ChartInfoKey) -> Observable<ChartInfo>
 }
 
 protocol IChartPointsScheduler {

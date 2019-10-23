@@ -5,7 +5,7 @@ class ChartInfoSyncManager {
     private let chartInfoManager: IChartInfoManager
     private let latestRateSyncManager: ILatestRateSyncManager
 
-    private var subjects = [ChartInfoKey: PublishSubject<ChartInfo?>]()
+    private var subjects = [ChartInfoKey: PublishSubject<ChartInfo>]()
     private var schedulers = [ChartInfoKey: ChartPointScheduler]()
     private var latestRateDisposables = [ChartInfoKey: Disposable]()
 
@@ -15,12 +15,12 @@ class ChartInfoSyncManager {
         self.latestRateSyncManager = latestRateSyncManager
     }
 
-    private func subject(key: ChartInfoKey) -> PublishSubject<ChartInfo?> {
+    private func subject(key: ChartInfoKey) -> PublishSubject<ChartInfo> {
         if let subject = subjects[key] {
             return subject
         }
 
-        let subject = PublishSubject<ChartInfo?>()
+        let subject = PublishSubject<ChartInfo>()
         subjects[key] = subject
         return subject
     }
@@ -59,7 +59,7 @@ class ChartInfoSyncManager {
 
 extension ChartInfoSyncManager: IChartInfoSyncManager {
 
-    func chartInfoObservable(key: ChartInfoKey) -> Observable<ChartInfo?> {
+    func chartInfoObservable(key: ChartInfoKey) -> Observable<ChartInfo> {
         subject(key: key)
                 .do(onSubscribed: { [weak self] in
                     self?.scheduler(key: key).schedule()
@@ -73,6 +73,10 @@ extension ChartInfoSyncManager: IChartInfoSyncManager {
 extension ChartInfoSyncManager: IChartInfoManagerDelegate {
 
     func didUpdate(chartInfo: ChartInfo?, key: ChartInfoKey) {
+        guard let chartInfo = chartInfo else {
+            return
+        }
+
         subjects[key]?.onNext(chartInfo)
     }
 
