@@ -11,7 +11,7 @@ class ChartInfoManager {
         self.latestRateManager = latestRateManager
     }
 
-    private func chartInfo(chartPoints: [ChartPoint], latestRate: Rate?, key: ChartPointKey) -> ChartInfo? {
+    private func chartInfo(chartPoints: [ChartPoint], latestRate: Rate?, key: ChartInfoKey) -> ChartInfo? {
         guard let lastPoint = chartPoints.last else {
             return nil
         }
@@ -56,12 +56,12 @@ class ChartInfoManager {
         )
     }
 
-    private func chartInfo(chartPoints: [ChartPoint], key: ChartPointKey) -> ChartInfo? {
+    private func chartInfo(chartPoints: [ChartPoint], key: ChartInfoKey) -> ChartInfo? {
         let latestRate = latestRateManager.latestRate(key: RateKey(coinCode: key.coinCode, currencyCode: key.currencyCode))
         return chartInfo(chartPoints: chartPoints, latestRate: latestRate, key: key)
     }
 
-    private func storedChartPoints(key: ChartPointKey) -> [ChartPoint] {
+    private func storedChartPoints(key: ChartInfoKey) -> [ChartPoint] {
         let currentTimestamp = Date().timeIntervalSince1970
         let fromTimestamp = currentTimestamp - key.chartType.rangeInterval
         let chartPointRecords = storage.chartPointRecords(key: key, fromTimestamp: fromTimestamp)
@@ -72,15 +72,15 @@ class ChartInfoManager {
 
 extension ChartInfoManager: IChartInfoManager {
 
-    func lastSyncTimestamp(key: ChartPointKey) -> TimeInterval? {
+    func lastSyncTimestamp(key: ChartInfoKey) -> TimeInterval? {
         storedChartPoints(key: key).last?.timestamp
     }
 
-    func chartInfo(key: ChartPointKey) -> ChartInfo? {
+    func chartInfo(key: ChartInfoKey) -> ChartInfo? {
         chartInfo(chartPoints: storedChartPoints(key: key), key: key)
     }
 
-    func handleUpdated(chartPoints: [ChartPoint], key: ChartPointKey) {
+    func handleUpdated(chartPoints: [ChartPoint], key: ChartInfoKey) {
         let records = chartPoints.map {
             ChartPointRecord(key: key, chartPoint: $0)
         }
@@ -91,7 +91,7 @@ extension ChartInfoManager: IChartInfoManager {
         delegate?.didUpdate(chartInfo: chartInfo(chartPoints: chartPoints, key: key), key: key)
     }
 
-    func handleUpdated(latestRate: Rate, key: ChartPointKey) {
+    func handleUpdated(latestRate: Rate, key: ChartInfoKey) {
         delegate?.didUpdate(chartInfo: chartInfo(chartPoints: storedChartPoints(key: key), latestRate: latestRate, key: key), key: key)
     }
 

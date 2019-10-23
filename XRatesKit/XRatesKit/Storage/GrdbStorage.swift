@@ -63,18 +63,18 @@ class GrdbStorage {
             }
         }
 
-        migrator.registerMigration("createMarketStats") { db in
-            try db.create(table: MarketStats.databaseTableName) { t in
-                t.column(MarketStats.Columns.coinCode.name, .text).notNull()
-                t.column(MarketStats.Columns.currencyCode.name, .text).notNull()
-                t.column(MarketStats.Columns.date.name, .double).notNull()
-                t.column(MarketStats.Columns.volume.name, .text).notNull()
-                t.column(MarketStats.Columns.marketCap.name, .text).notNull()
-                t.column(MarketStats.Columns.supply.name, .text).notNull()
+        migrator.registerMigration("createMarketInfo") { db in
+            try db.create(table: MarketInfoRecord.databaseTableName) { t in
+                t.column(MarketInfoRecord.Columns.coinCode.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.currencyCode.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.timestamp.name, .double).notNull()
+                t.column(MarketInfoRecord.Columns.volume.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.marketCap.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.supply.name, .text).notNull()
 
                 t.primaryKey([
-                    MarketStats.Columns.coinCode.name,
-                    MarketStats.Columns.currencyCode.name,
+                    MarketInfoRecord.Columns.coinCode.name,
+                    MarketInfoRecord.Columns.currencyCode.name,
                 ], onConflict: .replace)
             }
         }
@@ -131,20 +131,7 @@ extension GrdbStorage: IHistoricalRateStorage {
 
 extension GrdbStorage: IChartPointStorage {
 
-//    func marketStats(coinCodes: [String], currencyCode: String) -> [MarketStats] {
-//        let codesForQuery = coinCodes.map { "'\($0)'" }.joined(separator: ",")
-//        return try! dbPool.read { db in
-//            try MarketStats.fetchAll(db, sql: "SELECT * FROM market_stats WHERE coinCode IN (\(codesForQuery)) AND currencyCode = '\(currencyCode)'")
-//        }
-//    }
-//
-//    func save(marketStats: MarketStats) {
-//        _ = try! dbPool.write { db in
-//            try marketStats.insert(db)
-//        }
-//    }
-
-    func chartPointRecords(key: ChartPointKey, fromTimestamp: TimeInterval) -> [ChartPointRecord] {
+    func chartPointRecords(key: ChartInfoKey, fromTimestamp: TimeInterval) -> [ChartPointRecord] {
         try! dbPool.read { db in
             try ChartPointRecord
                     .filter(ChartPointRecord.Columns.coinCode == key.coinCode && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.chartType.rawValue)
@@ -161,11 +148,29 @@ extension GrdbStorage: IChartPointStorage {
         }
     }
 
-    func deleteChartPointRecords(key: ChartPointKey) {
+    func deleteChartPointRecords(key: ChartInfoKey) {
         _ = try! dbPool.write { db in
             try ChartPointRecord
                     .filter(ChartPointRecord.Columns.coinCode == key.coinCode && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.chartType.rawValue)
                     .deleteAll(db)
+        }
+    }
+
+}
+
+extension GrdbStorage: IMarketInfoStorage {
+
+    func marketInfo(coinCode: String, currencyCode: String) -> MarketInfoRecord? {
+        try! dbPool.read { db in
+            try MarketInfoRecord
+                    .filter(MarketInfoRecord.Columns.coinCode == coinCode && MarketInfoRecord.Columns.currencyCode == currencyCode)
+                    .fetchOne(db)
+        }
+    }
+
+    func save(marketInfoRecord: MarketInfoRecord) {
+        _ = try! dbPool.write { db in
+            try marketInfoRecord.insert(db)
         }
     }
 

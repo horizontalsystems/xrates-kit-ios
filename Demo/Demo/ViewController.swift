@@ -35,7 +35,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Fetch Historical", style: .plain, target: self, action: #selector(onTapHistorical))
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Fetch Historical", style: .plain, target: self, action: #selector(onTapHistorical))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Fetch Market Info", style: .plain, target: self, action: #selector(onTapMarketInfo))
 
         textView.font = .systemFont(ofSize: 14)
         textView.textContainerInset = UIEdgeInsets(top: 20, left: 15, bottom: 20, right: 15)
@@ -85,6 +86,17 @@ class ViewController: UIViewController {
                     print("Did fetch Historical Rate: \(value)")
                 }, onError: { error in
                     print("Historical Rate fetch error: \(error.localizedDescription)")
+                })
+                .disposed(by: disposeBag)
+    }
+
+    @objc func onTapMarketInfo() {
+        xRatesKit.marketInfo(coinCode: "BTC", currencyCode: "USD")
+                .observeOn(MainScheduler.instance)
+                .subscribe(onSuccess: { marketInfo in
+                    print("Did fetch Market Info: \(marketInfo)")
+                }, onError: { error in
+                    print("Market Info fetch error: \(error.localizedDescription)")
                 })
                 .disposed(by: disposeBag)
     }

@@ -32,7 +32,7 @@ struct CryptoCompareMarketInfoResponse: ImmutableMappable {
 
                 for (key, value) in dictionary {
                     if let marketInfo = value as? [String: Any],
-                       let volume = marketInfo["VOLUMEDAYTO"] as? Double,
+                       let volume = marketInfo["VOLUME24HOURTO"] as? Double,
                        let marketCap = marketInfo["MKTCAP"] as? Double,
                        let supply = marketInfo["SUPPLY"] as? Double {
                         result[key] = ResponseMarketInfo(volume: NSNumber(value: volume).decimalValue, marketCap: NSNumber(value: marketCap).decimalValue, supply: NSNumber(value: supply).decimalValue)

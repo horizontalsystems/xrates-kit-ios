@@ -15,7 +15,7 @@ class ChartPointSchedulerFactory {
         self.logger = logger
     }
 
-    func scheduler(key: ChartPointKey) -> ChartPointScheduler {
+    func scheduler(key: ChartInfoKey) -> ChartPointScheduler {
         let schedulerProvider: IChartPointSchedulerProvider = ChartPointSchedulerProvider(key: key, manager: manager, provider: provider, retryInterval: retryInterval)
         return ChartPointScheduler(provider: schedulerProvider, reachabilityManager: reachabilityManager, logger: logger)
     }

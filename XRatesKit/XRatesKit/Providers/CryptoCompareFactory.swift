@@ -1,10 +1,4 @@
 class CryptoCompareFactory {
-    private let dateProvider: ICurrentDateProvider
-
-    init(dateProvider: ICurrentDateProvider) {
-        self.dateProvider = dateProvider
-    }
-
 }
 
 extension CryptoCompareFactory: ICryptoCompareFactory {
@@ -14,13 +8,6 @@ extension CryptoCompareFactory: ICryptoCompareFactory {
             return nil
         }
         return RateResponse(coinCode: coinCode, value: rateValue)
-    }
-
-    func marketStats(coinCode: String, currencyCode: String, response: CryptoCompareMarketInfoResponse) -> MarketStats? {
-        guard let marketInfoMap = response.values[coinCode], let marketInfoValue = marketInfoMap.values[currencyCode] else {
-            return nil
-        }
-        return MarketStats(coinCode: coinCode, currencyCode: currencyCode, date: dateProvider.currentDate, volume: marketInfoValue.volume, marketCap: marketInfoValue.marketCap, supply: marketInfoValue.supply)
     }
 
     func historicalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval, value: Decimal) -> RateResponse {
