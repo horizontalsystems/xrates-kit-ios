@@ -103,6 +103,21 @@ protocol IChartPointSchedulerProvider {
     var syncSingle: Single<Void> { get }
 }
 
+// Market Stats
+
+protocol IMarketInfoManager {
+    func marketInfoSingle(coinCode: String, currencyCode: String) -> Single<MarketInfo>
+}
+
+protocol IMarketInfoStorage {
+    func marketInfo(coinCode: String, currencyCode: String) -> MarketInfoRecord?
+    func save(marketInfoRecord: MarketInfoRecord)
+}
+
+protocol IMarketInfoProvider {
+    func getMarketInfo(coinCode: String, currencyCode: String) -> Single<MarketInfoRecord>
+}
+
 // Misc
 
 protocol IReachabilityManager {
@@ -110,12 +125,7 @@ protocol IReachabilityManager {
     var reachabilityObservable: Observable<Bool> { get }
 }
 
-protocol ICurrentDateProvider {
-    var currentDate: Date { get }
-}
-
 protocol ICryptoCompareFactory {
     func latestRate(coinCode: String, currencyCode: String, response: CryptoCompareLatestRateResponse) -> RateResponse?
-    func marketStats(coinCode: String, currencyCode: String, response: CryptoCompareMarketInfoResponse) -> MarketStats?
     func historicalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval, value: Decimal) -> RateResponse
 }

@@ -6,13 +6,15 @@ public class XRatesKit {
     private let historicalRateManager: IHistoricalRateManager
     private let chartInfoManager: IChartInfoManager
     private let chartInfoSyncManager: IChartInfoSyncManager
+    private let marketInfoManager: IMarketInfoManager
 
-    init(latestRateManager: ILatestRateManager, latestRateSyncManager: ILatestRateSyncManager, historicalRateManager: IHistoricalRateManager, chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager) {
+    init(latestRateManager: ILatestRateManager, latestRateSyncManager: ILatestRateSyncManager, historicalRateManager: IHistoricalRateManager, chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager, marketInfoManager: IMarketInfoManager) {
         self.latestRateManager = latestRateManager
         self.latestRateSyncManager = latestRateSyncManager
         self.chartInfoManager = chartInfoManager
         self.chartInfoSyncManager = chartInfoSyncManager
         self.historicalRateManager = historicalRateManager
+        self.marketInfoManager = marketInfoManager
     }
 
 }
@@ -51,20 +53,23 @@ extension XRatesKit {
         chartInfoSyncManager.chartInfoObservable(key: ChartInfoKey(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType))
     }
 
+    public func marketInfo(coinCode: String, currencyCode: String) -> Single<MarketInfo> {
+        marketInfoManager.marketInfoSingle(coinCode: coinCode, currencyCode: currencyCode)
+    }
+
 }
 
 extension XRatesKit {
 
     public static func instance(currencyCode: String, latestRateExpirationInterval: TimeInterval = 5 * 60, retryInterval: TimeInterval = 10, minLogLevel: Logger.Level = .error) -> XRatesKit {
         let logger = Logger(minLogLevel: minLogLevel)
-        let currentDateProvider = CurrentDateProvider()
 
         let reachabilityManager = ReachabilityManager()
 
         let storage = GrdbStorage()
 
         let networkManager = NetworkManager(logger: logger)
-        let cryptoCompareFactory = CryptoCompareFactory(dateProvider: currentDateProvider)
+        let cryptoCompareFactory = CryptoCompareFactory()
         let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, cryptoCompareFactory: cryptoCompareFactory, baseUrl: "https://min-api.cryptocompare.com", timeoutInterval: 10)
 
         let latestRateManager = LatestRateManager(storage: storage, expirationInterval: latestRateExpirationInterval)
@@ -81,7 +86,16 @@ extension XRatesKit {
 
         chartInfoManager.delegate = chartInfoSyncManager
 
-        let kit = XRatesKit(latestRateManager: latestRateManager, latestRateSyncManager: latestRateSyncManager, historicalRateManager: historicalRateManager, chartInfoManager: chartInfoManager, chartInfoSyncManager: chartInfoSyncManager)
+        let marketInfoManager = MarketInfoManager(storage: storage, provider: cryptoCompareProvider)
+
+        let kit = XRatesKit(
+                latestRateManager: latestRateManager,
+                latestRateSyncManager: latestRateSyncManager,
+                historicalRateManager: historicalRateManager,
+                chartInfoManager: chartInfoManager,
+                chartInfoSyncManager: chartInfoSyncManager,
+                marketInfoManager: marketInfoManager
+        )
 
         return kit
     }

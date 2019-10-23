@@ -9,4 +9,8 @@ public class XRatesErrors {
         case noValueForHour
     }
 
+    public enum MarketInfo: Error {
+        case noInfo
+    }
+
 }

@@ -35,15 +35,8 @@ class CryptoCompareProvider {
         "\(baseUrl)/data/v2/\(historicalType.rawValue)?fsym=\(coinCode)&tsym=\(currencyCode)&limit=1&toTs=\(Int(timestamp))"
     }
 
-    private func marketInfoUrl(coinCodes: [String], currencyCode: String) -> String {
-        let coinList = coinCodes.joined(separator: ",")
-        return "\(baseUrl)/data/pricemultifull?fsyms=\(coinList)&tsyms=\(currencyCode)"
-    }
-
-    private func getMarketStats(coinCodes: [String], currencyCode: String, response: CryptoCompareMarketInfoResponse) -> [MarketStats] {
-        coinCodes.compactMap { coinCode in
-            self.cryptoCompareFactory.marketStats(coinCode: coinCode, currencyCode: currencyCode, response: response)
-        }
+    private func marketInfoUrl(coinCode: String, currencyCode: String) -> String {
+        "\(baseUrl)/data/pricemultifull?fsyms=\(coinCode)&tsyms=\(currencyCode)"
     }
 
     private func chartStatsUrl(key: ChartInfoKey) -> String {
@@ -105,12 +98,29 @@ extension CryptoCompareProvider: IChartPointProvider {
                 }
     }
 
-    func getMarketStats(coinCodes: [String], currencyCode: String) -> Single<[MarketStats]> {
-        let urlString = marketInfoUrl(coinCodes: coinCodes, currencyCode: currencyCode)
+}
 
-        return networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: self.timeoutInterval)
-                .map { (response: CryptoCompareMarketInfoResponse) -> [MarketStats] in
-                    self.getMarketStats(coinCodes: coinCodes, currencyCode: currencyCode, response: response)
+extension CryptoCompareProvider: IMarketInfoProvider {
+
+    func getMarketInfo(coinCode: String, currencyCode: String) -> Single<MarketInfoRecord> {
+        let urlString = marketInfoUrl(coinCode: coinCode, currencyCode: currencyCode)
+
+        return networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: timeoutInterval)
+                .flatMap { (response: CryptoCompareMarketInfoResponse) -> Single<MarketInfoRecord> in
+                    guard let marketInfoMap = response.values[coinCode], let marketInfoValue = marketInfoMap.values[currencyCode] else {
+                        return Single.error(XRatesErrors.MarketInfo.noInfo)
+                    }
+
+                    let record = MarketInfoRecord(
+                            coinCode: coinCode,
+                            currencyCode: currencyCode,
+                            timestamp: Date().timeIntervalSince1970,
+                            volume: marketInfoValue.volume,
+                            marketCap: marketInfoValue.marketCap,
+                            supply: marketInfoValue.supply
+                    )
+
+                    return Single.just(record)
                 }
     }
 
