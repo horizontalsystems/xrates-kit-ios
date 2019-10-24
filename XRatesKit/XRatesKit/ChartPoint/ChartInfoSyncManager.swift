@@ -9,6 +9,8 @@ class ChartInfoSyncManager {
     private var schedulers = [ChartInfoKey: ChartPointScheduler]()
     private var latestRateDisposables = [ChartInfoKey: Disposable]()
 
+    private let schedulerQueue = DispatchQueue(label: "Schedulers Queue", qos: .background)
+
     init(schedulerFactory: ChartPointSchedulerFactory, chartInfoManager: IChartInfoManager, latestRateSyncManager: ILatestRateSyncManager) {
         self.schedulerFactory = schedulerFactory
         self.chartInfoManager = chartInfoManager
@@ -55,6 +57,18 @@ class ChartInfoSyncManager {
         latestRateDisposables[key] = nil
     }
 
+    private func onSubscribed(key: ChartInfoKey) {
+        schedulerQueue.async {
+            self.scheduler(key: key).schedule()
+        }
+    }
+
+    private func onDisposed(key: ChartInfoKey) {
+        schedulerQueue.async {
+            self.cleanUp(key: key)
+        }
+    }
+
 }
 
 extension ChartInfoSyncManager: IChartInfoSyncManager {
@@ -62,9 +76,9 @@ extension ChartInfoSyncManager: IChartInfoSyncManager {
     func chartInfoObservable(key: ChartInfoKey) -> Observable<ChartInfo> {
         subject(key: key)
                 .do(onSubscribed: { [weak self] in
-                    self?.scheduler(key: key).schedule()
+                    self?.onSubscribed(key: key)
                 }, onDispose: { [weak self] in
-                    self?.cleanUp(key: key)
+                    self?.onDisposed(key: key)
                 })
     }
 

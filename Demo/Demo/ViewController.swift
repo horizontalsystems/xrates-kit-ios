@@ -126,11 +126,27 @@ class ViewController: UIViewController {
         chartInfo = xRatesKit.chartInfo(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType)
 
         xRatesKit.chartInfoObservable(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType)
+                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
                 .observeOn(MainScheduler.instance)
                 .subscribe(onNext: { [weak self] chartInfo in
                     self?.chartInfo = chartInfo
                     self?.updateTextView()
                 })
+                .disposed(by: chartDisposeBag)
+
+        additionalSubscribe(coinCode: "BNT", currencyCode: "USD")
+        additionalSubscribe(coinCode: "ETH", currencyCode: "USD")
+        additionalSubscribe(coinCode: "EOS", currencyCode: "USD")
+        additionalSubscribe(coinCode: "ZRX", currencyCode: "USD")
+    }
+
+    private func additionalSubscribe(coinCode: String, currencyCode: String) {
+        _ = xRatesKit.chartInfo(coinCode: coinCode, currencyCode: currencyCode, chartType: .day)
+
+        xRatesKit.chartInfoObservable(coinCode: coinCode, currencyCode: currencyCode, chartType: .day)
+                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+                .observeOn(MainScheduler.instance)
+                .subscribe()
                 .disposed(by: chartDisposeBag)
     }
 
