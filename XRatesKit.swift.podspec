@@ -7,13 +7,13 @@ Pod::Spec.new do |spec|
                        Kit provide latest rates for coins, chart data and historical data for different coins and currencies uses different providers.
                        ```
                     DESC
-  spec.homepage = 'https://github.com/horizontalsystems/x-rates-kit-ios'
+  spec.homepage = 'https://github.com/horizontalsystems/xrates-kit-ios'
   spec.license = { :type => 'Apache 2.0', :file => 'LICENSE' }
   spec.author = { 'Horizontal Systems' => 'hsdao@protonmail.ch' }
   spec.social_media_url = 'http://horizontalsystems.io/'
 
   spec.requires_arc = true
-  spec.source = { git: 'https://github.com/horizontalsystems/x-rates-kit-ios.git', tag: "#{spec.version}" }
+  spec.source = { git: 'https://github.com/horizontalsystems/xrates-kit-ios', tag: "#{spec.version}" }
   spec.source_files = 'XRatesKit/XRatesKit/**/*.{h,m,swift}'
   spec.ios.deployment_target = '11.0'
   spec.swift_version = '5'
