@@ -73,8 +73,8 @@ class ChartPointScheduler {
         provider.syncSingle
                 .subscribe(onSuccess: { [weak self] in
                     self?.onSyncSuccess()
-                }, onError: { [weak self] _ in
-                    self?.onSyncError()
+                }, onError: { [weak self] error in
+                    self?.onSync(error: error)
                 })
                 .disposed(by: disposeBag)
     }
@@ -86,8 +86,8 @@ class ChartPointScheduler {
         autoSchedule(minDelay: provider.retryInterval)
     }
 
-    private func onSyncError() {
-        logger?.debug("CHART: \(provider.logKey): Sync error")
+    private func onSync(error: Error) {
+        logger?.debug("CHART: \(provider.logKey): Sync error: \(error)")
 
         syncInProgress = false
         schedule(delay: provider.retryInterval)

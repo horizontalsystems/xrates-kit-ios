@@ -19,13 +19,10 @@ extension HistoricalRateManager: IHistoricalRateManager {
         }
 
         return provider.getHistoricalRate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)
-                .do(onSuccess: { [weak self] rateResponse in
-                    let rate = HistoricalRate(coinCode: coinCode, currencyCode: currencyCode, value: rateResponse.value, timestamp: timestamp)
+                .do(onSuccess: { [weak self] rateValue in
+                    let rate = HistoricalRate(coinCode: coinCode, currencyCode: currencyCode, value: rateValue, timestamp: timestamp)
                     self?.storage.save(historicalRate: rate)
                 })
-                .map { rate -> Decimal in
-                    rate.value
-                }
     }
 
 }

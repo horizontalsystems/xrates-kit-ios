@@ -4,14 +4,14 @@ class ChartInfoManager {
     weak var delegate: IChartInfoManagerDelegate?
 
     private let storage: IChartPointStorage
-    private let latestRateManager: ILatestRateManager
+    private let marketInfoManager: IMarketInfoManager
 
-    init(storage: IChartPointStorage, latestRateManager: ILatestRateManager) {
+    init(storage: IChartPointStorage, marketInfoManager: IMarketInfoManager) {
         self.storage = storage
-        self.latestRateManager = latestRateManager
+        self.marketInfoManager = marketInfoManager
     }
 
-    private func chartInfo(chartPoints: [ChartPoint], latestRate: Rate?, key: ChartInfoKey) -> ChartInfo? {
+    private func chartInfo(chartPoints: [ChartPoint], marketInfo: MarketInfo?, key: ChartInfoKey) -> ChartInfo? {
         guard let lastPoint = chartPoints.last else {
             return nil
         }
@@ -22,43 +22,35 @@ class ChartInfoManager {
         let lastPointDiffInterval = currentTimestamp - lastPoint.timestamp
 
         guard lastPointDiffInterval < key.chartType.expirationInterval else {
-            // expired chart info, not adding latest rate point
+            // expired chart info, not adding market info point
             return ChartInfo(
                     points: chartPoints,
                     startTimestamp: firstPoint.timestamp,
-                    endTimestamp: currentTimestamp,
-                    diff: nil
+                    endTimestamp: currentTimestamp
             )
         }
 
-        guard let latestRate = latestRate, latestRate.timestamp > lastPoint.timestamp else {
-            // non-expired chart info without latest rate
+        guard let marketInfo = marketInfo, marketInfo.timestamp > lastPoint.timestamp else {
+            // non-expired chart info without market info
             return ChartInfo(
                     points: chartPoints,
                     startTimestamp: firstPoint.timestamp,
-                    endTimestamp: lastPoint.timestamp,
-                    diff: nil
+                    endTimestamp: lastPoint.timestamp
             )
         }
 
-        let chartPointsWithLatestRate = chartPoints + [ChartPoint(timestamp: latestRate.timestamp, value: latestRate.value)]
-        var diff: Decimal? = nil
-
-        if !latestRate.expired {
-            diff = (latestRate.value - firstPoint.value) / firstPoint.value * 100
-        }
+        let chartPointsWithMarketInfo = chartPoints + [ChartPoint(timestamp: marketInfo.timestamp, value: marketInfo.rate)]
 
         return ChartInfo(
-                points: chartPointsWithLatestRate,
+                points: chartPointsWithMarketInfo,
                 startTimestamp: firstPoint.timestamp,
-                endTimestamp: latestRate.timestamp,
-                diff: diff
+                endTimestamp: marketInfo.timestamp
         )
     }
 
     private func chartInfo(chartPoints: [ChartPoint], key: ChartInfoKey) -> ChartInfo? {
-        let latestRate = latestRateManager.latestRate(key: RateKey(coinCode: key.coinCode, currencyCode: key.currencyCode))
-        return chartInfo(chartPoints: chartPoints, latestRate: latestRate, key: key)
+        let marketInfo = marketInfoManager.marketInfo(key: PairKey(coinCode: key.coinCode, currencyCode: key.currencyCode))
+        return chartInfo(chartPoints: chartPoints, marketInfo: marketInfo, key: key)
     }
 
     private func storedChartPoints(key: ChartInfoKey) -> [ChartPoint] {
@@ -66,6 +58,14 @@ class ChartInfoManager {
         let fromTimestamp = currentTimestamp - key.chartType.rangeInterval
         let chartPointRecords = storage.chartPointRecords(key: key, fromTimestamp: fromTimestamp)
         return chartPointRecords.map { $0.chartPoint }
+    }
+
+    private func notify(chartInfo: ChartInfo?, key: ChartInfoKey) {
+        if let chartInfo = chartInfo {
+            delegate?.didUpdate(chartInfo: chartInfo, key: key)
+        } else {
+            delegate?.didFoundNoChartInfo(key: key)
+        }
     }
 
 }
@@ -88,11 +88,11 @@ extension ChartInfoManager: IChartInfoManager {
         storage.deleteChartPointRecords(key: key)
         storage.save(chartPointRecords: records)
 
-        delegate?.didUpdate(chartInfo: chartInfo(chartPoints: chartPoints, key: key), key: key)
+        notify(chartInfo: chartInfo(chartPoints: chartPoints, key: key), key: key)
     }
 
-    func handleUpdated(latestRate: Rate, key: ChartInfoKey) {
-        delegate?.didUpdate(chartInfo: chartInfo(chartPoints: storedChartPoints(key: key), latestRate: latestRate, key: key), key: key)
+    func handleUpdated(marketInfo: MarketInfo, key: ChartInfoKey) {
+        notify(chartInfo: chartInfo(chartPoints: storedChartPoints(key: key), marketInfo: marketInfo, key: key), key: key)
     }
 
 }

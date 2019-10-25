@@ -7,11 +7,11 @@ class ViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private var chartDisposeBag = DisposeBag()
 
-    private let coinCodes = ["BTC", "ETH", "BNB", "AURA"]//, "GNT", "GUSD", "GTO", "HOT", "HT", "IDEX", "IDXM", "IQ", "KCS", "KNC"]
+    private let coinCodes = ["BTC", "ETH"]
     private let currencyCode = "USD"
 
-    private var latestRates = [String: Rate]()
-    private var chartInfo: ChartInfo?
+    private var marketInfos = [String: MarketInfo]()
+    private var chartData: ChartData?
     private var chartOn = false
 
     private let textView = UITextView()
@@ -35,8 +35,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Fetch Historical", style: .plain, target: self, action: #selector(onTapHistorical))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Fetch Market Info", style: .plain, target: self, action: #selector(onTapMarketInfo))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Fetch Historical", style: .plain, target: self, action: #selector(onTapHistorical))
 
         textView.font = .systemFont(ofSize: 14)
         textView.textContainerInset = UIEdgeInsets(top: 20, left: 15, bottom: 20, right: 15)
@@ -64,15 +63,23 @@ class ViewController: UIViewController {
 
         xRatesKit.set(coinCodes: coinCodes)
 
-        for coinCode in coinCodes {
-            xRatesKit.latestRateObservable(coinCode: coinCode, currencyCode: currencyCode)
-                    .observeOn(MainScheduler.instance)
-                    .subscribe(onNext: { [weak self] rate in
-                        self?.latestRates[coinCode] = rate
-                        self?.updateTextView()
-                    })
-                    .disposed(by: disposeBag)
-        }
+//        for coinCode in coinCodes {
+//            xRatesKit.marketInfoObservable(coinCode: coinCode, currencyCode: currencyCode)
+//                    .observeOn(MainScheduler.instance)
+//                    .subscribe(onNext: { [weak self] marketInfo in
+//                        self?.marketInfos[coinCode] = marketInfo
+//                        self?.updateTextView()
+//                    })
+//                    .disposed(by: disposeBag)
+//        }
+
+        xRatesKit.marketInfosObservable(currencyCode: currencyCode)
+                .observeOn(MainScheduler.instance)
+                .subscribe(onNext: { [weak self] marketInfos in
+                    self?.marketInfos = marketInfos
+                    self?.updateTextView()
+                })
+                .disposed(by: disposeBag)
     }
 
     @objc func onTapRefresh() {
@@ -86,17 +93,6 @@ class ViewController: UIViewController {
                     print("Did fetch Historical Rate: \(value)")
                 }, onError: { error in
                     print("Historical Rate fetch error: \(error.localizedDescription)")
-                })
-                .disposed(by: disposeBag)
-    }
-
-    @objc func onTapMarketInfo() {
-        xRatesKit.marketInfo(coinCode: "BTC", currencyCode: "USD")
-                .observeOn(MainScheduler.instance)
-                .subscribe(onSuccess: { marketInfo in
-                    print("Did fetch Market Info: \(marketInfo)")
-                }, onError: { error in
-                    print("Market Info fetch error: \(error.localizedDescription)")
                 })
                 .disposed(by: disposeBag)
     }
@@ -123,21 +119,26 @@ class ViewController: UIViewController {
         let currencyCode = "USD"
         let chartType: ChartType = .day
 
-        chartInfo = xRatesKit.chartInfo(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType)
+        if let chartInfo = xRatesKit.chartInfo(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType) {
+            chartData = .data(chartInfo: chartInfo)
+        }
 
         xRatesKit.chartInfoObservable(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType)
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
                 .observeOn(MainScheduler.instance)
                 .subscribe(onNext: { [weak self] chartInfo in
-                    self?.chartInfo = chartInfo
+                    self?.chartData = .data(chartInfo: chartInfo)
                     self?.updateTextView()
+                }, onError: { error in
+                    self.chartData = .error(error: error)
+                    self.updateTextView()
                 })
                 .disposed(by: chartDisposeBag)
 
-        additionalSubscribe(coinCode: "BNT", currencyCode: "USD")
-        additionalSubscribe(coinCode: "ETH", currencyCode: "USD")
-        additionalSubscribe(coinCode: "EOS", currencyCode: "USD")
-        additionalSubscribe(coinCode: "ZRX", currencyCode: "USD")
+//        additionalSubscribe(coinCode: "BNT", currencyCode: "USD")
+//        additionalSubscribe(coinCode: "ETH", currencyCode: "USD")
+//        additionalSubscribe(coinCode: "EOS", currencyCode: "USD")
+//        additionalSubscribe(coinCode: "ZRX", currencyCode: "USD")
     }
 
     private func additionalSubscribe(coinCode: String, currencyCode: String) {
@@ -151,13 +152,13 @@ class ViewController: UIViewController {
     }
 
     private func onChartOff() {
-        chartInfo = nil
+        chartData = nil
         chartDisposeBag = DisposeBag()
     }
 
     private func fillInitialData() {
         for coinCode in coinCodes {
-            latestRates[coinCode] = xRatesKit.latestRate(coinCode: coinCode, currencyCode: currencyCode)
+            marketInfos[coinCode] = xRatesKit.marketInfo(coinCode: coinCode, currencyCode: currencyCode)
         }
 
         updateTextView()
@@ -169,10 +170,14 @@ class ViewController: UIViewController {
         for coinCode in coinCodes {
             text += "\(coinCode): "
 
-            if let rate = latestRates[coinCode] {
-                text += "\(rate.expired ? "⛔" : "✅")\n"
-                text += "   • \(rate.value)\n"
-                text += "   • \(format(timestamp: rate.timestamp))\n"
+            if let marketInfo = marketInfos[coinCode] {
+                text += "\(marketInfo.expired ? "⛔" : "✅")\n"
+                text += "   • \(format(timestamp: marketInfo.timestamp))\n"
+                text += "   • \(marketInfo.rate)\n"
+                text += "   • \(marketInfo.diff)\n"
+                text += "   • Volume: \(marketInfo.volume)\n"
+                text += "   • Market Cap: \(marketInfo.marketCap)\n"
+                text += "   • Supply: \(marketInfo.supply)\n"
             } else {
                 text += "n/a\n"
             }
@@ -182,15 +187,28 @@ class ViewController: UIViewController {
 
         text += "\n"
 
-        if let chartInfo = chartInfo {
+        if let chartData = chartData {
             text += "Chart Info:\n"
-            text += "Diff: \(chartInfo.diff.map { "\($0)" } ?? "n/a")\n"
-            text += "Start Date: \(format(timestamp: chartInfo.startTimestamp))\n"
-            text += "End Date: \(format(timestamp: chartInfo.endTimestamp))\n"
 
-            for point in chartInfo.points {
-                text += "   \(format(timestamp: point.timestamp)): \(point.value)\n"
+            switch chartData {
+            case .data(let chartInfo):
+                text += "Start Date: \(format(timestamp: chartInfo.startTimestamp))\n"
+                text += "End Date: \(format(timestamp: chartInfo.endTimestamp))\n"
+
+                if let point = chartInfo.points.first {
+                    text += "   \(format(timestamp: point.timestamp)): \(point.value)\n"
+                }
+                if let point = chartInfo.points.last {
+                    text += "   \(format(timestamp: point.timestamp)): \(point.value)\n"
+                }
+
+//                for point in chartInfo.points {
+//                    text += "   \(format(timestamp: point.timestamp)): \(point.value)\n"
+//                }
+            case .error(let error):
+                text += "Error: \(error)\n"
             }
+
         }
 
         textView.text = text
@@ -201,4 +219,9 @@ class ViewController: UIViewController {
         return dateFormatter.string(from: date)
     }
 
+}
+
+enum ChartData {
+    case data(chartInfo: ChartInfo)
+    case error(error: Error)
 }

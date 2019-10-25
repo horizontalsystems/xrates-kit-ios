@@ -1,14 +1,14 @@
 import Foundation
 
-class LatestRateSchedulerFactory {
-    private let manager: ILatestRateManager
-    private let provider: ILatestRateProvider
+class MarketInfoSchedulerFactory {
+    private let manager: IMarketInfoManager
+    private let provider: IMarketInfoProvider
     private let reachabilityManager: IReachabilityManager
     private let expirationInterval: TimeInterval
     private let retryInterval: TimeInterval
     private var logger: Logger?
 
-    init(manager: ILatestRateManager, provider: ILatestRateProvider, reachabilityManager: IReachabilityManager, expirationInterval: TimeInterval, retryInterval: TimeInterval, logger: Logger? = nil) {
+    init(manager: IMarketInfoManager, provider: IMarketInfoProvider, reachabilityManager: IReachabilityManager, expirationInterval: TimeInterval, retryInterval: TimeInterval, logger: Logger? = nil) {
         self.manager = manager
         self.provider = provider
         self.reachabilityManager = reachabilityManager
@@ -17,8 +17,8 @@ class LatestRateSchedulerFactory {
         self.logger = logger
     }
 
-    func scheduler(coinCodes: [String], currencyCode: String) -> LatestRateScheduler {
-        let schedulerProvider = LatestRateSchedulerProvider(
+    func scheduler(coinCodes: [String], currencyCode: String) -> MarketInfoScheduler {
+        let schedulerProvider = MarketInfoSchedulerProvider(
                 coinCodes: coinCodes,
                 currencyCode: currencyCode,
                 manager: manager,
@@ -27,7 +27,7 @@ class LatestRateSchedulerFactory {
                 retryInterval: retryInterval
         )
 
-        return LatestRateScheduler(provider: schedulerProvider, reachabilityManager: reachabilityManager, logger: logger)
+        return MarketInfoScheduler(provider: schedulerProvider, reachabilityManager: reachabilityManager, logger: logger)
     }
 
 }

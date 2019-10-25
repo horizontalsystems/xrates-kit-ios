@@ -1,41 +1,60 @@
 import RxSwift
 
 class MarketInfoManager {
-    private let storage: IMarketInfoStorage
-    private let provider: IMarketInfoProvider
+    weak var delegate: IMarketInfoManagerDelegate?
 
-    init(storage: IMarketInfoStorage, provider: IMarketInfoProvider) {
+    private let storage: IMarketInfoStorage
+    private let expirationInterval: TimeInterval
+
+    init(storage: IMarketInfoStorage, expirationInterval: TimeInterval) {
         self.storage = storage
-        self.provider = provider
+        self.expirationInterval = expirationInterval
+    }
+
+    private func marketInfo(record: MarketInfoRecord) -> MarketInfo {
+        MarketInfo(record: record, expirationInterval: expirationInterval)
+    }
+
+    private func notify(records: [MarketInfoRecord], currencyCode: String) {
+        var marketInfos = [String: MarketInfo]()
+
+        records.forEach { record in
+            let info = marketInfo(record: record)
+            delegate?.didUpdate(marketInfo: info, key: record.key)
+            marketInfos[record.key.coinCode] = info
+        }
+
+        delegate?.didUpdate(marketInfos: marketInfos, currencyCode: currencyCode)
     }
 
 }
 
 extension MarketInfoManager: IMarketInfoManager {
 
-    func marketInfoSingle(coinCode: String, currencyCode: String) -> Single<MarketInfo> {
-        let currentTimestamp = Date().timeIntervalSince1970
-        let expirationInterval: TimeInterval = 60 * 60
-        let fallbackInterval: TimeInterval = 24 * 60 * 60
+    func lastSyncTimestamp(coinCodes: [String], currencyCode: String) -> TimeInterval? {
+        let records = storage.marketInfoRecordsSortedByTimestamp(coinCodes: coinCodes, currencyCode: currencyCode)
 
-        let storedRecord = storage.marketInfo(coinCode: coinCode, currencyCode: currencyCode)
-
-        if let storedRecord = storedRecord, currentTimestamp - storedRecord.timestamp < expirationInterval {
-            return Single.just(MarketInfo(record: storedRecord))
+        // not all records for coin codes are stored in database - force sync required
+        guard records.count == coinCodes.count else {
+            return nil
         }
 
-        var single = provider.getMarketInfo(coinCode: coinCode, currencyCode: currencyCode)
-                .do(onSuccess: { [weak self] record in
-                    self?.storage.save(marketInfoRecord: record)
-                })
+        // return date of the most expired stored record
+        return records.first?.timestamp
+    }
 
-        if let storedRecord = storedRecord, currentTimestamp - storedRecord.timestamp < fallbackInterval {
-            single = single.catchErrorJustReturn(storedRecord)
-        }
+    func marketInfo(key: PairKey) -> MarketInfo? {
+        storage.marketInfoRecord(key: key).map { marketInfo(record: $0) }
+    }
 
-        return single.map { record in
-            MarketInfo(record: record)
-        }
+    func handleUpdated(records: [MarketInfoRecord], currencyCode: String) {
+        storage.save(marketInfoRecords: records)
+        notify(records: records, currencyCode: currencyCode)
+    }
+
+    func notifyExpired(coinCodes: [String], currencyCode: String) {
+        let records = storage.marketInfoRecordsSortedByTimestamp(coinCodes: coinCodes, currencyCode: currencyCode)
+        notify(records: records, currencyCode: currencyCode)
     }
 
 }

@@ -1,52 +1,48 @@
 import RxSwift
 
-// Latest Rates
+// Market Info
 
-protocol ILatestRateManager {
+protocol IMarketInfoManager {
     func lastSyncTimestamp(coinCodes: [String], currencyCode: String) -> TimeInterval?
-    func latestRate(key: RateKey) -> Rate?
-    func handleUpdated(rates: [LatestRate])
-    func notifyExpiredRates(coinCodes: [String], currencyCode: String)
+    func marketInfo(key: PairKey) -> MarketInfo?
+    func handleUpdated(records: [MarketInfoRecord], currencyCode: String)
+    func notifyExpired(coinCodes: [String], currencyCode: String)
 }
 
-protocol ILatestRateManagerDelegate: AnyObject {
-    func didUpdate(rateInfo: Rate, key: RateKey)
+protocol IMarketInfoManagerDelegate: AnyObject {
+    func didUpdate(marketInfo: MarketInfo, key: PairKey)
+    func didUpdate(marketInfos: [String: MarketInfo], currencyCode: String)
 }
 
-protocol ILatestRateProvider: class {
-    func getLatestRates(coinCodes: [String], currencyCode: String) -> Single<[RateResponse]>
+protocol IMarketInfoProvider: class {
+    func getMarketInfoRecords(coinCodes: [String], currencyCode: String) -> Single<[MarketInfoRecord]>
 }
 
-protocol ILatestRateStorage {
-    func latestRate(key: RateKey) -> LatestRate?
-    func latestRatesSortedByTimestamp(coinCodes: [String], currencyCode: String) -> [LatestRate]
-    func save(latestRates: [LatestRate])
+protocol IMarketInfoStorage {
+    func marketInfoRecord(key: PairKey) -> MarketInfoRecord?
+    func marketInfoRecordsSortedByTimestamp(coinCodes: [String], currencyCode: String) -> [MarketInfoRecord]
+    func save(marketInfoRecords: [MarketInfoRecord])
 }
 
-protocol ILatestRateSyncManager {
+protocol IMarketInfoSyncManager {
     func set(coinCodes: [String])
     func set(currencyCode: String)
     func refresh()
-    func latestRateObservable(key: RateKey) -> Observable<Rate>
+    func marketInfoObservable(key: PairKey) -> Observable<MarketInfo>
+    func marketInfosObservable(currencyCode: String) -> Observable<[String: MarketInfo]>
 }
 
-protocol ILatestRateScheduler {
+protocol IMarketInfoScheduler {
     func schedule()
     func forceSchedule()
 }
 
-protocol ILatestRateSchedulerProvider {
+protocol IMarketInfoSchedulerProvider {
     var lastSyncTimestamp: TimeInterval? { get }
     var expirationInterval: TimeInterval { get }
     var retryInterval: TimeInterval { get }
     var syncSingle: Single<Void> { get }
-    func notifyExpiredRates()
-}
-
-protocol ILatestRateProviderDelegate: class {
-    func didReceive(rate: LatestRate)
-    func didSuccess()
-    func didFail(error: Error)
+    func notifyExpired()
 }
 
 // Historical Rates
@@ -56,7 +52,7 @@ protocol IHistoricalRateManager {
 }
 
 protocol IHistoricalRateProvider {
-    func getHistoricalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<RateResponse>
+    func getHistoricalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal>
 }
 
 protocol IHistoricalRateStorage {
@@ -70,11 +66,12 @@ protocol IChartInfoManager {
     func lastSyncTimestamp(key: ChartInfoKey) -> TimeInterval?
     func chartInfo(key: ChartInfoKey) -> ChartInfo?
     func handleUpdated(chartPoints: [ChartPoint], key: ChartInfoKey)
-    func handleUpdated(latestRate: Rate, key: ChartInfoKey)
+    func handleUpdated(marketInfo: MarketInfo, key: ChartInfoKey)
 }
 
 protocol IChartInfoManagerDelegate: AnyObject {
-    func didUpdate(chartInfo: ChartInfo?, key: ChartInfoKey)
+    func didUpdate(chartInfo: ChartInfo, key: ChartInfoKey)
+    func didFoundNoChartInfo(key: ChartInfoKey)
 }
 
 protocol IChartPointProvider {
@@ -103,29 +100,9 @@ protocol IChartPointSchedulerProvider {
     var syncSingle: Single<Void> { get }
 }
 
-// Market Stats
-
-protocol IMarketInfoManager {
-    func marketInfoSingle(coinCode: String, currencyCode: String) -> Single<MarketInfo>
-}
-
-protocol IMarketInfoStorage {
-    func marketInfo(coinCode: String, currencyCode: String) -> MarketInfoRecord?
-    func save(marketInfoRecord: MarketInfoRecord)
-}
-
-protocol IMarketInfoProvider {
-    func getMarketInfo(coinCode: String, currencyCode: String) -> Single<MarketInfoRecord>
-}
-
 // Misc
 
 protocol IReachabilityManager {
     var isReachable: Bool { get }
     var reachabilityObservable: Observable<Bool> { get }
-}
-
-protocol ICryptoCompareFactory {
-    func latestRate(coinCode: String, currencyCode: String, response: CryptoCompareLatestRateResponse) -> RateResponse?
-    func historicalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval, value: Decimal) -> RateResponse
 }

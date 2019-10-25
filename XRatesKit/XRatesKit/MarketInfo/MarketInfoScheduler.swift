@@ -1,9 +1,9 @@
 import RxSwift
 
-class LatestRateScheduler {
+class MarketInfoScheduler {
     private let bufferInterval: TimeInterval = 5
 
-    private let provider: ILatestRateSchedulerProvider
+    private let provider: IMarketInfoSchedulerProvider
     private let reachabilityManager: IReachabilityManager
     private var logger: Logger?
 
@@ -13,7 +13,7 @@ class LatestRateScheduler {
     private var syncInProgress = false
     private var expirationNotified = false
 
-    init(provider: ILatestRateSchedulerProvider, reachabilityManager: IReachabilityManager, logger: Logger? = nil) {
+    init(provider: IMarketInfoSchedulerProvider, reachabilityManager: IReachabilityManager, logger: Logger? = nil) {
         self.provider = provider
         self.reachabilityManager = reachabilityManager
         self.logger = logger
@@ -33,11 +33,11 @@ class LatestRateScheduler {
 
         // check if sync process is already running
         guard !syncInProgress else {
-            logger?.debug("RATE: Sync already running")
+            logger?.debug("MARKET INFO: Sync already running")
             return
         }
 
-        logger?.debug("RATE: Sync started")
+        logger?.debug("MARKET INFO: Sync started")
 
         syncInProgress = true
 
@@ -51,7 +51,7 @@ class LatestRateScheduler {
     }
 
     private func onSyncSuccess() {
-        logger?.debug("RATE: Sync success")
+        logger?.debug("MARKET INFO: Sync success")
 
         expirationNotified = false
 
@@ -60,7 +60,7 @@ class LatestRateScheduler {
     }
 
     private func onSyncError() {
-        logger?.debug("RATE: Sync error")
+        logger?.debug("MARKET INFO: Sync error")
 
         syncInProgress = false
         schedule(delay: provider.retryInterval)
@@ -69,7 +69,7 @@ class LatestRateScheduler {
     private func schedule(delay: TimeInterval) {
         let intDelay = Int(delay.rounded(.up))
 
-        logger?.debug("RATE: Schedule: delay: \(intDelay) sec")
+        logger?.debug("MARKET INFO: Schedule: delay: \(intDelay) sec")
 
         // invalidate previous timer if exists
         timerDisposable?.dispose()
@@ -90,13 +90,13 @@ class LatestRateScheduler {
         }
 
         let currentTimestamp = Date().timeIntervalSince1970
-        if let lastSuccessSyncTimestamp = provider.lastSyncTimestamp, currentTimestamp - lastSuccessSyncTimestamp < provider.expirationInterval {
+        if let lastSyncTimestamp = provider.lastSyncTimestamp, currentTimestamp - lastSyncTimestamp < provider.expirationInterval {
             return
         }
 
-        logger?.debug("RATE: Notifying expiration")
+        logger?.debug("MARKET INFO: Notifying expiration")
 
-        provider.notifyExpiredRates()
+        provider.notifyExpired()
         expirationNotified = true
     }
 
@@ -114,10 +114,10 @@ class LatestRateScheduler {
 
 }
 
-extension LatestRateScheduler: ILatestRateScheduler {
+extension MarketInfoScheduler: IMarketInfoScheduler {
 
     func schedule() {
-        logger?.debug("RATE: Auto schedule")
+        logger?.debug("MARKET INFO: Auto schedule")
 
         DispatchQueue.global(qos: .background).async {
             self.autoSchedule()
@@ -125,7 +125,7 @@ extension LatestRateScheduler: ILatestRateScheduler {
     }
 
     func forceSchedule() {
-        logger?.debug("RATE: Force schedule")
+        logger?.debug("MARKET INFO: Force schedule")
 
         DispatchQueue.global(qos: .background).async {
             self.schedule(delay: 0)
