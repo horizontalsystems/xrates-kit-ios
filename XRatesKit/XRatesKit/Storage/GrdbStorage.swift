@@ -17,16 +17,20 @@ class GrdbStorage {
     var migrator: DatabaseMigrator {
         var migrator = DatabaseMigrator()
 
-        migrator.registerMigration("createLatestRates") { db in
-            try db.create(table: LatestRate.databaseTableName) { t in
-                t.column(LatestRate.Columns.coinCode.name, .text).notNull()
-                t.column(LatestRate.Columns.currencyCode.name, .text).notNull()
-                t.column(LatestRate.Columns.value.name, .text).notNull()
-                t.column(LatestRate.Columns.timestamp.name, .double).notNull()
+        migrator.registerMigration("createMarketInfo") { db in
+            try db.create(table: MarketInfoRecord.databaseTableName) { t in
+                t.column(MarketInfoRecord.Columns.coinCode.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.currencyCode.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.timestamp.name, .double).notNull()
+                t.column(MarketInfoRecord.Columns.rate.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.diff.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.volume.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.marketCap.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.supply.name, .text).notNull()
 
                 t.primaryKey([
-                    LatestRate.Columns.coinCode.name,
-                    LatestRate.Columns.currencyCode.name,
+                    MarketInfoRecord.Columns.coinCode.name,
+                    MarketInfoRecord.Columns.currencyCode.name,
                 ], onConflict: .replace)
             }
         }
@@ -63,47 +67,31 @@ class GrdbStorage {
             }
         }
 
-        migrator.registerMigration("createMarketInfo") { db in
-            try db.create(table: MarketInfoRecord.databaseTableName) { t in
-                t.column(MarketInfoRecord.Columns.coinCode.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.currencyCode.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.timestamp.name, .double).notNull()
-                t.column(MarketInfoRecord.Columns.volume.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.marketCap.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.supply.name, .text).notNull()
-
-                t.primaryKey([
-                    MarketInfoRecord.Columns.coinCode.name,
-                    MarketInfoRecord.Columns.currencyCode.name,
-                ], onConflict: .replace)
-            }
-        }
-
         return migrator
     }
 
 }
 
-extension GrdbStorage: ILatestRateStorage {
+extension GrdbStorage: IMarketInfoStorage {
 
-    func latestRate(key: RateKey) -> LatestRate? {
+    func marketInfoRecord(key: PairKey) -> MarketInfoRecord? {
         try! dbPool.read { db in
-            try LatestRate.filter(LatestRate.Columns.coinCode == key.coinCode && LatestRate.Columns.currencyCode == key.currencyCode).fetchOne(db)
+            try MarketInfoRecord.filter(MarketInfoRecord.Columns.coinCode == key.coinCode && MarketInfoRecord.Columns.currencyCode == key.currencyCode).fetchOne(db)
         }
     }
 
-    func latestRatesSortedByTimestamp(coinCodes: [String], currencyCode: String) -> [LatestRate] {
+    func marketInfoRecordsSortedByTimestamp(coinCodes: [String], currencyCode: String) -> [MarketInfoRecord] {
         try! dbPool.read { db in
-            try LatestRate
-                    .filter(coinCodes.contains(LatestRate.Columns.coinCode) && LatestRate.Columns.currencyCode == currencyCode)
-                    .order(LatestRate.Columns.timestamp)
+            try MarketInfoRecord
+                    .filter(coinCodes.contains(MarketInfoRecord.Columns.coinCode) && MarketInfoRecord.Columns.currencyCode == currencyCode)
+                    .order(MarketInfoRecord.Columns.timestamp)
                     .fetchAll(db)
         }
     }
 
-    func save(latestRates: [LatestRate]) {
+    func save(marketInfoRecords: [MarketInfoRecord]) {
         _ = try! dbPool.write { db in
-            for rate in latestRates {
+            for rate in marketInfoRecords {
                 try rate.insert(db)
             }
         }
@@ -153,24 +141,6 @@ extension GrdbStorage: IChartPointStorage {
             try ChartPointRecord
                     .filter(ChartPointRecord.Columns.coinCode == key.coinCode && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.chartType.rawValue)
                     .deleteAll(db)
-        }
-    }
-
-}
-
-extension GrdbStorage: IMarketInfoStorage {
-
-    func marketInfo(coinCode: String, currencyCode: String) -> MarketInfoRecord? {
-        try! dbPool.read { db in
-            try MarketInfoRecord
-                    .filter(MarketInfoRecord.Columns.coinCode == coinCode && MarketInfoRecord.Columns.currencyCode == currencyCode)
-                    .fetchOne(db)
-        }
-    }
-
-    func save(marketInfoRecord: MarketInfoRecord) {
-        _ = try! dbPool.write { db in
-            try marketInfoRecord.insert(db)
         }
     }
 

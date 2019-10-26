@@ -3,18 +3,20 @@ import RxSwift
 class ChartInfoSyncManager {
     private let schedulerFactory: ChartPointSchedulerFactory
     private let chartInfoManager: IChartInfoManager
-    private let latestRateSyncManager: ILatestRateSyncManager
+    private let marketInfoSyncManager: IMarketInfoSyncManager
 
     private var subjects = [ChartInfoKey: PublishSubject<ChartInfo>]()
     private var schedulers = [ChartInfoKey: ChartPointScheduler]()
-    private var latestRateDisposables = [ChartInfoKey: Disposable]()
+    private var marketInfoDisposables = [ChartInfoKey: Disposable]()
+
+    private var failedKeys = [ChartInfoKey]()
 
     private let schedulerQueue = DispatchQueue(label: "Schedulers Queue", qos: .background)
 
-    init(schedulerFactory: ChartPointSchedulerFactory, chartInfoManager: IChartInfoManager, latestRateSyncManager: ILatestRateSyncManager) {
+    init(schedulerFactory: ChartPointSchedulerFactory, chartInfoManager: IChartInfoManager, marketInfoSyncManager: IMarketInfoSyncManager) {
         self.schedulerFactory = schedulerFactory
         self.chartInfoManager = chartInfoManager
-        self.latestRateSyncManager = latestRateSyncManager
+        self.marketInfoSyncManager = marketInfoSyncManager
     }
 
     private func subject(key: ChartInfoKey) -> PublishSubject<ChartInfo> {
@@ -35,13 +37,13 @@ class ChartInfoSyncManager {
         let scheduler = schedulerFactory.scheduler(key: key)
         schedulers[key] = scheduler
 
-        let disposable = latestRateSyncManager.latestRateObservable(key: RateKey(coinCode: key.coinCode, currencyCode: key.currencyCode))
+        let disposable = marketInfoSyncManager.marketInfoObservable(key: PairKey(coinCode: key.coinCode, currencyCode: key.currencyCode))
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
-                .subscribe(onNext: { [weak self] latestRate in
-                    self?.chartInfoManager.handleUpdated(latestRate: latestRate, key: key)
+                .subscribe(onNext: { [weak self] marketInfo in
+                    self?.chartInfoManager.handleUpdated(marketInfo: marketInfo, key: key)
                 })
 
-        latestRateDisposables[key] = disposable
+        marketInfoDisposables[key] = disposable
 
         return scheduler
     }
@@ -53,8 +55,8 @@ class ChartInfoSyncManager {
 
         subjects[key] = nil
         schedulers[key] = nil
-        latestRateDisposables[key]?.dispose()
-        latestRateDisposables[key] = nil
+        marketInfoDisposables[key]?.dispose()
+        marketInfoDisposables[key] = nil
     }
 
     private func onSubscribed(key: ChartInfoKey) {
@@ -74,7 +76,11 @@ class ChartInfoSyncManager {
 extension ChartInfoSyncManager: IChartInfoSyncManager {
 
     func chartInfoObservable(key: ChartInfoKey) -> Observable<ChartInfo> {
-        subject(key: key)
+        guard !failedKeys.contains(key) else {
+            return Observable.error(XRatesErrors.ChartInfo.noInfo)
+        }
+
+        return subject(key: key)
                 .do(onSubscribed: { [weak self] in
                     self?.onSubscribed(key: key)
                 }, onDispose: { [weak self] in
@@ -86,12 +92,13 @@ extension ChartInfoSyncManager: IChartInfoSyncManager {
 
 extension ChartInfoSyncManager: IChartInfoManagerDelegate {
 
-    func didUpdate(chartInfo: ChartInfo?, key: ChartInfoKey) {
-        guard let chartInfo = chartInfo else {
-            return
-        }
-
+    func didUpdate(chartInfo: ChartInfo, key: ChartInfoKey) {
         subjects[key]?.onNext(chartInfo)
+    }
+
+    func didFoundNoChartInfo(key: ChartInfoKey) {
+        failedKeys.append(key)
+        subjects[key]?.onError(XRatesErrors.ChartInfo.noInfo)
     }
 
 }

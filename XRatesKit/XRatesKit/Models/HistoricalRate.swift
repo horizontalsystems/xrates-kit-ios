@@ -1,12 +1,12 @@
 import GRDB
 
 class HistoricalRate: Record {
-    let key: RateKey
+    let key: PairKey
     let value: Decimal
     let timestamp: TimeInterval
 
     init(coinCode: String, currencyCode: String, value: Decimal, timestamp: TimeInterval) {
-        self.key = RateKey(coinCode: coinCode, currencyCode: currencyCode)
+        self.key = PairKey(coinCode: coinCode, currencyCode: currencyCode)
         self.value = value
         self.timestamp = timestamp
 
@@ -22,7 +22,7 @@ class HistoricalRate: Record {
     }
 
     required init(row: Row) {
-        key = RateKey(coinCode: row[Columns.coinCode], currencyCode: row[Columns.currencyCode])
+        key = PairKey(coinCode: row[Columns.coinCode], currencyCode: row[Columns.currencyCode])
         value = row[Columns.value]
         timestamp = row[Columns.timestamp]
 
