@@ -56,7 +56,7 @@ class MarketInfoScheduler {
         expirationNotified = false
 
         syncInProgress = false
-        schedule()
+        autoSchedule(minDelay: provider.retryInterval)
     }
 
     private func onSyncError() {
@@ -100,7 +100,7 @@ class MarketInfoScheduler {
         expirationNotified = true
     }
 
-    private func autoSchedule() {
+    private func autoSchedule(minDelay: TimeInterval = 0) {
         var delay: TimeInterval = 0
 
         if let lastSyncTimestamp = provider.lastSyncTimestamp {
@@ -109,7 +109,7 @@ class MarketInfoScheduler {
             delay = max(0, provider.expirationInterval - bufferInterval - diff)
         }
 
-        schedule(delay: delay)
+        schedule(delay: max(minDelay, delay))
     }
 
 }
