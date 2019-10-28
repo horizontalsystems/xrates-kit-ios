@@ -12,11 +12,9 @@ class ChartInfoManager {
     }
 
     private func chartInfo(chartPoints: [ChartPoint], marketInfo: MarketInfo?, key: ChartInfoKey) -> ChartInfo? {
-        guard let lastPoint = chartPoints.last else {
+        guard let firstPoint = chartPoints.first, let lastPoint = chartPoints.last else {
             return nil
         }
-
-        let firstPoint = chartPoints[0]
 
         let currentTimestamp = Date().timeIntervalSince1970
         let lastPointDiffInterval = currentTimestamp - lastPoint.timestamp
@@ -60,14 +58,6 @@ class ChartInfoManager {
         return chartPointRecords.map { $0.chartPoint }
     }
 
-    private func notify(chartInfo: ChartInfo?, key: ChartInfoKey) {
-        if let chartInfo = chartInfo {
-            delegate?.didUpdate(chartInfo: chartInfo, key: key)
-        } else {
-            delegate?.didFoundNoChartInfo(key: key)
-        }
-    }
-
 }
 
 extension ChartInfoManager: IChartInfoManager {
@@ -88,11 +78,17 @@ extension ChartInfoManager: IChartInfoManager {
         storage.deleteChartPointRecords(key: key)
         storage.save(chartPointRecords: records)
 
-        notify(chartInfo: chartInfo(chartPoints: chartPoints, key: key), key: key)
+        if let chartInfo = chartInfo(chartPoints: chartPoints, key: key) {
+            delegate?.didUpdate(chartInfo: chartInfo, key: key)
+        } else {
+            delegate?.didFoundNoChartInfo(key: key)
+        }
     }
 
     func handleUpdated(marketInfo: MarketInfo, key: ChartInfoKey) {
-        notify(chartInfo: chartInfo(chartPoints: storedChartPoints(key: key), marketInfo: marketInfo, key: key), key: key)
+        if let chartInfo = chartInfo(chartPoints: storedChartPoints(key: key), marketInfo: marketInfo, key: key) {
+            delegate?.didUpdate(chartInfo: chartInfo, key: key)
+        }
     }
 
 }
