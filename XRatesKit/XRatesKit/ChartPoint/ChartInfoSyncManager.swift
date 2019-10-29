@@ -5,13 +5,11 @@ class ChartInfoSyncManager {
     private let chartInfoManager: IChartInfoManager
     private let marketInfoSyncManager: IMarketInfoSyncManager
 
-    private var subjects = [ChartInfoKey: PublishSubject<ChartInfo>]()
-    private var schedulers = [ChartInfoKey: ChartPointScheduler]()
-    private var marketInfoDisposables = [ChartInfoKey: Disposable]()
+    private var subjects = ThreadSafeDictionary<ChartInfoKey, PublishSubject<ChartInfo>>()
+    private var schedulers = ThreadSafeDictionary<ChartInfoKey, ChartPointScheduler>()
+    private var marketInfoDisposables = ThreadSafeDictionary<ChartInfoKey, Disposable>()
 
-    private var failedKeys = [ChartInfoKey]()
-
-    private let schedulerQueue = DispatchQueue(label: "Schedulers Queue", qos: .background)
+    private var failedKeys = ThreadSafeArray<ChartInfoKey>()
 
     init(schedulerFactory: ChartPointSchedulerFactory, chartInfoManager: IChartInfoManager, marketInfoSyncManager: IMarketInfoSyncManager) {
         self.schedulerFactory = schedulerFactory
@@ -60,15 +58,11 @@ class ChartInfoSyncManager {
     }
 
     private func onSubscribed(key: ChartInfoKey) {
-        schedulerQueue.async {
-            self.scheduler(key: key).schedule()
-        }
+        scheduler(key: key).schedule()
     }
 
     private func onDisposed(key: ChartInfoKey) {
-        schedulerQueue.async {
-            self.cleanUp(key: key)
-        }
+        cleanUp(key: key)
     }
 
 }

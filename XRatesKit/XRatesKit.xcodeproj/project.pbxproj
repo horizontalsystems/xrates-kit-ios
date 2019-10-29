@@ -10,6 +10,7 @@
 		11B3500F3471FFB9EB3D2A5C /* MarketInfoSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B358AA60E3FB21DF85385D /* MarketInfoSyncManager.swift */; };
 		11B3504C8719D8945110E449 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B3528366BAE735FEAD5CB2 /* Protocols.swift */; };
 		11B3518913F33DF80CFDCDEB /* ChartInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B3567E958C2B106E74581A /* ChartInfo.swift */; };
+		11B35233B900882894A6F979 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B35EC2FA599D4D7641E1CF /* Utils.swift */; };
 		11B352C11E0D6812A7975130 /* MarketInfoScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B359ADE25089AA6FE0DE1F /* MarketInfoScheduler.swift */; };
 		11B35323DBDDE63EBEDCE15E /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B350E65863F0C372568BA3 /* NetworkManager.swift */; };
 		11B356BBA6ABAE506874FCB4 /* XRatesKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B35471CEEEB5F94EC054C1 /* XRatesKit.swift */; };
@@ -74,6 +75,7 @@
 		11B35ABDC998B00472E4DD54 /* ReachabilityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReachabilityManager.swift; sourceTree = "<group>"; };
 		11B35B3320C00CFFBA79D1CE /* ChartInfoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartInfoManager.swift; sourceTree = "<group>"; };
 		11B35D0C465A0F12BB0FDF44 /* ChartPointSchedulerProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartPointSchedulerProvider.swift; sourceTree = "<group>"; };
+		11B35EC2FA599D4D7641E1CF /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		11B35F9BC30DA1537D9BAA35 /* ChartPointSchedulerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartPointSchedulerFactory.swift; sourceTree = "<group>"; };
 		1545D7B3EB910B2451D8DF6F /* Pods_XRatesKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_XRatesKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E71D5D2994ECFED9050A97F /* Pods-XRatesKit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XRatesKit.debug.xcconfig"; path = "Target Support Files/Pods-XRatesKit/Pods-XRatesKit.debug.xcconfig"; sourceTree = "<group>"; };
@@ -151,6 +153,7 @@
 				11B3594F3568B6D06564A16E /* Logger.swift */,
 				58AAAA7A2F003145DE644DB5 /* XRatesKitErrors.swift */,
 				11B35ABDC998B00472E4DD54 /* ReachabilityManager.swift */,
+				11B35EC2FA599D4D7641E1CF /* Utils.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -509,6 +512,7 @@
 				11B3579E70DE7167B7A45465 /* ChartPointSchedulerProvider.swift in Sources */,
 				11B35DA72ABEFDE6DAED4309 /* ChartPointScheduler.swift in Sources */,
 				11B3518913F33DF80CFDCDEB /* ChartInfo.swift in Sources */,
+				11B35233B900882894A6F979 /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
