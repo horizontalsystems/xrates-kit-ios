@@ -19,7 +19,7 @@ class MarketInfoScheduler {
         self.logger = logger
 
         reachabilityManager.reachabilityObservable
-                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
                 .subscribe(onNext: { [weak self] reachable in
                     if reachable {
                         self?.autoSchedule()
@@ -119,7 +119,7 @@ extension MarketInfoScheduler: IMarketInfoScheduler {
     func schedule() {
         logger?.debug("MARKET INFO: Auto schedule")
 
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .utility).async {
             self.autoSchedule()
         }
     }
@@ -127,7 +127,7 @@ extension MarketInfoScheduler: IMarketInfoScheduler {
     func forceSchedule() {
         logger?.debug("MARKET INFO: Force schedule")
 
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .userInitiated).async {
             self.schedule(delay: 0)
         }
     }

@@ -16,7 +16,7 @@ class ChartPointScheduler {
         self.logger = logger
 
         reachabilityManager.reachabilityObservable
-                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
                 .subscribe(onNext: { [weak self] reachable in
                     if reachable {
                         self?.autoSchedule()
@@ -100,7 +100,7 @@ extension ChartPointScheduler: IChartPointsScheduler {
     func schedule() {
         logger?.debug("CHART: \(provider.logKey): Schedule")
 
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .utility).async {
             self.autoSchedule()
         }
     }

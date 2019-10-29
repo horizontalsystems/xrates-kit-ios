@@ -6,8 +6,8 @@ class MarketInfoSyncManager {
     private var coinCodes = [String]()
     private var currencyCode: String
 
-    private var subjects = [PairKey: PublishSubject<MarketInfo>]()
-    private var currencySubjects = [String: PublishSubject<[String: MarketInfo]>]()
+    private var subjects = ThreadSafeDictionary<PairKey, PublishSubject<MarketInfo>>()
+    private var currencySubjects = ThreadSafeDictionary<String, PublishSubject<[String: MarketInfo]>>()
     private var scheduler: IMarketInfoScheduler?
 
     init(currencyCode: String, schedulerFactory: MarketInfoSchedulerFactory) {
