@@ -11,7 +11,7 @@ class MarketInfoRecord: Record {
 
     init(coinCode: String, currencyCode: String, response: ResponseMarketInfo) {
         key = PairKey(coinCode: coinCode, currencyCode: currencyCode)
-        timestamp = response.timestamp
+        timestamp = Date().timeIntervalSince1970
         rate = response.rate
         diff = response.diff
         volume = response.volume
