@@ -11,8 +11,8 @@ public enum ChartType: Int, CaseIterable {
         let multiplier: TimeInterval
 
         switch resource {
-        case "histominute": multiplier = 60 
-        case "histohour": multiplier = 60 * 60 
+        case "histominute": multiplier = 60
+        case "histohour": multiplier = 60 * 60
         case "histoday": multiplier = 24 * 60 * 60
         default: multiplier = 60
         }
@@ -21,7 +21,7 @@ public enum ChartType: Int, CaseIterable {
     }
 
     var rangeInterval: TimeInterval {
-        expirationInterval * TimeInterval(interval * pointCount)
+        expirationInterval * TimeInterval(pointCount)
     }
 
     var interval: Int {

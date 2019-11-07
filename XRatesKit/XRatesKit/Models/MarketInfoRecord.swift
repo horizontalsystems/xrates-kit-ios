@@ -4,6 +4,7 @@ class MarketInfoRecord: Record {
     let key: PairKey
     let timestamp: TimeInterval
     let rate: Decimal
+    let open24Hour: Decimal
     let diff: Decimal
     let volume: Decimal
     let marketCap: Decimal
@@ -13,6 +14,7 @@ class MarketInfoRecord: Record {
         key = PairKey(coinCode: coinCode, currencyCode: currencyCode)
         timestamp = Date().timeIntervalSince1970
         rate = response.rate
+        open24Hour = response.open24Hour
         diff = response.diff
         volume = response.volume
         marketCap = response.marketCap
@@ -26,13 +28,14 @@ class MarketInfoRecord: Record {
     }
 
     enum Columns: String, ColumnExpression {
-        case coinCode, currencyCode, timestamp, rate, diff, volume, marketCap, supply
+        case coinCode, currencyCode, timestamp, rate, open24Hour, diff, volume, marketCap, supply
     }
 
     required init(row: Row) {
         key = PairKey(coinCode: row[Columns.coinCode], currencyCode: row[Columns.currencyCode])
         timestamp = row[Columns.timestamp]
         rate = row[Columns.rate]
+        open24Hour = row[Columns.open24Hour]
         diff = row[Columns.diff]
         volume = row[Columns.volume]
         marketCap = row[Columns.marketCap]
@@ -46,6 +49,7 @@ class MarketInfoRecord: Record {
         container[Columns.currencyCode] = key.currencyCode
         container[Columns.timestamp] = timestamp
         container[Columns.rate] = rate
+        container[Columns.open24Hour] = open24Hour
         container[Columns.diff] = diff
         container[Columns.volume] = volume
         container[Columns.marketCap] = marketCap
@@ -57,7 +61,7 @@ class MarketInfoRecord: Record {
 extension MarketInfoRecord: CustomStringConvertible {
 
     var description: String {
-        "MarketInfo [coinCode: \(key.coinCode); currencyCode: \(key.currencyCode); timestamp: \(timestamp); rate: \(rate); diff: \(diff)]"
+        "MarketInfo [coinCode: \(key.coinCode); currencyCode: \(key.currencyCode); timestamp: \(timestamp); rate: \(rate); open24Hour: \(open24Hour); diff: \(diff)]"
     }
 
 }
