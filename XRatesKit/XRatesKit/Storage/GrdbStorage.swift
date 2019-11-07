@@ -23,6 +23,7 @@ class GrdbStorage {
                 t.column(MarketInfoRecord.Columns.currencyCode.name, .text).notNull()
                 t.column(MarketInfoRecord.Columns.timestamp.name, .double).notNull()
                 t.column(MarketInfoRecord.Columns.rate.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.open24Hour.name, .text).notNull()
                 t.column(MarketInfoRecord.Columns.diff.name, .text).notNull()
                 t.column(MarketInfoRecord.Columns.volume.name, .text).notNull()
                 t.column(MarketInfoRecord.Columns.marketCap.name, .text).notNull()

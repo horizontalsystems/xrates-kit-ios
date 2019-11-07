@@ -3,6 +3,7 @@ import ObjectMapper
 struct ResponseMarketInfo: ImmutableMappable {
     let timestamp: TimeInterval
     let rate: Decimal
+    let open24Hour: Decimal
     let diff: Decimal
     let volume: Decimal
     let marketCap: Decimal
@@ -11,6 +12,7 @@ struct ResponseMarketInfo: ImmutableMappable {
     init(map: Map) throws {
         timestamp = try map.value("LASTUPDATE")
         rate = try map.value("PRICE", using: ResponseMarketInfo.decimalTransform)
+        open24Hour = try map.value("OPEN24HOUR", using: ResponseMarketInfo.decimalTransform)
         diff = try map.value("CHANGEPCT24HOUR", using: ResponseMarketInfo.decimalTransform)
         volume = try map.value("VOLUME24HOURTO", using: ResponseMarketInfo.decimalTransform)
         marketCap = try map.value("MKTCAP", using: ResponseMarketInfo.decimalTransform)

@@ -28,7 +28,7 @@ class ChartInfoManager {
             )
         }
 
-        guard let marketInfo = marketInfo, marketInfo.timestamp > lastPoint.timestamp else {
+        guard let marketInfo = marketInfo else {
             // non-expired chart info without market info
             return ChartInfo(
                     points: chartPoints,
@@ -37,11 +37,22 @@ class ChartInfoManager {
             )
         }
 
-        let chartPointsWithMarketInfo = chartPoints + [ChartPoint(timestamp: marketInfo.timestamp, value: marketInfo.rate)]
+        var chartPoints = chartPoints
+        var firstTimestamp = firstPoint.timestamp
+
+        chartPoints.removeAll { $0.timestamp > marketInfo.timestamp  }
+
+        if key.chartType == .day {
+            firstTimestamp = marketInfo.timestamp - key.chartType.rangeInterval
+            chartPoints.removeAll { $0.timestamp < firstTimestamp }
+            chartPoints = [ChartPoint(timestamp: firstTimestamp, value: marketInfo.open24hour)] + chartPoints
+        }
+
+        chartPoints = chartPoints + [ChartPoint(timestamp: marketInfo.timestamp, value: marketInfo.rate)]
 
         return ChartInfo(
-                points: chartPointsWithMarketInfo,
-                startTimestamp: firstPoint.timestamp,
+                points: chartPoints,
+                startTimestamp: firstTimestamp,
                 endTimestamp: marketInfo.timestamp
         )
     }
