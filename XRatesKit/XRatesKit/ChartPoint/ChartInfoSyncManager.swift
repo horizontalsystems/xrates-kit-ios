@@ -5,11 +5,13 @@ class ChartInfoSyncManager {
     private let chartInfoManager: IChartInfoManager
     private let marketInfoSyncManager: IMarketInfoSyncManager
 
-    private var subjects = ThreadSafeDictionary<ChartInfoKey, PublishSubject<ChartInfo>>()
-    private var schedulers = ThreadSafeDictionary<ChartInfoKey, ChartPointScheduler>()
-    private var marketInfoDisposables = ThreadSafeDictionary<ChartInfoKey, Disposable>()
+    private var subjects = [ChartInfoKey: PublishSubject<ChartInfo>]()
+    private var schedulers = [ChartInfoKey: ChartPointScheduler]()
+    private var marketInfoDisposables = [ChartInfoKey: Disposable]()
 
     private var failedKeys = ThreadSafeArray<ChartInfoKey>()
+
+    private let queue = DispatchQueue(label: "io.horizontalsystems.x_rates_kit.chart_info_sync_manager", qos: .userInitiated)
 
     init(schedulerFactory: ChartPointSchedulerFactory, chartInfoManager: IChartInfoManager, marketInfoSyncManager: IMarketInfoSyncManager) {
         self.schedulerFactory = schedulerFactory
@@ -58,11 +60,15 @@ class ChartInfoSyncManager {
     }
 
     private func onSubscribed(key: ChartInfoKey) {
-        scheduler(key: key).schedule()
+        queue.async {
+            self.scheduler(key: key).schedule()
+        }
     }
 
     private func onDisposed(key: ChartInfoKey) {
-        cleanUp(key: key)
+        queue.async {
+            self.cleanUp(key: key)
+        }
     }
 
 }
@@ -70,16 +76,18 @@ class ChartInfoSyncManager {
 extension ChartInfoSyncManager: IChartInfoSyncManager {
 
     func chartInfoObservable(key: ChartInfoKey) -> Observable<ChartInfo> {
-        guard !failedKeys.contains(key) else {
-            return Observable.error(XRatesErrors.ChartInfo.noInfo)
-        }
+        queue.sync {
+            guard !failedKeys.contains(key) else {
+                return Observable.error(XRatesErrors.ChartInfo.noInfo)
+            }
 
-        return subject(key: key)
-                .do(onSubscribed: { [weak self] in
-                    self?.onSubscribed(key: key)
-                }, onDispose: { [weak self] in
-                    self?.onDisposed(key: key)
-                })
+            return subject(key: key)
+                    .do(onSubscribed: { [weak self] in
+                        self?.onSubscribed(key: key)
+                    }, onDispose: { [weak self] in
+                        self?.onDisposed(key: key)
+                    })
+        }
     }
 
 }
@@ -87,12 +95,16 @@ extension ChartInfoSyncManager: IChartInfoSyncManager {
 extension ChartInfoSyncManager: IChartInfoManagerDelegate {
 
     func didUpdate(chartInfo: ChartInfo, key: ChartInfoKey) {
-        subjects[key]?.onNext(chartInfo)
+        queue.async {
+            self.subjects[key]?.onNext(chartInfo)
+        }
     }
 
     func didFoundNoChartInfo(key: ChartInfoKey) {
-        failedKeys.append(key)
-        subjects[key]?.onError(XRatesErrors.ChartInfo.noInfo)
+        queue.async {
+            self.failedKeys.append(key)
+            self.subjects[key]?.onError(XRatesErrors.ChartInfo.noInfo)
+        }
     }
 
 }
