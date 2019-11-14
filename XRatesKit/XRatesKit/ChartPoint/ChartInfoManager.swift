@@ -96,6 +96,10 @@ extension ChartInfoManager: IChartInfoManager {
         }
     }
 
+    func handleNoChartPoints(key: ChartInfoKey) {
+        delegate?.didFoundNoChartInfo(key: key)
+    }
+
     func handleUpdated(marketInfo: MarketInfo, key: ChartInfoKey) {
         if let chartInfo = chartInfo(chartPoints: storedChartPoints(key: key), marketInfo: marketInfo, key: key) {
             delegate?.didUpdate(chartInfo: chartInfo, key: key)

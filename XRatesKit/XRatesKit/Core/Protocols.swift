@@ -66,6 +66,7 @@ protocol IChartInfoManager {
     func lastSyncTimestamp(key: ChartInfoKey) -> TimeInterval?
     func chartInfo(key: ChartInfoKey) -> ChartInfo?
     func handleUpdated(chartPoints: [ChartPoint], key: ChartInfoKey)
+    func handleNoChartPoints(key: ChartInfoKey)
     func handleUpdated(marketInfo: MarketInfo, key: ChartInfoKey)
 }
 

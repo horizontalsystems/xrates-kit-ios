@@ -18,6 +18,10 @@ class ChartPointSchedulerProvider {
         manager.handleUpdated(chartPoints: chartPoints, key: key)
     }
 
+    private func handleNoChartPoints() {
+        manager.handleNoChartPoints(key: key)
+    }
+
 }
 
 extension ChartPointSchedulerProvider: IChartPointSchedulerProvider {
@@ -38,6 +42,10 @@ extension ChartPointSchedulerProvider: IChartPointSchedulerProvider {
         provider.chartPointsSingle(key: key)
                 .do(onSuccess: { [weak self] chartPoints in
                     self?.handleUpdated(chartPoints: chartPoints)
+                }, onError: { [weak self] error in
+                    if let error = error as? CryptoCompareError, error == .noDataForSymbol {
+                        self?.handleNoChartPoints()
+                    }
                 })
                 .map { _ in () }
     }

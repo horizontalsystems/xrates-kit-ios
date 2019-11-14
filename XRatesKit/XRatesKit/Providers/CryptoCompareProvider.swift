@@ -1,6 +1,8 @@
 import RxSwift
+import RxSwiftExt
 
 class CryptoCompareProvider {
+
     enum HistoricalType: String {
         case minute = "histominute"
         case hour = "histohour"
@@ -31,6 +33,17 @@ class CryptoCompareProvider {
         "\(baseUrl)/data/v2/\(key.chartType.resource)?fsym=\(key.coinCode)&tsym=\(key.currencyCode)&limit=\(key.chartType.pointCount)&aggregate=\(key.chartType.interval)"
     }
 
+    private func singleWithRetry<T>(single: Single<T>) -> Single<T> {
+        single.asObservable()
+                .retry(.exponentialDelayed(maxCount: 3, initial: 1, multiplier: 1), scheduler: ConcurrentDispatchQueueScheduler(qos: .background)) { error in
+                    if let error = error as? CryptoCompareError, error == .rateLimitExceeded {
+                        return true
+                    }
+                    return false
+                }
+                .asSingle()
+    }
+
 }
 
 extension CryptoCompareProvider: IMarketInfoProvider {
@@ -58,26 +71,15 @@ extension CryptoCompareProvider: IMarketInfoProvider {
 extension CryptoCompareProvider: IHistoricalRateProvider {
 
     func getHistoricalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
-        let hourUrlString = historicalRateUrl(coinCode: coinCode, currencyCode: currencyCode, historicalType: .hour, timestamp: timestamp)
-        let minuteUrlString = historicalRateUrl(coinCode: coinCode, currencyCode: currencyCode, historicalType: .minute, timestamp: timestamp)
+        let minuteThreshold: TimeInterval = 60 * 60 * 24 * 7
 
-        let minuteSingle: Single<CryptoCompareHistoricalRateResponse> = networkManager.single(urlString: minuteUrlString, httpMethod: .get, timoutInterval: timeoutInterval)
-        let hourSingle: Single<CryptoCompareHistoricalRateResponse> = networkManager.single(urlString: hourUrlString, httpMethod: .get, timoutInterval: timeoutInterval)
+        let historicalType: HistoricalType = timestamp > Date().timeIntervalSince1970 - minuteThreshold ? .minute : .hour
 
-        return minuteSingle.flatMap { response -> Single<Decimal> in
-            guard let rateValue = response.rateValue else {
-                return Single.error(XRatesErrors.HistoricalRate.noValueForMinute)
-            }
-            return Single.just(rateValue)
-        }.catchError { _ in
-            hourSingle.flatMap { response -> Single<Decimal> in
-                guard let rateValue = response.rateValue else {
-                    return Single.error(XRatesErrors.HistoricalRate.noValueForHour)
-                }
-                return Single.just(rateValue)
-            }
-        }
+        let urlString = historicalRateUrl(coinCode: coinCode, currencyCode: currencyCode, historicalType: historicalType, timestamp: timestamp)
+        let single: Single<CryptoCompareHistoricalRateResponse> = networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: timeoutInterval)
 
+        return singleWithRetry(single: single)
+                .map { $0.rateValue }
     }
 
 }
@@ -87,10 +89,12 @@ extension CryptoCompareProvider: IChartPointProvider {
     func chartPointsSingle(key: ChartInfoKey) -> Single<[ChartPoint]> {
         let urlString = chartStatsUrl(key: key)
 
-        return networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: timeoutInterval)
+        let single: Single<[ChartPoint]> = networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: timeoutInterval)
                 .map { (response: CryptoCompareChartStatsResponse) -> [ChartPoint] in
                     response.chartPoints
                 }
+
+        return singleWithRetry(single: single)
     }
 
 }

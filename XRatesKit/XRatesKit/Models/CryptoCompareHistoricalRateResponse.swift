@@ -1,22 +1,24 @@
 import ObjectMapper
 
-struct CryptoCompareHistoricalRateResponse: ImmutableMappable {
-    let rateValue: Decimal?
+class CryptoCompareHistoricalRateResponse: ImmutableMappable {
+    let rateValue: Decimal
 
-    init(map: Map) throws {
-        let rateDataList: [[String: Any]] = try map.value("Data.Data") 
-        guard rateDataList.count > 0 else {
-            rateValue = nil
-            return
-        }
-        var rate: Decimal = 0
-        for rateData in rateDataList {
-            if let open = rateData["open"] as? Double, let close = rateData["close"] as? Double {
-                rate += NSNumber(value: open + close).decimalValue
-            }
+    required init(map: Map) throws {
+        let data = try CryptoCompareResponse.parseData(map: map)
+
+        guard let rateDataList = data["Data"] as? [[String: Any]] else {
+            throw CryptoCompareError.invalidData
         }
 
-        self.rateValue = rate / (Decimal(rateDataList.count) * 2)
+        guard let lastRateData = rateDataList.last else {
+            throw CryptoCompareError.invalidData
+        }
+
+        guard let value = lastRateData["close"] as? Double else {
+            throw CryptoCompareError.invalidData
+        }
+
+        rateValue = NSNumber(value: value).decimalValue
     }
 
 }
