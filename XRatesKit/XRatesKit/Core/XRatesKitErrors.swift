@@ -1,10 +1,5 @@
 public class XRatesErrors {
 
-    public enum HistoricalRate: Error {
-        case noValueForMinute
-        case noValueForHour
-    }
-
     public enum MarketInfo: Error {
         case invalidResponse
     }

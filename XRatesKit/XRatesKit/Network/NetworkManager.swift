@@ -37,15 +37,15 @@ class NetworkManager {
         })
     }
 
-    private func single<T>(forRequest request: URLRequestConvertible, mapper: @escaping (Any) -> T?) -> Single<T> {
+    private func single<T>(forRequest request: URLRequestConvertible, mapper: @escaping (Any) throws -> T) -> Single<T> {
         single(forRequest: request)
                 .flatMap { dataResponse -> Single<T> in
                     switch dataResponse.result {
                     case .success(let result):
-                        if let value = mapper(result) {
-                            return Single.just(value)
-                        } else {
-                            return Single.error(NetworkError.mappingError)
+                        do {
+                            return Single.just(try mapper(result))
+                        } catch {
+                            return Single.error(error)
                         }
                     case .failure:
                         if let response = dataResponse.response {
@@ -62,7 +62,7 @@ class NetworkManager {
 
 extension NetworkManager {
 
-    func single<T>(urlString: String, httpMethod: HTTPMethod, basicAuth: (user: String, password: String)? = nil, parameters: [String: Any]?, timoutInterval: TimeInterval = 30, mapper: @escaping (Any) -> T?) -> Single<T> {
+    func single<T>(urlString: String, httpMethod: HTTPMethod, basicAuth: (user: String, password: String)? = nil, parameters: [String: Any]?, timoutInterval: TimeInterval = 30, mapper: @escaping (Any) throws -> T) -> Single<T> {
         guard let url = URL(string: urlString) else {
             return Single.error(NetworkError.invalidUrl)
         }
@@ -85,11 +85,11 @@ extension NetworkManager {
     }
 
     func single<T: ImmutableMappable>(urlString: String, httpMethod: HTTPMethod, parameters: [String: Any]? = nil, timoutInterval: TimeInterval = 30) -> Single<T> {
-        single(urlString: urlString, httpMethod: httpMethod, parameters: parameters, timoutInterval: timoutInterval) { response -> T? in
-            if let jsonObject = response as? [String: Any], let object = try? T(JSONObject: jsonObject) {
-                return object
+        single(urlString: urlString, httpMethod: httpMethod, parameters: parameters, timoutInterval: timoutInterval) { response throws -> T in
+            guard let jsonObject = response as? [String: Any] else {
+                throw NetworkError.mappingError
             }
-            return nil
+            return try T(JSONObject: jsonObject)
         }
     }
 
@@ -109,7 +109,7 @@ extension NetworkManager {
         }
 
         func asURLRequest() throws -> URLRequest {
-            return try encoding.encode(urlRequest, with: parameters)
+            try encoding.encode(urlRequest, with: parameters)
         }
 
     }

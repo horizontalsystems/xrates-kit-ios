@@ -19,6 +19,7 @@ Pod::Spec.new do |spec|
   spec.swift_version = '5'
 
   spec.dependency 'RxSwift', '~> 5.0'
+  spec.dependency 'RxSwiftExt', '~> 5'
   spec.dependency 'Alamofire', '~> 4.0'
   spec.dependency 'GRDB.swift', '~> 4.0'
   spec.dependency 'ObjectMapper', '~> 3.5'
