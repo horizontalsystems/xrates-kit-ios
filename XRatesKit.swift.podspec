@@ -1,26 +1,25 @@
-Pod::Spec.new do |spec|
-  spec.name = 'XRatesKit.swift'
-  spec.module_name = 'XRatesKit'
-  spec.version = '0.3'
-  spec.summary = 'Kit provide latest rates for coins, chart data and historical data for different coins and currencies'
-  spec.description = <<-DESC
-                       Kit provide latest rates for coins, chart data and historical data for different coins and currencies uses different providers.
-                       ```
-                    DESC
-  spec.homepage = 'https://github.com/horizontalsystems/xrates-kit-ios'
-  spec.license = { :type => 'Apache 2.0', :file => 'LICENSE' }
-  spec.author = { 'Horizontal Systems' => 'hsdao@protonmail.ch' }
-  spec.social_media_url = 'http://horizontalsystems.io/'
+Pod::Spec.new do |s|
+  s.name             = 'XRatesKit.swift'
+  s.module_name      = 'XRatesKit'
+  s.version          = '0.4'
+  s.summary          = 'Kit provides latest rates for coins, chart data and historical data for different coins and currencies.'
 
-  spec.requires_arc = true
-  spec.source = { git: 'https://github.com/horizontalsystems/xrates-kit-ios', tag: "#{spec.version}" }
-  spec.source_files = 'XRatesKit/XRatesKit/**/*.{h,m,swift}'
-  spec.ios.deployment_target = '11.0'
-  spec.swift_version = '5'
+  s.homepage         = 'https://github.com/horizontalsystems/xrates-kit-ios'
+  s.license          = { :type => 'MIT', :file => 'LICENSE' }
+  s.author           = { 'Horizontal Systems' => 'hsdao@protonmail.ch' }
+  s.source           = { git: 'https://github.com/horizontalsystems/xrates-kit-ios.git', tag: "#{s.version}" }
+  s.social_media_url = 'http://horizontalsystems.io/'
 
-  spec.dependency 'RxSwift', '~> 5.0'
-  spec.dependency 'RxSwiftExt', '~> 5'
-  spec.dependency 'Alamofire', '~> 4.0'
-  spec.dependency 'GRDB.swift', '~> 4.0'
-  spec.dependency 'ObjectMapper', '~> 3.5'
+  s.ios.deployment_target = '11.0'
+  s.swift_version = '5'
+
+  s.source_files = 'XRatesKit/Classes/**/*'
+
+  s.requires_arc = true
+
+  s.dependency 'Alamofire', '~> 4.0'
+  s.dependency 'RxSwift', '~> 5.0'
+  s.dependency 'RxSwiftExt', '~> 5'
+  s.dependency 'GRDB.swift', '~> 4.0'
+  s.dependency 'ObjectMapper', '~> 3.5'
 end

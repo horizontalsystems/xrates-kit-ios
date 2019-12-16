@@ -1,0 +1,12 @@
+platform :ios, '11'
+use_modular_headers!
+
+target 'XRatesKitExample' do
+  pod 'XRatesKit.swift', :path => '../'
+
+  pod 'SnapKit'
+end
+
+target 'XRatesKitTests' do
+  pod 'XRatesKit.swift', :path => '../'
+end
