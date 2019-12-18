@@ -43,7 +43,11 @@ extension XRatesKit {
         marketInfoSyncManager.marketInfosObservable(currencyCode: currencyCode)
     }
 
-    public func historicalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
+    public func historicalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Decimal? {
+        historicalRateManager.historicalRate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)
+    }
+
+    public func historicalRateSingle(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
         historicalRateManager.historicalRateSingle(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)
     }
 
@@ -59,7 +63,7 @@ extension XRatesKit {
 
 extension XRatesKit {
 
-    public static func instance(currencyCode: String, marketInfoExpirationInterval: TimeInterval = 5 * 60, retryInterval: TimeInterval = 10, minLogLevel: Logger.Level = .error) -> XRatesKit {
+    public static func instance(currencyCode: String, marketInfoExpirationInterval: TimeInterval = 5 * 60, retryInterval: TimeInterval = 30, minLogLevel: Logger.Level = .error) -> XRatesKit {
         let logger = Logger(minLogLevel: minLogLevel)
 
         let reachabilityManager = ReachabilityManager()

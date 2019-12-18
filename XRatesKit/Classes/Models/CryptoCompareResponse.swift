@@ -1,10 +1,11 @@
 import ObjectMapper
 
 class CryptoCompareResponse {
-//    let data: [String: Any]
 
-    static func parseData(map: Map) throws -> [String: Any] {
-        let type = try map.value("Type") as Int
+    static func validate(map: Map) throws {
+        guard let type = try? map.value("Type") as Int else {
+            return
+        }
 
         // rate limit exceeded
         if type == 99 {
@@ -15,12 +16,6 @@ class CryptoCompareResponse {
         if type == 2 {
             throw CryptoCompareError.noDataForSymbol
         }
-
-        guard type == 100 else {
-            throw CryptoCompareError.unknownType
-        }
-
-        return try map.value("Data")
     }
 
 }

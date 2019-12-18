@@ -5,6 +5,7 @@ target 'XRatesKitExample' do
   pod 'XRatesKit.swift', :path => '../'
 
   pod 'SnapKit'
+  pod 'Chart.swift'
 end
 
 target 'XRatesKitTests' do
