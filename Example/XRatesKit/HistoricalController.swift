@@ -69,7 +69,7 @@ class HistoricalController: UIViewController {
         xRatesKit.historicalRateSingle(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)
                 .observeOn(MainScheduler.instance)
                 .subscribe(onSuccess: { [weak self] value in
-                    self?.show(rate: value, date: Date(timeIntervalSince1970: timestamp))
+                    self?.show(rate: value, timestamp: timestamp)
                 }, onError: { [weak self] error in
                     self?.rateLabel.text = "Fetch error: \(error)"
                 })
@@ -77,16 +77,15 @@ class HistoricalController: UIViewController {
     }
 
     private func showStoredRate() {
-        let date = datePicker.date
-        let timestamp = timestampWithoutSeconds(date: date)
+        let timestamp = timestampWithoutSeconds(date: datePicker.date)
         let storedRate = xRatesKit.historicalRate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)
 
-        show(rate: storedRate, date: date)
+        show(rate: storedRate, timestamp: timestamp)
     }
 
-    private func show(rate: Decimal?, date: Date) {
+    private func show(rate: Decimal?, timestamp: TimeInterval) {
         let rateText = rate.flatMap { HistoricalController.rateFormatter.string(from: $0 as NSNumber) } ?? "not fetched yet"
-        let dateText = HistoricalController.dateFormatter.string(from: date)
+        let dateText = HistoricalController.dateFormatter.string(from: Date(timeIntervalSince1970: timestamp))
         rateLabel.text = "Rate for \(dateText)\n\n\(rateText)"
     }
 
