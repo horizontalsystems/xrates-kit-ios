@@ -63,7 +63,7 @@ extension XRatesKit {
 
 extension XRatesKit {
 
-    public static func instance(currencyCode: String, marketInfoExpirationInterval: TimeInterval = 5 * 60, retryInterval: TimeInterval = 10, minLogLevel: Logger.Level = .error) -> XRatesKit {
+    public static func instance(currencyCode: String, marketInfoExpirationInterval: TimeInterval = 5 * 60, retryInterval: TimeInterval = 30, minLogLevel: Logger.Level = .error) -> XRatesKit {
         let logger = Logger(minLogLevel: minLogLevel)
 
         let reachabilityManager = ReachabilityManager()

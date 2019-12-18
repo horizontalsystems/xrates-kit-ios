@@ -44,8 +44,8 @@ class MarketInfoScheduler {
         provider.syncSingle
                 .subscribe(onSuccess: { [weak self] in
                     self?.onSyncSuccess()
-                }, onError: { [weak self] _ in
-                    self?.onSyncError()
+                }, onError: { [weak self] error in
+                    self?.onSyncError(error: error)
                 })
                 .disposed(by: disposeBag)
     }
@@ -59,8 +59,8 @@ class MarketInfoScheduler {
         autoSchedule(minDelay: provider.retryInterval)
     }
 
-    private func onSyncError() {
-        logger?.debug("MARKET INFO: Sync error")
+    private func onSyncError(error: Error) {
+        logger?.error("MARKET INFO: Sync error: \(error)")
 
         syncInProgress = false
         schedule(delay: provider.retryInterval)

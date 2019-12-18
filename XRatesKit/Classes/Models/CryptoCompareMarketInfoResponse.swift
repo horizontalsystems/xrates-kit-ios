@@ -33,24 +33,26 @@ struct CryptoCompareMarketInfoResponse: ImmutableMappable {
     let values: [String: [String: ResponseMarketInfo]]
 
     init(map: Map) throws {
+        try CryptoCompareResponse.validate(map: map)
+
         var values = [String: [String: ResponseMarketInfo]]()
 
         let raw = map.JSON
 
         guard let rawDictionary = raw["RAW"] as? [String: Any] else {
-            throw XRatesErrors.MarketInfo.invalidResponse
+            throw CryptoCompareError.invalidData
         }
 
         for (coinCode, coinCodeValue) in rawDictionary {
             guard let coinCodeDictionary = coinCodeValue as? [String: Any] else {
-                throw XRatesErrors.MarketInfo.invalidResponse
+                throw CryptoCompareError.invalidData
             }
 
             var coinCodeValues = [String: ResponseMarketInfo]()
 
             for (currencyCode, currencyCodeValue) in coinCodeDictionary {
                 guard let currencyCodeDictionary = currencyCodeValue as? [String: Any] else {
-                    throw XRatesErrors.MarketInfo.invalidResponse
+                    throw CryptoCompareError.invalidData
                 }
 
                 coinCodeValues[currencyCode] = ResponseMarketInfo(JSON: currencyCodeDictionary)

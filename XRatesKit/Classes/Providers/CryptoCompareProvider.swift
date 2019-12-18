@@ -35,7 +35,7 @@ class CryptoCompareProvider {
 
     private func singleWithRetry<T>(single: Single<T>) -> Single<T> {
         single.asObservable()
-                .retry(.exponentialDelayed(maxCount: 3, initial: 1, multiplier: 1), scheduler: ConcurrentDispatchQueueScheduler(qos: .background)) { error in
+                .retry(.exponentialDelayed(maxCount: 3, initial: 3, multiplier: 1), scheduler: ConcurrentDispatchQueueScheduler(qos: .background)) { error in
                     if let error = error as? CryptoCompareError, error == .rateLimitExceeded {
                         return true
                     }
@@ -51,7 +51,7 @@ extension CryptoCompareProvider: IMarketInfoProvider {
     func getMarketInfoRecords(coinCodes: [String], currencyCode: String) -> Single<[MarketInfoRecord]> {
         let urlString = marketInfoUrl(coinCodes: coinCodes, currencyCode: currencyCode)
 
-        return networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: timeoutInterval)
+        let single: Single<[MarketInfoRecord]> = networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: timeoutInterval)
                     .map { (response: CryptoCompareMarketInfoResponse) -> [MarketInfoRecord] in
                         var records = [MarketInfoRecord]()
 
@@ -64,6 +64,9 @@ extension CryptoCompareProvider: IMarketInfoProvider {
 
                         return records
                     }
+
+//        return singleWithRetry(single: single)
+        return single
     }
 
 }

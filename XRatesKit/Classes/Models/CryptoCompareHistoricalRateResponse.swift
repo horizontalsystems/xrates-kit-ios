@@ -4,7 +4,9 @@ class CryptoCompareHistoricalRateResponse: ImmutableMappable {
     let rateValue: Decimal
 
     required init(map: Map) throws {
-        let data = try CryptoCompareResponse.parseData(map: map)
+        try CryptoCompareResponse.validate(map: map)
+
+        let data: [String: Any] = try map.value("Data") 
 
         guard let rateDataList = data["Data"] as? [[String: Any]] else {
             throw CryptoCompareError.invalidData
