@@ -12,7 +12,8 @@ class HistoricalController: UIViewController {
 
     private let timestamp = Date().timeIntervalSince1970
 
-    private let textView = UITextView()
+    private let datePicker = UIDatePicker()
+    private let rateLabel = UILabel()
 
     init(xRatesKit: XRatesKit, currencyCode: String, coinCode: String) {
         self.xRatesKit = xRatesKit
@@ -30,32 +31,84 @@ class HistoricalController: UIViewController {
         super.viewDidLoad()
 
         title = "Historical"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(onTapHistorical))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Fetch", style: .plain, target: self, action: #selector(onTapFetch))
 
-        view.addSubview(textView)
-        textView.snp.makeConstraints { maker in
-            maker.edges.equalTo(view.safeAreaLayoutGuide)
+        view.addSubview(datePicker)
+        datePicker.snp.makeConstraints { maker in
+            maker.leading.top.trailing.equalTo(view.safeAreaLayoutGuide)
+            maker.height.equalTo(200)
         }
 
-        textView.font = .systemFont(ofSize: 12)
-        textView.textContainerInset = UIEdgeInsets(top: 20, left: 15, bottom: 20, right: 15)
+        datePicker.datePickerMode = .dateAndTime
+        datePicker.maximumDate = Date()
+        datePicker.locale = Locale.current
+        datePicker.addTarget(self, action: #selector(onDateChanged), for: .valueChanged)
+
+        view.addSubview(rateLabel)
+        rateLabel.snp.makeConstraints { maker in
+            maker.leading.trailing.equalToSuperview().inset(20)
+            maker.top.equalTo(datePicker.snp.bottom).offset(20)
+        }
+
+        rateLabel.numberOfLines = 0
+        rateLabel.textAlignment = .center
+        rateLabel.font = .systemFont(ofSize: 17, weight: .medium)
+
+        showStoredRate()
     }
 
-    @objc func onTapHistorical() {
-        updateTextView(text: "Fetching...")
+    @objc func onDateChanged() {
+        showStoredRate()
+    }
 
-        xRatesKit.historicalRate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)
+    @objc func onTapFetch() {
+        rateLabel.text = "Fetching..."
+
+        let timestamp = timestampWithoutSeconds(date: datePicker.date)
+
+        xRatesKit.historicalRateSingle(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)
                 .observeOn(MainScheduler.instance)
                 .subscribe(onSuccess: { [weak self] value in
-                    self?.updateTextView(text: "Did fetch Historical Rate: \(value)")
+                    self?.show(rate: value, date: Date(timeIntervalSince1970: timestamp))
                 }, onError: { [weak self] error in
-                    self?.updateTextView(text: "Historical Rate fetch error: \(error.localizedDescription)")
+                    self?.rateLabel.text = "Fetch error: \(error)"
                 })
                 .disposed(by: disposeBag)
     }
 
-    private func updateTextView(text: String) {
-        textView.text = text
+    private func showStoredRate() {
+        let date = datePicker.date
+        let timestamp = timestampWithoutSeconds(date: date)
+        let storedRate = xRatesKit.historicalRate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)
+
+        show(rate: storedRate, date: date)
     }
+
+    private func show(rate: Decimal?, date: Date) {
+        let rateText = rate.flatMap { HistoricalController.rateFormatter.string(from: $0 as NSNumber) } ?? "not fetched yet"
+        let dateText = HistoricalController.dateFormatter.string(from: date)
+        rateLabel.text = "Rate for \(dateText)\n\n\(rateText)"
+    }
+
+    private func timestampWithoutSeconds(date: Date) -> TimeInterval {
+        floor(date.timeIntervalSince1970 / 60.0) * 60.0
+    }
+
+}
+
+extension HistoricalController {
+
+    static let rateFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 2
+        return formatter
+    }()
+
+    static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale.current
+        formatter.dateFormat = "MMM d, hh:mm:ss"
+        return formatter
+    }()
 
 }

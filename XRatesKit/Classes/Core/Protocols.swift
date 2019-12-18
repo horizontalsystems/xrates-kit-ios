@@ -48,6 +48,7 @@ protocol IMarketInfoSchedulerProvider {
 // Historical Rates
 
 protocol IHistoricalRateManager {
+    func historicalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Decimal?
     func historicalRateSingle(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal>
 }
 

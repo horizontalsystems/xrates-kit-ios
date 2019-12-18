@@ -13,6 +13,10 @@ class HistoricalRateManager {
 
 extension HistoricalRateManager: IHistoricalRateManager {
 
+    func historicalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Decimal? {
+        storage.rate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)?.value
+    }
+
     func historicalRateSingle(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
         if let dbRate = storage.rate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp) {
             return Single.just(dbRate.value)
