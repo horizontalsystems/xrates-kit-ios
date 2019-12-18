@@ -1,6 +1,7 @@
 import UIKit
 import RxSwift
 import SnapKit
+import Chart
 import XRatesKit
 
 class ChartController: UIViewController {
@@ -12,21 +13,15 @@ class ChartController: UIViewController {
     private let coinCode: String
 
     private let chartType: ChartType = .day
+    private var chartUpdatesOn = false
 
-    private var chartData: ChartData?
-    private var chartOn = false
-
-    private let textView = UITextView()
-
-    private let dateFormatter = DateFormatter()
+    private let rateLabel = UILabel()
+    private var chartView: ChartView?
 
     init(xRatesKit: XRatesKit, currencyCode: String, coinCode: String) {
         self.xRatesKit = xRatesKit
         self.currencyCode = currencyCode
         self.coinCode = coinCode
-
-        dateFormatter.locale = Locale.current
-        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MMM d, hh:mm:ss")
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -40,24 +35,39 @@ class ChartController: UIViewController {
 
         title = "Chart"
 
-        view.addSubview(textView)
-        textView.snp.makeConstraints { maker in
-            maker.edges.equalTo(view.safeAreaLayoutGuide)
+        let configuration = ChartConfiguration()
+        let chartView = ChartView(configuration: configuration, gridIntervalType: .day(2), indicatorDelegate: self)
+
+        view.addSubview(chartView)
+        chartView.snp.makeConstraints { maker in
+            maker.top.equalTo(view.safeAreaLayoutGuide).offset(20)
+            maker.leading.trailing.equalToSuperview().inset(20)
+            maker.height.equalTo(200)
         }
 
-        textView.font = .systemFont(ofSize: 10)
-        textView.textContainerInset = UIEdgeInsets(top: 20, left: 15, bottom: 20, right: 15)
+        chartView.backgroundColor = .black
+        self.chartView = chartView
+
+        view.addSubview(rateLabel)
+        rateLabel.snp.makeConstraints { maker in
+            maker.top.equalTo(chartView.snp.bottom).offset(20)
+            maker.leading.trailing.equalToSuperview().inset(20)
+        }
+
+        rateLabel.numberOfLines = 0
+        rateLabel.textAlignment = .center
+        rateLabel.font = .systemFont(ofSize: 14, weight: .medium)
 
         syncChartButton()
         fillInitialData()
     }
 
     @objc func onTapChart() {
-        if chartOn {
-            chartOn = false
+        if chartUpdatesOn {
+            chartUpdatesOn = false
             onChartOff()
         } else {
-            chartOn = true
+            chartUpdatesOn = true
             onChartOn()
         }
 
@@ -65,7 +75,7 @@ class ChartController: UIViewController {
     }
 
     private func syncChartButton() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: chartOn ? .stop : .play, target: self, action: #selector(onTapChart))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: chartUpdatesOn ? .stop : .play, target: self, action: #selector(onTapChart))
     }
 
     private func onChartOn() {
@@ -73,29 +83,12 @@ class ChartController: UIViewController {
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
                 .observeOn(MainScheduler.instance)
                 .subscribe(onNext: { [weak self] chartInfo in
-                    self?.chartData = .data(chartInfo: chartInfo)
-                    self?.updateTextView()
-                }, onError: { error in
-                    self.chartData = .error(error: error)
-                    self.updateTextView()
+                    self?.handle(chartInfo: chartInfo)
+                }, onError: { [weak self] error in
+                    self?.rateLabel.text = "Subscription error: \(error)"
                 })
                 .disposed(by: chartDisposeBag)
-
-//        additionalSubscribe(coinCode: "BNT", currencyCode: "USD")
-//        additionalSubscribe(coinCode: "ETH", currencyCode: "USD")
-//        additionalSubscribe(coinCode: "EOS", currencyCode: "USD")
-//        additionalSubscribe(coinCode: "ZRX", currencyCode: "USD")
     }
-
-//    private func additionalSubscribe(coinCode: String, currencyCode: String) {
-//        _ = xRatesKit.chartInfo(coinCode: coinCode, currencyCode: currencyCode, chartType: .day)
-//
-//        xRatesKit.chartInfoObservable(coinCode: coinCode, currencyCode: currencyCode, chartType: .day)
-//                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
-//                .observeOn(MainScheduler.instance)
-//                .subscribe()
-//                .disposed(by: chartDisposeBag)
-//    }
 
     private func onChartOff() {
         chartDisposeBag = DisposeBag()
@@ -103,47 +96,44 @@ class ChartController: UIViewController {
 
     private func fillInitialData() {
         if let chartInfo = xRatesKit.chartInfo(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType) {
-            chartData = .data(chartInfo: chartInfo)
-            updateTextView()
+            handle(chartInfo: chartInfo)
         }
     }
 
-    private func updateTextView() {
-        var text = ""
-
-        if let chartData = chartData {
-            switch chartData {
-            case .data(let chartInfo):
-//                text += "Start Date: \(format(timestamp: chartInfo.startTimestamp))\n"
-//                text += "End Date: \(format(timestamp: chartInfo.endTimestamp))\n"
-
-//                if let point = chartInfo.points.first {
-//                    text += "   \(format(timestamp: point.timestamp)): \(point.value)\n"
-//                }
-//                if let point = chartInfo.points.last {
-//                    text += "   \(format(timestamp: point.timestamp)): \(point.value)\n"
-//                }
-
-                for point in chartInfo.points {
-                    text += "\(format(timestamp: point.timestamp)): \(point.value)\n"
-                }
-            case .error(let error):
-                text += "Error: \(error)\n"
-            }
-
-        }
-
-        textView.text = text
-    }
-
-    private func format(timestamp: TimeInterval) -> String {
-        let date = Date(timeIntervalSince1970: timestamp)
-        return dateFormatter.string(from: date)
+    private func handle(chartInfo: ChartInfo) {
+        let chartPoints = chartInfo.points.map { Chart.ChartPoint(timestamp: $0.timestamp, value: $0.value) }
+        chartView?.set(gridIntervalType: .hour(6), data: chartPoints, start: chartInfo.startTimestamp, end: chartInfo.endTimestamp, animated: true)
     }
 
 }
 
-enum ChartData {
-    case data(chartInfo: ChartInfo)
-    case error(error: Error)
+extension ChartController: IChartIndicatorDelegate {
+
+    public func didTap(chartPoint: Chart.ChartPoint) {
+        let rateText = ChartController.rateFormatter.string(from: chartPoint.value as NSNumber) ?? "n/a"
+        let dateText = ChartController.dateFormatter.string(from: Date(timeIntervalSince1970: chartPoint.timestamp))
+        rateLabel.text = "\(dateText)\n\n\(rateText)"
+    }
+
+    public func didFinishTap() {
+        rateLabel.text = nil
+    }
+
+}
+
+extension ChartController {
+
+    static let rateFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 2
+        return formatter
+    }()
+
+    static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale.current
+        formatter.dateFormat = "MMM d, hh:mm:ss"
+        return formatter
+    }()
+
 }

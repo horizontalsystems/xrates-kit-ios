@@ -33,6 +33,7 @@ class MarketInfoController: UITableViewController {
 
         tableView.register(MarketInfoCell.self, forCellReuseIdentifier: String(describing: MarketInfoCell.self))
         tableView.separatorInset = .zero
+        tableView.allowsSelection = false
         tableView.tableFooterView = UIView()
 
         fillInitialData()
