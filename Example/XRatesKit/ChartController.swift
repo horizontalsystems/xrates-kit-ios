@@ -101,7 +101,7 @@ class ChartController: UIViewController {
     }
 
     private func handle(chartInfo: ChartInfo) {
-        let chartPoints = chartInfo.points.map { Chart.ChartPoint(timestamp: $0.timestamp, value: $0.value) }
+        let chartPoints = chartInfo.points.map { Chart.ChartPoint(timestamp: $0.timestamp, value: $0.value, volume: $0.volume) }
         chartView?.set(gridIntervalType: .hour(6), data: chartPoints, start: chartInfo.startTimestamp, end: chartInfo.endTimestamp, animated: true)
     }
 

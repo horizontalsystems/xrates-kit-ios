@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (4.9.1)
-  - Chart.swift (1.0):
+  - Chart.swift (1.2):
     - SnapKit (~> 5.0)
   - GRDB.swift (4.6.2):
     - GRDB.swift/standard (= 4.6.2)
@@ -21,7 +21,7 @@ PODS:
     - RxCocoa (~> 5.0)
     - RxSwiftExt/Core
   - SnapKit (5.0.1)
-  - XRatesKit.swift (0.4):
+  - XRatesKit.swift (0.5):
     - Alamofire (~> 4.0)
     - GRDB.swift (~> 4.0)
     - ObjectMapper (~> 3.5)
@@ -51,7 +51,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
-  Chart.swift: 0016b521cd6b627dd8394274f2fb3605e1e32496
+  Chart.swift: 2634973317e2637347d160b99992b7b21cbf7644
   GRDB.swift: 258520e10b49ff55307cbb0bec701af0742ae621
   ObjectMapper: 70187b8941977c62ccfb423caf6b50be405cabf0
   RxCocoa: e741b9749968e8a143e2b787f1dfbff2b63d0a5c
@@ -59,7 +59,7 @@ SPEC CHECKSUMS:
   RxSwift: e2dc62b366a3adf6a0be44ba9f405efd4c94e0c4
   RxSwiftExt: 4ca80336f43c28f11a2825cdd2fc61dd6c044697
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
-  XRatesKit.swift: 44f04b20699f855a4e3550797232084a240a8690
+  XRatesKit.swift: 568660675ce881653095645bc9e30dbc1abc5578
 
 PODFILE CHECKSUM: d8439d8c383e94827c017b9bea65356bdc87fc67
 

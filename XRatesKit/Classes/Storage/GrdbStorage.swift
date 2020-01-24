@@ -67,7 +67,12 @@ class GrdbStorage {
                 ], onConflict: .replace)
             }
         }
-
+        migrator.registerMigration("addVolumeToChartPoints") { db in 
+            try db.execute(sql: "DELETE from \(ChartPointRecord.databaseTableName)")
+            try db.alter(table: ChartPointRecord.databaseTableName) { t in
+                t.add(column: ChartPointRecord.Columns.volume.name, .text)
+            }
+        }
         return migrator
     }
 
