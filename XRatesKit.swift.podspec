@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = 'XRatesKit.swift'
   s.module_name      = 'XRatesKit'
-  s.version          = '0.4.1'
+  s.version          = '0.5'
   s.summary          = 'Kit provides latest rates for coins, chart data and historical data for different coins and currencies.'
 
   s.homepage         = 'https://github.com/horizontalsystems/xrates-kit-ios'
