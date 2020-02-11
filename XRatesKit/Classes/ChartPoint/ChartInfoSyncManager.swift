@@ -9,7 +9,7 @@ class ChartInfoSyncManager {
     private var schedulers = [ChartInfoKey: ChartPointScheduler]()
     private var marketInfoDisposables = [ChartInfoKey: Disposable]()
 
-    private var failedKeys = ThreadSafeArray<ChartInfoKey>()
+    private var failedKeys = [ChartInfoKey]()
 
     private let queue = DispatchQueue(label: "io.horizontalsystems.x_rates_kit.chart_info_sync_manager", qos: .userInitiated)
 

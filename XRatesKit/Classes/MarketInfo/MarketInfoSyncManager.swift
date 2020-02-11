@@ -6,9 +6,11 @@ class MarketInfoSyncManager {
     private var coinCodes = [String]()
     private var currencyCode: String
 
-    private var subjects = ThreadSafeDictionary<PairKey, PublishSubject<MarketInfo>>()
-    private var currencySubjects = ThreadSafeDictionary<String, PublishSubject<[String: MarketInfo]>>()
+    private var subjects = [PairKey: PublishSubject<MarketInfo>]()
+    private var currencySubjects = [String: PublishSubject<[String: MarketInfo]>]()
     private var scheduler: IMarketInfoScheduler?
+
+    private let queue = DispatchQueue(label: "io.horizontalsystems.x_rates_kit.market_info_sync_manager", qos: .userInitiated)
 
     init(currencyCode: String, schedulerFactory: MarketInfoSchedulerFactory) {
         self.currencyCode = currencyCode
@@ -36,8 +38,6 @@ class MarketInfoSyncManager {
     }
 
     private func updateScheduler() {
-        subjects.removeAll()
-        currencySubjects.removeAll()
         scheduler = nil
 
         guard !coinCodes.isEmpty else {
@@ -67,11 +67,15 @@ extension MarketInfoSyncManager: IMarketInfoSyncManager {
     }
 
     func marketInfoObservable(key: PairKey) -> Observable<MarketInfo> {
-        subject(key: key).asObservable()
+        queue.sync {
+            subject(key: key).asObservable()
+        }
     }
 
     func marketInfosObservable(currencyCode: String) -> Observable<[String: MarketInfo]> {
-        currencySubject(currencyCode: currencyCode).asObservable()
+        queue.sync {
+            currencySubject(currencyCode: currencyCode).asObservable()
+        }
     }
 
 }
@@ -79,11 +83,15 @@ extension MarketInfoSyncManager: IMarketInfoSyncManager {
 extension MarketInfoSyncManager: IMarketInfoManagerDelegate {
 
     func didUpdate(marketInfo: MarketInfo, key: PairKey) {
-        subjects[key]?.onNext(marketInfo)
+        queue.async {
+            self.subjects[key]?.onNext(marketInfo)
+        }
     }
 
     func didUpdate(marketInfos: [String: MarketInfo], currencyCode: String) {
-        currencySubjects[currencyCode]?.onNext(marketInfos)
+        queue.async {
+            self.currencySubjects[currencyCode]?.onNext(marketInfos)
+        }
     }
 
 }
