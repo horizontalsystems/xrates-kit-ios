@@ -18,7 +18,7 @@ struct CryptoCompareChartStatsResponse: ImmutableMappable {
             if let timestamp = rateData["time"] as? Int, 
                let open = rateData["open"] as? Double, 
                let close = rateData["close"] as? Double,
-               let volume = rateData["volumefrom"] as? Double {
+               let volume = rateData["volumeto"] as? Double {
 
                 let rateValue = NSNumber(value: (open + close) / 2).decimalValue
                 let volumeValue = NSNumber(value: volume).decimalValue
