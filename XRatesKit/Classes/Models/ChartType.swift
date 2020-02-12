@@ -4,8 +4,10 @@ public enum ChartType: Int, CaseIterable {
     case day
     case week
     case month
+    case month3
     case halfYear
     case year
+    case year2
 
     var expirationInterval: TimeInterval {
         let multiplier: TimeInterval
@@ -29,8 +31,10 @@ public enum ChartType: Int, CaseIterable {
         case .day: return 30
         case .week: return 3
         case .month: return 12
+        case .month3: return 2
         case .halfYear: return 3
         case .year: return 7
+        case .year2: return 14
         }
     }
 
@@ -39,8 +43,10 @@ public enum ChartType: Int, CaseIterable {
         case .day: return "histominute"
         case .week: return "histohour"
         case .month: return "histohour"
+        case .month3: return "histoday"
         case .halfYear: return "histoday"
         case .year: return "histoday"
+        case .year2: return "histoday"
         }
     }
 
@@ -49,8 +55,10 @@ public enum ChartType: Int, CaseIterable {
         case .day: return 48
         case .week: return 56
         case .month: return 60
+        case .month3: return 45
         case .halfYear: return 60
         case .year: return 52
+        case .year2: return 52
         }
     }
 
