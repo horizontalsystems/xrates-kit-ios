@@ -33,6 +33,14 @@ class CryptoCompareProvider {
         "\(baseUrl)/data/v2/\(key.chartType.resource)?fsym=\(key.coinCode)&tsym=\(key.currencyCode)&limit=\(key.chartType.pointCount)&aggregate=\(key.chartType.interval)"
     }
 
+    private func newsUrl(for categories: String, latestTimeStamp: TimeInterval?) -> String {
+        var url = "\(baseUrl)/data/v2/news/?categories=\(categories)&excludeCategories=Sponsored"
+        if let timestamp = latestTimeStamp {
+            url.append("&lTs=\(Int(timestamp))")
+        }
+        return url
+    }
+
     private func singleWithRetry<T>(single: Single<T>) -> Single<T> {
         single.asObservable()
                 .retry(.exponentialDelayed(maxCount: 3, initial: 3, multiplier: 1), scheduler: ConcurrentDispatchQueueScheduler(qos: .background)) { error in
@@ -96,6 +104,16 @@ extension CryptoCompareProvider: IChartPointProvider {
                 .map { (response: CryptoCompareChartStatsResponse) -> [ChartPoint] in
                     response.chartPoints
                 }
+
+        return singleWithRetry(single: single)
+    }
+
+}
+
+extension CryptoCompareProvider: INewsProvider {
+
+    func newsSingle(for categories: String, latestTimestamp: TimeInterval?) -> Single<CryptoCompareNewsResponse> {
+        let single: Single<CryptoCompareNewsResponse> = networkManager.single(urlString: newsUrl(for: categories, latestTimeStamp: latestTimestamp), httpMethod: .get, timoutInterval: timeoutInterval)
 
         return singleWithRetry(single: single)
     }

@@ -6,13 +6,15 @@ public class XRatesKit {
     private let historicalRateManager: IHistoricalRateManager
     private let chartInfoManager: IChartInfoManager
     private let chartInfoSyncManager: IChartInfoSyncManager
+    private let newsPostsManager: INewsManager
 
-    init(marketInfoManager: IMarketInfoManager, marketInfoSyncManager: IMarketInfoSyncManager, historicalRateManager: IHistoricalRateManager, chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager) {
+    init(marketInfoManager: IMarketInfoManager, marketInfoSyncManager: IMarketInfoSyncManager, historicalRateManager: IHistoricalRateManager, chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager, newsPostsManager: INewsManager) {
         self.marketInfoManager = marketInfoManager
         self.marketInfoSyncManager = marketInfoSyncManager
         self.historicalRateManager = historicalRateManager
         self.chartInfoManager = chartInfoManager
         self.chartInfoSyncManager = chartInfoSyncManager
+        self.newsPostsManager = newsPostsManager
     }
 
 }
@@ -55,8 +57,16 @@ extension XRatesKit {
         chartInfoManager.chartInfo(key: ChartInfoKey(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType))
     }
 
-    public func chartInfoObservable(coinCode: String, currencyCode: String, chartType: ChartType) -> Observable<ChartInfo> {
+    public func chartInfoObservable(coinCode: String, currencyCode: String, chartType:ChartType) -> Observable<ChartInfo> {
         chartInfoSyncManager.chartInfoObservable(key: ChartInfoKey(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType))
+    }
+
+    public func cryptoPosts(for coinName: String, timestamp: TimeInterval) -> [CryptoNewsPost] {
+        newsPostsManager.posts(for: coinName, timestamp: timestamp)
+    }
+
+    public func cryptoPostsSingle(for coinName: String) -> Single<[CryptoNewsPost]> {
+        newsPostsManager.postsSingle(for: coinName, latestTimestamp: nil)
     }
 
 }
@@ -87,12 +97,15 @@ extension XRatesKit {
 
         chartInfoManager.delegate = chartInfoSyncManager
 
+        let newsPostManager = NewsManager(provider: cryptoCompareProvider, state: NewsState(expirationTime: 30 * 60))
+
         let kit = XRatesKit(
                 marketInfoManager: marketInfoManager,
                 marketInfoSyncManager: marketInfoSyncManager,
                 historicalRateManager: historicalRateManager,
                 chartInfoManager: chartInfoManager,
-                chartInfoSyncManager: chartInfoSyncManager
+                chartInfoSyncManager: chartInfoSyncManager,
+                newsPostsManager: newsPostManager
         )
 
         return kit

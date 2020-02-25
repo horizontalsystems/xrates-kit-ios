@@ -13,6 +13,8 @@
 		11B35D8CA92B63F6279733F0 /* MarketInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B35BF121C55E553EF12DAA /* MarketInfoCell.swift */; };
 		236BD08FC0BF271673C6A099 /* libPods-XRatesKitTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8875036EA288755C69937725 /* libPods-XRatesKitTests.a */; };
 		355B15AE9F68AAD03202FD22 /* libPods-XRatesKitExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FF449648814E3098505446E6 /* libPods-XRatesKitExample.a */; };
+		58AAA08601DB6F013E3C4EFB /* NewsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA5ADEC7B359D22C5D731 /* NewsHeaderView.swift */; };
+		58AAA28EC036998B6853DFD9 /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58AAA7081ADE4DE8BE3BBFDA /* PostCell.swift */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		D36AAB4123A749060065B32B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D36AAB3E23A749060065B32B /* AppDelegate.swift */; };
 		D36AAB4223A749060065B32B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D36AAB3F23A749060065B32B /* Assets.xcassets */; };
@@ -38,6 +40,8 @@
 		11B35BF121C55E553EF12DAA /* MarketInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketInfoCell.swift; sourceTree = "<group>"; };
 		409713D2B6EC6E46DA916C92 /* Pods-XRatesKit_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XRatesKit_Example.release.xcconfig"; path = "Target Support Files/Pods-XRatesKit_Example/Pods-XRatesKit_Example.release.xcconfig"; sourceTree = "<group>"; };
 		58432341CDD758741A5CFF02 /* Pods-XRatesKitExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XRatesKitExample.debug.xcconfig"; path = "Target Support Files/Pods-XRatesKitExample/Pods-XRatesKitExample.debug.xcconfig"; sourceTree = "<group>"; };
+		58AAA5ADEC7B359D22C5D731 /* NewsHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsHeaderView.swift; sourceTree = "<group>"; };
+		58AAA7081ADE4DE8BE3BBFDA /* PostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* XRatesKitExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XRatesKitExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACE51AFB9204008FA782 /* XRatesKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XRatesKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -112,6 +116,8 @@
 				D36AAB4423A749750065B32B /* LaunchScreen.storyboard */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 				11B35BF121C55E553EF12DAA /* MarketInfoCell.swift */,
+				58AAA7081ADE4DE8BE3BBFDA /* PostCell.swift */,
+				58AAA5ADEC7B359D22C5D731 /* NewsHeaderView.swift */,
 			);
 			name = "Example for XRatesKit";
 			path = XRatesKit;
@@ -334,6 +340,8 @@
 				11B354711C0333DBE0C0C2A8 /* HistoricalController.swift in Sources */,
 				11B3585E65F36C1A8A7FA88B /* ChartController.swift in Sources */,
 				11B35D8CA92B63F6279733F0 /* MarketInfoCell.swift in Sources */,
+				58AAA28EC036998B6853DFD9 /* PostCell.swift in Sources */,
+				58AAA08601DB6F013E3C4EFB /* NewsHeaderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
