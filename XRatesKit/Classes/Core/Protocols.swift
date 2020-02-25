@@ -102,6 +102,22 @@ protocol IChartPointSchedulerProvider {
     var syncSingle: Single<Void> { get }
 }
 
+// News Posts
+
+protocol INewsProvider {
+    func newsSingle(for categories: String, latestTimestamp: TimeInterval?) -> Single<CryptoCompareNewsResponse>
+}
+
+protocol INewsManager {
+    func posts(for coinName: String, timestamp: TimeInterval) -> [CryptoNewsPost]
+    func postsSingle(for coinName: String, latestTimestamp: TimeInterval?) -> Single<[CryptoNewsPost]>
+}
+
+protocol INewsState {
+    func set(posts: [CryptoNewsPost], coinName: String)
+    func nonExpiredPosts(for coinName: String, timestamp: TimeInterval) -> [CryptoNewsPost]
+}
+
 // Misc
 
 protocol IReachabilityManager {
