@@ -34,7 +34,7 @@ extension CryptoNewsPost: Comparable {
     }
 
     public static func <(lhs: CryptoNewsPost, rhs: CryptoNewsPost) -> Bool {
-        lhs.timestamp < rhs.timestamp
+        lhs.timestamp > rhs.timestamp
     }
 
 }

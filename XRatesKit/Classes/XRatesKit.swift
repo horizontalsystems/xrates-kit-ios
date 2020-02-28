@@ -61,7 +61,7 @@ extension XRatesKit {
         chartInfoSyncManager.chartInfoObservable(key: ChartInfoKey(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType))
     }
 
-    public func cryptoPosts(for coinName: String, timestamp: TimeInterval) -> [CryptoNewsPost] {
+    public func cryptoPosts(for coinName: String, timestamp: TimeInterval) -> [CryptoNewsPost]? {
         newsPostsManager.posts(for: coinName, timestamp: timestamp)
     }
 
