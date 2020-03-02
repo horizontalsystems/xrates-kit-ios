@@ -22,13 +22,13 @@ extension NewsState: INewsState {
         self.lastUpdatedTimestamp[coinName] = Date().timeIntervalSince1970
     }
 
-    public func nonExpiredPosts(for coinName: String, timestamp: TimeInterval) -> [CryptoNewsPost] {
+    public func nonExpiredPosts(for coinName: String, timestamp: TimeInterval) -> [CryptoNewsPost]? {
         let coinName = NewsManager.registeredCoinList.contains(coinName) ? coinName : NewsState.altcoinName
 
         guard let posts = self.posts[coinName], let lastTimestamp = lastUpdatedTimestamp[coinName] else {
-            return []
+            return nil
         }
-        return timestamp < (lastTimestamp + expirationTime) ? posts : []
+        return timestamp < (lastTimestamp + expirationTime) ? posts : nil
     }
 
 }

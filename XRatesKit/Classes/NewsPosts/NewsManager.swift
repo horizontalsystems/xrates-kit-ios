@@ -22,7 +22,7 @@ class NewsManager {
 
 extension NewsManager: INewsManager {
 
-    func posts(for coinName: String, timestamp: TimeInterval) -> [CryptoNewsPost] {
+    func posts(for coinName: String, timestamp: TimeInterval) -> [CryptoNewsPost]? {
         state.nonExpiredPosts(for: coinName, timestamp: timestamp)
     }
 

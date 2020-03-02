@@ -109,13 +109,13 @@ protocol INewsProvider {
 }
 
 protocol INewsManager {
-    func posts(for coinName: String, timestamp: TimeInterval) -> [CryptoNewsPost]
+    func posts(for coinName: String, timestamp: TimeInterval) -> [CryptoNewsPost]?
     func postsSingle(for coinName: String, latestTimestamp: TimeInterval?) -> Single<[CryptoNewsPost]>
 }
 
 protocol INewsState {
     func set(posts: [CryptoNewsPost], coinName: String)
-    func nonExpiredPosts(for coinName: String, timestamp: TimeInterval) -> [CryptoNewsPost]
+    func nonExpiredPosts(for coinName: String, timestamp: TimeInterval) -> [CryptoNewsPost]?
 }
 
 // Misc
