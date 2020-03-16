@@ -87,10 +87,12 @@ class ChartController: UIViewController {
         super.viewDidAppear(animated)
 
         let posts = xRatesKit.cryptoPosts(for: "BTC", timestamp: Date().timeIntervalSince1970)
-        self.posts = posts
-        tableView.reloadData()
 
-        if posts.isEmpty {
+        if let posts = posts {
+            self.posts = posts
+            tableView.reloadData()
+            headerView.bind(title: "BTC News")
+        } else {
             headerView.bind(title: "Loading...")
             xRatesKit.cryptoPostsSingle(for: "BTC")
                     .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
@@ -101,8 +103,6 @@ class ChartController: UIViewController {
                         self?.headerView.bind(title: "BTC News")
                     })
                     .disposed(by: disposeBag)
-        } else {
-            headerView.bind(title: "BTC News")
         }
     }
 
