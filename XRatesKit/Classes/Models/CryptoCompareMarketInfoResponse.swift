@@ -55,7 +55,7 @@ struct CryptoCompareMarketInfoResponse: ImmutableMappable {
                     throw CryptoCompareError.invalidData
                 }
 
-                coinCodeValues[currencyCode] = ResponseMarketInfo(JSON: currencyCodeDictionary)
+                coinCodeValues[currencyCode] = try ResponseMarketInfo(JSON: currencyCodeDictionary)
             }
 
             values[coinCode] = coinCodeValues
