@@ -13,16 +13,22 @@ class CryptoCompareProvider {
     private let networkManager: NetworkManager
     private let baseUrl: String
     private let timeoutInterval: TimeInterval
+    private let topMarketsCount: Int
 
-    init(networkManager: NetworkManager, baseUrl: String, timeoutInterval: TimeInterval) {
+    init(networkManager: NetworkManager, baseUrl: String, timeoutInterval: TimeInterval, topMarketsCount: Int) {
         self.networkManager = networkManager
         self.baseUrl = baseUrl
         self.timeoutInterval = timeoutInterval
+        self.topMarketsCount = min(100, max(10, topMarketsCount))
     }
 
     private func marketInfoUrl(coinCodes: [String], currencyCode: String) -> String {
             let coinList = coinCodes.joined(separator: ",")
             return "\(baseUrl)/data/pricemultifull?fsyms=\(coinList)&tsyms=\(currencyCode)"
+    }
+
+    private func topMarketInfosUrl(currencyCode: String) -> String {
+        "\(baseUrl)/data/top/mktcapfull?&tsym=\(currencyCode)&limit=\(topMarketsCount)"
     }
 
     private func historicalRateUrl(coinCode: String, currencyCode: String, historicalType: HistoricalType, timestamp: TimeInterval) -> String {
@@ -74,6 +80,32 @@ extension CryptoCompareProvider: IMarketInfoProvider {
                     }
 
 //        return singleWithRetry(single: single)
+        return single
+    }
+
+}
+
+extension CryptoCompareProvider: ITopMarketsProvider {
+
+    func getTopMarketInfoRecords(currencyCode: String) -> Single<[TopMarketInfoRecord]> {
+        let urlString = topMarketInfosUrl(currencyCode: currencyCode)
+
+        let single: Single<[TopMarketInfoRecord]> = networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: timeoutInterval)
+                .map { (response: CryptoCompareTopMarketInfosResponse) -> [TopMarketInfoRecord] in
+                    var records = [TopMarketInfoRecord]()
+
+                    guard let values = response.values[currencyCode] else {
+                        return []
+                    }
+
+                    for value in values {
+                        let record = TopMarketInfoRecord(coinCode: value.coinCode, coinName: value.coinName, currencyCode: currencyCode, response: value.marketInfo)
+                        records.append(record)
+                    }
+
+                    return records
+                }
+
         return single
     }
 

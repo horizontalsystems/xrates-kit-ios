@@ -6,6 +6,7 @@ class MarketInfoScheduler {
     private let provider: IMarketInfoSchedulerProvider
     private let reachabilityManager: IReachabilityManager
     private var logger: Logger?
+    private var name: String
 
     private let disposeBag = DisposeBag()
     private var timerDisposable: Disposable?
@@ -13,7 +14,8 @@ class MarketInfoScheduler {
     private var syncInProgress = false
     private var expirationNotified = false
 
-    init(provider: IMarketInfoSchedulerProvider, reachabilityManager: IReachabilityManager, logger: Logger? = nil) {
+    init(name: String, provider: IMarketInfoSchedulerProvider, reachabilityManager: IReachabilityManager, logger: Logger? = nil) {
+        self.name = name
         self.provider = provider
         self.reachabilityManager = reachabilityManager
         self.logger = logger
@@ -33,11 +35,11 @@ class MarketInfoScheduler {
 
         // check if sync process is already running
         guard !syncInProgress else {
-            logger?.debug("MARKET INFO: Sync already running")
+            logger?.debug("\(name): Sync already running")
             return
         }
 
-        logger?.debug("MARKET INFO: Sync started")
+        logger?.debug("\(name): Sync started")
 
         syncInProgress = true
 
@@ -51,7 +53,7 @@ class MarketInfoScheduler {
     }
 
     private func onSyncSuccess() {
-        logger?.debug("MARKET INFO: Sync success")
+        logger?.debug("\(name): Sync success")
 
         expirationNotified = false
 
@@ -60,7 +62,7 @@ class MarketInfoScheduler {
     }
 
     private func onSyncError(error: Error) {
-        logger?.error("MARKET INFO: Sync error: \(error)")
+        logger?.error("\(name): Sync error: \(error)")
 
         syncInProgress = false
         schedule(delay: provider.retryInterval)
@@ -69,7 +71,7 @@ class MarketInfoScheduler {
     private func schedule(delay: TimeInterval) {
         let intDelay = Int(delay.rounded(.up))
 
-        logger?.debug("MARKET INFO: Schedule: delay: \(intDelay) sec")
+        logger?.debug("\(name): Schedule: delay: \(intDelay) sec")
 
         // invalidate previous timer if exists
         timerDisposable?.dispose()
@@ -94,7 +96,7 @@ class MarketInfoScheduler {
             return
         }
 
-        logger?.debug("MARKET INFO: Notifying expiration")
+        logger?.debug("\(name): Notifying expiration")
 
         provider.notifyExpired()
         expirationNotified = true
@@ -117,7 +119,7 @@ class MarketInfoScheduler {
 extension MarketInfoScheduler: IMarketInfoScheduler {
 
     func schedule() {
-        logger?.debug("MARKET INFO: Auto schedule")
+        logger?.debug("\(name): Auto schedule")
 
         DispatchQueue.global(qos: .utility).async {
             self.autoSchedule()
@@ -125,7 +127,7 @@ extension MarketInfoScheduler: IMarketInfoScheduler {
     }
 
     func forceSchedule() {
-        logger?.debug("MARKET INFO: Force schedule")
+        logger?.debug("\(name): Force schedule")
 
         DispatchQueue.global(qos: .userInitiated).async {
             self.schedule(delay: 0)
