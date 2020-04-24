@@ -73,6 +73,27 @@ class GrdbStorage {
                 t.add(column: ChartPointRecord.Columns.volume.name, .text)
             }
         }
+
+        migrator.registerMigration("createTopMarketInfo") { db in
+            try db.create(table: TopMarketInfoRecord.databaseTableName) { t in
+                t.column(TopMarketInfoRecord.Columns.coinCode.name, .text).notNull()
+                t.column(TopMarketInfoRecord.Columns.coinName.name, .text).notNull()
+                t.column(TopMarketInfoRecord.Columns.currencyCode.name, .text).notNull()
+                t.column(TopMarketInfoRecord.Columns.timestamp.name, .double).notNull()
+                t.column(TopMarketInfoRecord.Columns.rate.name, .text).notNull()
+                t.column(TopMarketInfoRecord.Columns.open24Hour.name, .text).notNull()
+                t.column(TopMarketInfoRecord.Columns.diff.name, .text).notNull()
+                t.column(TopMarketInfoRecord.Columns.volume.name, .text).notNull()
+                t.column(TopMarketInfoRecord.Columns.marketCap.name, .text).notNull()
+                t.column(TopMarketInfoRecord.Columns.supply.name, .text).notNull()
+
+                t.primaryKey([
+                    TopMarketInfoRecord.Columns.coinCode.name,
+                    TopMarketInfoRecord.Columns.currencyCode.name,
+                ], onConflict: .replace)
+            }
+        }
+
         return migrator
     }
 
@@ -99,6 +120,24 @@ extension GrdbStorage: IMarketInfoStorage {
         _ = try! dbPool.write { db in
             for rate in marketInfoRecords {
                 try rate.insert(db)
+            }
+        }
+    }
+
+}
+
+extension GrdbStorage: ITopMarketsStorage {
+
+    func topMarketInfoRecords(currencyCode: String) -> [TopMarketInfoRecord] {
+        try! dbPool.read { db in
+            try TopMarketInfoRecord.filter(TopMarketInfoRecord.Columns.currencyCode == currencyCode).fetchAll(db)
+        }
+    }
+
+    func save(topMarketInfoRecords: [TopMarketInfoRecord]) {
+        _ = try! dbPool.write { db in
+            for marketInfo in topMarketInfoRecords {
+                try marketInfo.insert(db)
             }
         }
     }

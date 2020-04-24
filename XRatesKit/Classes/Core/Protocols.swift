@@ -45,6 +45,34 @@ protocol IMarketInfoSchedulerProvider {
     func notifyExpired()
 }
 
+// TopMarkets
+
+protocol ITopMarketsManager {
+    func lastSyncTimestamp(currencyCode: String) -> TimeInterval?
+    func handleUpdated(records: [TopMarketInfoRecord])
+    func notifyExpired(currencyCode: String)
+    func topMarketInfos(currencyCode: String) -> [TopMarketInfo]
+}
+
+protocol ITopMarketsManagerDelegate: AnyObject {
+    func didUpdate(topMarketInfos: [TopMarketInfo])
+}
+
+protocol ITopMarketsProvider: class {
+    func getTopMarketInfoRecords(currencyCode: String) -> Single<[TopMarketInfoRecord]>
+}
+
+protocol ITopMarketsStorage {
+    func topMarketInfoRecords(currencyCode: String) -> [TopMarketInfoRecord]
+    func save(topMarketInfoRecords: [TopMarketInfoRecord])
+}
+
+protocol ITopMarketsSyncManager {
+    func set(currencyCode: String)
+    func refresh()
+    func topMarketsObservable() -> Observable<[TopMarketInfo]>
+}
+
 // Historical Rates
 
 protocol IHistoricalRateManager {

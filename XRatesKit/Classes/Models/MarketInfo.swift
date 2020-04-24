@@ -23,6 +23,17 @@ public struct MarketInfo {
         self.expirationInterval = expirationInterval
     }
 
+    init(timestamp: TimeInterval, rate: Decimal, open24hour: Decimal, diff: Decimal, volume: Decimal, marketCap: Decimal, supply: Decimal, expirationInterval: TimeInterval) {
+        self.timestamp = timestamp
+        self.rate = rate
+        self.open24hour = open24hour
+        self.diff = diff
+        self.volume = volume
+        self.marketCap = marketCap
+        self.supply = supply
+        self.expirationInterval = expirationInterval
+    }
+
     public var expired: Bool {
         Date().timeIntervalSince1970 - timestamp > expirationInterval
     }
