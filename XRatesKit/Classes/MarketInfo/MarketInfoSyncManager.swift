@@ -10,6 +10,9 @@ class MarketInfoSyncManager {
     private var currencySubjects = [String: PublishSubject<[String: MarketInfo]>]()
     private var scheduler: IMarketInfoScheduler?
 
+    private let topMarketsSubject = PublishSubject<[MarketInfo]>()
+    private var topMarketsSubscriptionsCount = 0
+
     private let queue = DispatchQueue(label: "io.horizontalsystems.x_rates_kit.market_info_sync_manager", qos: .userInitiated)
 
     init(currencyCode: String, schedulerFactory: MarketInfoSchedulerFactory) {
@@ -45,7 +48,23 @@ class MarketInfoSyncManager {
         }
 
         scheduler = schedulerFactory.scheduler(coinCodes: coinCodes, currencyCode: currencyCode)
+        addMarketsInfoSyncer()
+        if topMarketsSubscriptionsCount > 1 {
+            addTopMarketsSyncer()
+        }
         scheduler?.schedule()
+    }
+
+    private func addMarketsInfoSyncer() {
+        scheduler?.syncers["MarketInfo"] = schedulerFactory.marketInfoSyncer(coinCodes: coinCodes, currencyCode: currencyCode)
+    }
+
+    private func addTopMarketsSyncer() {
+        scheduler?.syncers["TopMarkets"] = schedulerFactory.topMarketsSyncer(currencyCode: currencyCode)
+    }
+
+    private func removeTopMarketsSyncer() {
+        scheduler?.syncers.removeValue(forKey: "TopMarkets")
     }
 
 }
@@ -78,6 +97,36 @@ extension MarketInfoSyncManager: IMarketInfoSyncManager {
         }
     }
 
+    func topMarketsObservable() -> Observable<[MarketInfo]> {
+        topMarketsSubject
+                .do(
+                        onSubscribed: { [weak self] in
+                            guard let _self = self else {
+                                return
+                            }
+
+                            _self.topMarketsSubscriptionsCount = _self.topMarketsSubscriptionsCount + 1
+
+                            if _self.topMarketsSubscriptionsCount == 1 {
+                                _self.addTopMarketsSyncer()
+                                _self.scheduler?.forceSchedule()
+                            }
+                        },
+                        onDispose: { [weak self] in
+                            guard let _self = self else {
+                                return
+                            }
+
+                            _self.topMarketsSubscriptionsCount = _self.topMarketsSubscriptionsCount - 1
+
+                            if _self.topMarketsSubscriptionsCount <= 0 {
+                                _self.removeTopMarketsSyncer()
+                            }
+                        }
+                )
+                .asObservable()
+    }
+
 }
 
 extension MarketInfoSyncManager: IMarketInfoManagerDelegate {
@@ -91,6 +140,16 @@ extension MarketInfoSyncManager: IMarketInfoManagerDelegate {
     func didUpdate(marketInfos: [String: MarketInfo], currencyCode: String) {
         queue.async {
             self.currencySubjects[currencyCode]?.onNext(marketInfos)
+        }
+    }
+
+}
+
+extension MarketInfoSyncManager: ITopMarketsManagerDelegate {
+
+    func didUpdate(topMarketInfos: [MarketInfo]) {
+        queue.async {
+            self.topMarketsSubject.onNext(topMarketInfos)
         }
     }
 

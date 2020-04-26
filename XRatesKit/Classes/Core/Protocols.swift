@@ -3,7 +3,6 @@ import RxSwift
 // Market Info
 
 protocol IMarketInfoManager {
-    func lastSyncTimestamp(coinCodes: [String], currencyCode: String) -> TimeInterval?
     func marketInfo(key: PairKey) -> MarketInfo?
     func handleUpdated(records: [MarketInfoRecord], currencyCode: String)
     func notifyExpired(coinCodes: [String], currencyCode: String)
@@ -16,12 +15,15 @@ protocol IMarketInfoManagerDelegate: AnyObject {
 
 protocol IMarketInfoProvider: class {
     func getMarketInfoRecords(coinCodes: [String], currencyCode: String) -> Single<[MarketInfoRecord]>
+    func getTopMarketInfoRecords(currencyCode: String) -> Single<[MarketInfoRecord]>
 }
 
 protocol IMarketInfoStorage {
     func marketInfoRecord(key: PairKey) -> MarketInfoRecord?
     func marketInfoRecordsSortedByTimestamp(coinCodes: [String], currencyCode: String) -> [MarketInfoRecord]
+    func topMarketInfoRecords(currencyCode: String) -> [MarketInfoRecord]
     func save(marketInfoRecords: [MarketInfoRecord])
+    func save(topMarketInfoRecords: [MarketInfoRecord])
 }
 
 protocol IMarketInfoSyncManager {
@@ -30,9 +32,11 @@ protocol IMarketInfoSyncManager {
     func refresh()
     func marketInfoObservable(key: PairKey) -> Observable<MarketInfo>
     func marketInfosObservable(currencyCode: String) -> Observable<[String: MarketInfo]>
+    func topMarketsObservable() -> Observable<[MarketInfo]>
 }
 
 protocol IMarketInfoScheduler {
+    var syncers: [String: IMarketInfoSyncer] { get set }
     func schedule()
     func forceSchedule()
 }
@@ -41,36 +45,21 @@ protocol IMarketInfoSchedulerProvider {
     var lastSyncTimestamp: TimeInterval? { get }
     var expirationInterval: TimeInterval { get }
     var retryInterval: TimeInterval { get }
+}
+
+protocol IMarketInfoSyncer {
     var syncSingle: Single<Void> { get }
     func notifyExpired()
 }
 
-// TopMarkets
-
 protocol ITopMarketsManager {
-    func lastSyncTimestamp(currencyCode: String) -> TimeInterval?
-    func handleUpdated(records: [TopMarketInfoRecord])
+    func handleUpdated(records: [MarketInfoRecord])
     func notifyExpired(currencyCode: String)
-    func topMarketInfos(currencyCode: String) -> [TopMarketInfo]
+    func topMarketInfos(currencyCode: String) -> [MarketInfo]
 }
 
 protocol ITopMarketsManagerDelegate: AnyObject {
-    func didUpdate(topMarketInfos: [TopMarketInfo])
-}
-
-protocol ITopMarketsProvider: class {
-    func getTopMarketInfoRecords(currencyCode: String) -> Single<[TopMarketInfoRecord]>
-}
-
-protocol ITopMarketsStorage {
-    func topMarketInfoRecords(currencyCode: String) -> [TopMarketInfoRecord]
-    func save(topMarketInfoRecords: [TopMarketInfoRecord])
-}
-
-protocol ITopMarketsSyncManager {
-    func set(currencyCode: String)
-    func refresh()
-    func topMarketsObservable() -> Observable<[TopMarketInfo]>
+    func didUpdate(topMarketInfos: [MarketInfo])
 }
 
 // Historical Rates

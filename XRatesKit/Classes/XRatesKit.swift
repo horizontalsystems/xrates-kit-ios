@@ -2,20 +2,17 @@ import RxSwift
 
 public class XRatesKit {
     private let marketInfoManager: IMarketInfoManager
-    private let marketInfoSyncManager: IMarketInfoSyncManager
     private let topMarketsManager: ITopMarketsManager
-    private let topMarketsSyncManager: ITopMarketsSyncManager
+    private let marketInfoSyncManager: IMarketInfoSyncManager
     private let historicalRateManager: IHistoricalRateManager
     private let chartInfoManager: IChartInfoManager
     private let chartInfoSyncManager: IChartInfoSyncManager
     private let newsPostsManager: INewsManager
 
-    init(marketInfoManager: IMarketInfoManager, marketInfoSyncManager: IMarketInfoSyncManager,
-         topMarketsManager: ITopMarketsManager, topMarketsSyncManager: ITopMarketsSyncManager,
+    init(marketInfoManager: IMarketInfoManager, topMarketsManager: ITopMarketsManager, marketInfoSyncManager: IMarketInfoSyncManager,
          historicalRateManager: IHistoricalRateManager, chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager,
          newsPostsManager: INewsManager) {
         self.topMarketsManager = topMarketsManager
-        self.topMarketsSyncManager = topMarketsSyncManager
         self.marketInfoManager = marketInfoManager
         self.marketInfoSyncManager = marketInfoSyncManager
         self.historicalRateManager = historicalRateManager
@@ -38,7 +35,6 @@ extension XRatesKit {
 
     public func set(currencyCode: String) {
         marketInfoSyncManager.set(currencyCode: currencyCode)
-        topMarketsSyncManager.set(currencyCode: currencyCode)
     }
 
     public func marketInfo(coinCode: String, currencyCode: String) -> MarketInfo? {
@@ -53,11 +49,11 @@ extension XRatesKit {
         marketInfoSyncManager.marketInfosObservable(currencyCode: currencyCode)
     }
 
-    public func topMarketInfosObservable() -> Observable<[TopMarketInfo]> {
-        topMarketsSyncManager.topMarketsObservable()
+    public func topMarketInfosObservable() -> Observable<[MarketInfo]> {
+        marketInfoSyncManager.topMarketsObservable()
     }
 
-    public func topMarketInfos(currencyCode: String) -> [TopMarketInfo] {
+    public func topMarketInfos(currencyCode: String) -> [MarketInfo] {
         topMarketsManager.topMarketInfos(currencyCode: currencyCode)
     }
 
@@ -89,7 +85,7 @@ extension XRatesKit {
 
 extension XRatesKit {
 
-    public static func instance(currencyCode: String, marketInfoExpirationInterval: TimeInterval = 5 * 60, topMarketsExpirationInterval: TimeInterval = 5 * 60, topMarketsCount: Int = 10, retryInterval: TimeInterval = 30, minLogLevel: Logger.Level = .verbose) -> XRatesKit {
+    public static func instance(currencyCode: String, marketInfoExpirationInterval: TimeInterval = 5 * 60, topMarketsCount: Int = 10, retryInterval: TimeInterval = 30, minLogLevel: Logger.Level = .error) -> XRatesKit {
         let logger = Logger(minLogLevel: minLogLevel)
 
         let reachabilityManager = ReachabilityManager()
@@ -100,14 +96,11 @@ extension XRatesKit {
         let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, baseUrl: "https://min-api.cryptocompare.com", timeoutInterval: 10, topMarketsCount: topMarketsCount)
 
         let marketInfoManager = MarketInfoManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
-        let marketInfoSchedulerFactory = MarketInfoSchedulerFactory(manager: marketInfoManager, provider: cryptoCompareProvider, reachabilityManager: reachabilityManager, expirationInterval: marketInfoExpirationInterval, retryInterval: retryInterval, logger: logger)
+        let topMarketsManager = TopMarketsManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
+        let marketInfoSchedulerFactory = MarketInfoSchedulerFactory(marketsInfoManager: marketInfoManager, topMarketsManager: topMarketsManager, provider: cryptoCompareProvider, storage: storage, reachabilityManager: reachabilityManager, expirationInterval: marketInfoExpirationInterval, retryInterval: retryInterval, logger: logger)
         let marketInfoSyncManager = MarketInfoSyncManager(currencyCode: currencyCode, schedulerFactory: marketInfoSchedulerFactory)
         marketInfoManager.delegate = marketInfoSyncManager
-
-        let topMarketsManager = TopMarketsManager(storage: storage, expirationInterval: topMarketsExpirationInterval)
-        let topMarketsSchedulerFactory = TopMarketsSchedulerFactory(manager: topMarketsManager, provider: cryptoCompareProvider, reachabilityManager: reachabilityManager, expirationInterval: topMarketsExpirationInterval, retryInterval: retryInterval, logger: logger)
-        let topMarketsSyncManager = TopMarketsSyncManager(currencyCode: currencyCode, schedulerFactory: topMarketsSchedulerFactory)
-        topMarketsManager.delegate = topMarketsSyncManager
+        topMarketsManager.delegate = marketInfoSyncManager
 
         let historicalRateManager = HistoricalRateManager(storage: storage, provider: cryptoCompareProvider)
 
@@ -121,9 +114,8 @@ extension XRatesKit {
 
         let kit = XRatesKit(
                 marketInfoManager: marketInfoManager,
-                marketInfoSyncManager: marketInfoSyncManager,
                 topMarketsManager: topMarketsManager,
-                topMarketsSyncManager: topMarketsSyncManager,
+                marketInfoSyncManager: marketInfoSyncManager,
                 historicalRateManager: historicalRateManager,
                 chartInfoManager: chartInfoManager,
                 chartInfoSyncManager: chartInfoSyncManager,
