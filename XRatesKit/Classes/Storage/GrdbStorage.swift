@@ -74,23 +74,10 @@ class GrdbStorage {
             }
         }
 
-        migrator.registerMigration("createTopMarketInfo") { db in
-            try db.create(table: TopMarketInfoRecord.databaseTableName) { t in
-                t.column(TopMarketInfoRecord.Columns.coinCode.name, .text).notNull()
-                t.column(TopMarketInfoRecord.Columns.coinName.name, .text).notNull()
-                t.column(TopMarketInfoRecord.Columns.currencyCode.name, .text).notNull()
-                t.column(TopMarketInfoRecord.Columns.timestamp.name, .double).notNull()
-                t.column(TopMarketInfoRecord.Columns.rate.name, .text).notNull()
-                t.column(TopMarketInfoRecord.Columns.open24Hour.name, .text).notNull()
-                t.column(TopMarketInfoRecord.Columns.diff.name, .text).notNull()
-                t.column(TopMarketInfoRecord.Columns.volume.name, .text).notNull()
-                t.column(TopMarketInfoRecord.Columns.marketCap.name, .text).notNull()
-                t.column(TopMarketInfoRecord.Columns.supply.name, .text).notNull()
-
-                t.primaryKey([
-                    TopMarketInfoRecord.Columns.coinCode.name,
-                    TopMarketInfoRecord.Columns.currencyCode.name,
-                ], onConflict: .replace)
+        migrator.registerMigration("addCoinNameToMarketInfo") { db in
+            try db.alter(table: MarketInfoRecord.databaseTableName) { t in
+                t.add(column: MarketInfoRecord.Columns.coinName.name, .text)
+                t.add(column: MarketInfoRecord.Columns.topByMarketCap.name, .boolean).notNull().defaults(to: false)
             }
         }
 
@@ -116,6 +103,12 @@ extension GrdbStorage: IMarketInfoStorage {
         }
     }
 
+    func topMarketInfoRecords(currencyCode: String) -> [MarketInfoRecord] {
+        try! dbPool.read { db in
+            try MarketInfoRecord.filter(MarketInfoRecord.Columns.currencyCode == currencyCode && MarketInfoRecord.Columns.topByMarketCap == true).fetchAll(db)
+        }
+    }
+
     func save(marketInfoRecords: [MarketInfoRecord]) {
         _ = try! dbPool.write { db in
             for rate in marketInfoRecords {
@@ -124,17 +117,7 @@ extension GrdbStorage: IMarketInfoStorage {
         }
     }
 
-}
-
-extension GrdbStorage: ITopMarketsStorage {
-
-    func topMarketInfoRecords(currencyCode: String) -> [TopMarketInfoRecord] {
-        try! dbPool.read { db in
-            try TopMarketInfoRecord.filter(TopMarketInfoRecord.Columns.currencyCode == currencyCode).fetchAll(db)
-        }
-    }
-
-    func save(topMarketInfoRecords: [TopMarketInfoRecord]) {
+    func save(topMarketInfoRecords: [MarketInfoRecord]) {
         _ = try! dbPool.write { db in
             for marketInfo in topMarketInfoRecords {
                 try marketInfo.insert(db)

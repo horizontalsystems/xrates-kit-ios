@@ -83,23 +83,19 @@ extension CryptoCompareProvider: IMarketInfoProvider {
         return single
     }
 
-}
-
-extension CryptoCompareProvider: ITopMarketsProvider {
-
-    func getTopMarketInfoRecords(currencyCode: String) -> Single<[TopMarketInfoRecord]> {
+    func getTopMarketInfoRecords(currencyCode: String) -> Single<[MarketInfoRecord]> {
         let urlString = topMarketInfosUrl(currencyCode: currencyCode)
 
-        let single: Single<[TopMarketInfoRecord]> = networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: timeoutInterval)
-                .map { (response: CryptoCompareTopMarketInfosResponse) -> [TopMarketInfoRecord] in
-                    var records = [TopMarketInfoRecord]()
+        let single: Single<[MarketInfoRecord]> = networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: timeoutInterval)
+                .map { (response: CryptoCompareTopMarketInfosResponse) -> [MarketInfoRecord] in
+                    var records = [MarketInfoRecord]()
 
                     guard let values = response.values[currencyCode] else {
                         return []
                     }
 
                     for value in values {
-                        let record = TopMarketInfoRecord(coinCode: value.coinCode, coinName: value.coinName, currencyCode: currencyCode, response: value.marketInfo)
+                        let record = MarketInfoRecord(coinCode: value.coinCode, currencyCode: currencyCode, coinName: value.coinName, topByMarketCap: true, response: value.marketInfo)
                         records.append(record)
                     }
 
