@@ -67,6 +67,22 @@ class MarketInfoSyncManager {
         scheduler?.syncers.removeValue(forKey: "TopMarkets")
     }
 
+    private func topMarketsSubscriptionAdded() {
+        topMarketsSubscriptionsCount = topMarketsSubscriptionsCount + 1
+
+        if topMarketsSubscriptionsCount == 1 {
+            addTopMarketsSyncer()
+            scheduler?.forceSchedule()
+        }
+    }
+
+    private func topMarketsSubscriptionRemoved() {
+        topMarketsSubscriptionsCount = topMarketsSubscriptionsCount - 1
+
+        if topMarketsSubscriptionsCount <= 0 {
+            removeTopMarketsSyncer()
+        }
+    }
 }
 
 extension MarketInfoSyncManager: IMarketInfoSyncManager {
@@ -100,29 +116,8 @@ extension MarketInfoSyncManager: IMarketInfoSyncManager {
     func topMarketsObservable() -> Observable<[MarketInfo]> {
         topMarketsSubject
                 .do(
-                        onSubscribed: { [weak self] in
-                            guard let _self = self else {
-                                return
-                            }
-
-                            _self.topMarketsSubscriptionsCount = _self.topMarketsSubscriptionsCount + 1
-
-                            if _self.topMarketsSubscriptionsCount == 1 {
-                                _self.addTopMarketsSyncer()
-                                _self.scheduler?.forceSchedule()
-                            }
-                        },
-                        onDispose: { [weak self] in
-                            guard let _self = self else {
-                                return
-                            }
-
-                            _self.topMarketsSubscriptionsCount = _self.topMarketsSubscriptionsCount - 1
-
-                            if _self.topMarketsSubscriptionsCount <= 0 {
-                                _self.removeTopMarketsSyncer()
-                            }
-                        }
+                        onSubscribed: { [weak self] in self?.topMarketsSubscriptionAdded() },
+                        onDispose: { [weak self] in self?.topMarketsSubscriptionRemoved() }
                 )
                 .asObservable()
     }
