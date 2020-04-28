@@ -2,7 +2,7 @@ import Foundation
 
 public struct MarketInfo {
     public let coinCode: String
-    public let coinName: String?
+    public let coinName: String
     public let timestamp: TimeInterval
     public let rate: Decimal
     public let open24hour: Decimal
@@ -14,7 +14,7 @@ public struct MarketInfo {
     private let expirationInterval: TimeInterval
 
     init(record: MarketInfoRecord, expirationInterval: TimeInterval) {
-        coinCode = record.key.coinCode
+        coinCode = record.coinCode
         coinName = record.coinName
         timestamp = record.timestamp
         rate = record.rate

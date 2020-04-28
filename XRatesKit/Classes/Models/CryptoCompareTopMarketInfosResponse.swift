@@ -1,12 +1,12 @@
 import ObjectMapper
 
 struct CryptoCompareTopMarketInfosResponse: ImmutableMappable {
-    let values: [String: [(coinCode: String, coinName: String, marketInfo: ResponseMarketInfo)]]
+    let values: [String: [(coin: Coin, marketInfo: ResponseMarketInfo)]]
 
     init(map: Map) throws {
         try CryptoCompareResponse.validate(map: map)
 
-        var values = [String: [(coinCode: String, coinName: String, marketInfo: ResponseMarketInfo)]]()
+        var values = [String: [(coin: Coin, marketInfo: ResponseMarketInfo)]]()
         let raw = map.JSON
 
         guard let rawArray = raw["Data"] as? [Any] else {
@@ -27,7 +27,7 @@ struct CryptoCompareTopMarketInfosResponse: ImmutableMappable {
 
             for (currencyCode, currencyCodeValue) in pricesDictionary {
                 if values[currencyCode] == nil {
-                    values[currencyCode] = [(coinCode: String, coinName: String, marketInfo: ResponseMarketInfo)]()
+                    values[currencyCode] = [(coin: Coin, marketInfo: ResponseMarketInfo)]()
                 }
 
                 guard let currencyCodeDictionary = currencyCodeValue as? [String: Any] else {
@@ -36,7 +36,7 @@ struct CryptoCompareTopMarketInfosResponse: ImmutableMappable {
 
                 let marketInfo = try ResponseMarketInfo(JSON: currencyCodeDictionary)
 
-                values[currencyCode]?.append((coinCode: coinCode, coinName: coinName, marketInfo: marketInfo))
+                values[currencyCode]?.append((coin: Coin(code: coinCode, title: coinName), marketInfo: marketInfo))
             }
         }
 

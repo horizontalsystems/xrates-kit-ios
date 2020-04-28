@@ -76,8 +76,7 @@ class GrdbStorage {
 
         migrator.registerMigration("addCoinNameToMarketInfo") { db in
             try db.alter(table: MarketInfoRecord.databaseTableName) { t in
-                t.add(column: MarketInfoRecord.Columns.coinName.name, .text)
-                t.add(column: MarketInfoRecord.Columns.topByMarketCap.name, .boolean).notNull().defaults(to: false)
+                t.add(column: MarketInfoRecord.Columns.coinName.name, .text).notNull().defaults(to: "")
             }
         }
 
@@ -103,15 +102,23 @@ extension GrdbStorage: IMarketInfoStorage {
         }
     }
 
-    func topMarketInfoRecords(currencyCode: String) -> [MarketInfoRecord] {
-        try! dbPool.read { db in
-            try MarketInfoRecord.filter(MarketInfoRecord.Columns.currencyCode == currencyCode && MarketInfoRecord.Columns.topByMarketCap == true).fetchAll(db)
+    func topMarketInfoRecordsSortedByMarketCap(currencyCode: String, limit: Int) -> [MarketInfoRecord] {
+        let records = try! dbPool.read { db in
+            try MarketInfoRecord
+                    .filter(MarketInfoRecord.Columns.currencyCode == currencyCode)
+                    .fetchAll(db)
         }
+
+        return Array(records.sorted(by: { $0.marketCap > $1.marketCap }).prefix(limit))
     }
 
     func save(marketInfoRecords: [MarketInfoRecord]) {
         _ = try! dbPool.write { db in
             for rate in marketInfoRecords {
+                if let old = marketInfoRecord(key: rate.key) {
+                    rate.coinName = old.coinName
+                }
+
                 try rate.insert(db)
             }
         }

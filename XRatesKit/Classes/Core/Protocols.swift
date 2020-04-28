@@ -21,7 +21,7 @@ protocol IMarketInfoProvider: class {
 protocol IMarketInfoStorage {
     func marketInfoRecord(key: PairKey) -> MarketInfoRecord?
     func marketInfoRecordsSortedByTimestamp(coinCodes: [String], currencyCode: String) -> [MarketInfoRecord]
-    func topMarketInfoRecords(currencyCode: String) -> [MarketInfoRecord]
+    func topMarketInfoRecordsSortedByMarketCap(currencyCode: String, limit: Int) -> [MarketInfoRecord]
     func save(marketInfoRecords: [MarketInfoRecord])
     func save(topMarketInfoRecords: [MarketInfoRecord])
 }

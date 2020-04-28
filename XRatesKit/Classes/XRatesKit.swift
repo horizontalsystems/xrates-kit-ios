@@ -96,7 +96,7 @@ extension XRatesKit {
         let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, baseUrl: "https://min-api.cryptocompare.com", timeoutInterval: 10, topMarketsCount: topMarketsCount)
 
         let marketInfoManager = MarketInfoManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
-        let topMarketsManager = TopMarketsManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
+        let topMarketsManager = TopMarketsManager(storage: storage, expirationInterval: marketInfoExpirationInterval, marketsCount: topMarketsCount)
         let marketInfoSchedulerFactory = MarketInfoSchedulerFactory(marketsInfoManager: marketInfoManager, topMarketsManager: topMarketsManager, provider: cryptoCompareProvider, storage: storage, reachabilityManager: reachabilityManager, expirationInterval: marketInfoExpirationInterval, retryInterval: retryInterval, logger: logger)
         let marketInfoSyncManager = MarketInfoSyncManager(currencyCode: currencyCode, schedulerFactory: marketInfoSchedulerFactory)
         marketInfoManager.delegate = marketInfoSyncManager

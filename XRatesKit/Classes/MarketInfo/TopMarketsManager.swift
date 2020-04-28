@@ -5,10 +5,12 @@ class TopMarketsManager {
 
     private let storage: IMarketInfoStorage
     private let expirationInterval: TimeInterval
+    private let marketsCount: Int
 
-    init(storage: IMarketInfoStorage, expirationInterval: TimeInterval) {
+    init(storage: IMarketInfoStorage, expirationInterval: TimeInterval, marketsCount: Int) {
         self.storage = storage
         self.expirationInterval = expirationInterval
+        self.marketsCount = marketsCount
     }
 
     private func topMarketInfo(record: MarketInfoRecord) -> MarketInfo {
@@ -31,12 +33,12 @@ extension TopMarketsManager: ITopMarketsManager {
     }
 
     func notifyExpired(currencyCode: String) {
-        let records = storage.topMarketInfoRecords(currencyCode: currencyCode)
+        let records = storage.topMarketInfoRecordsSortedByMarketCap(currencyCode: currencyCode, limit: marketsCount)
         notify(records: records)
     }
 
     func topMarketInfos(currencyCode: String) -> [MarketInfo] {
-        storage.topMarketInfoRecords(currencyCode: currencyCode).map { topMarketInfo(record: $0) }
+        storage.topMarketInfoRecordsSortedByMarketCap(currencyCode: currencyCode, limit: marketsCount).map { topMarketInfo(record: $0) }
     }
 
 }
