@@ -21,7 +21,7 @@ class MarketInfoManager {
         records.forEach { record in
             let info = marketInfo(record: record)
             delegate?.didUpdate(marketInfo: info, key: record.key)
-            marketInfos[record.key.coinCode] = info
+            marketInfos[record.coinCode] = info
         }
 
         delegate?.didUpdate(marketInfos: marketInfos, currencyCode: currencyCode)

@@ -16,7 +16,7 @@ class MarketInfoSyncer {
     private func handle(updatedRecords: [MarketInfoRecord]) {
         coinCodes.removeAll { coinCode in
             !updatedRecords.contains { record in
-                record.key.coinCode == coinCode
+                record.coinCode == coinCode
             }
         }
 

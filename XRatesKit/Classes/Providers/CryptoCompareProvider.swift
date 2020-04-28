@@ -71,7 +71,7 @@ extension CryptoCompareProvider: IMarketInfoProvider {
 
                         for (coinCode, values) in response.values {
                             for (currencyCode, marketInfoResponse) in values {
-                                let record = MarketInfoRecord(coinCode: coinCode, currencyCode: currencyCode, response: marketInfoResponse)
+                                let record = MarketInfoRecord(coin: Coin(code: coinCode, title: ""), currencyCode: currencyCode, response: marketInfoResponse)
                                 records.append(record)
                             }
                         }
@@ -95,7 +95,7 @@ extension CryptoCompareProvider: IMarketInfoProvider {
                     }
 
                     for value in values {
-                        let record = MarketInfoRecord(coinCode: value.coinCode, currencyCode: currencyCode, coinName: value.coinName, topByMarketCap: true, response: value.marketInfo)
+                        let record = MarketInfoRecord(coin: value.coin, currencyCode: currencyCode, response: value.marketInfo)
                         records.append(record)
                     }
 
