@@ -3,17 +3,20 @@ import Foundation
 class MarketInfoSchedulerFactory {
     private let marketInfoManager: IMarketInfoManager
     private let topMarketsManager: ITopMarketsManager
-    private let provider: IMarketInfoProvider
+    private let marketInfoProvider: IMarketInfoProvider
+    private let topMarketsProvider: ITopMarketsProvider
     private let storage: IMarketInfoStorage
     private let reachabilityManager: IReachabilityManager
     private let expirationInterval: TimeInterval
     private let retryInterval: TimeInterval
     private var logger: Logger?
 
-    init(marketsInfoManager: IMarketInfoManager, topMarketsManager: ITopMarketsManager, provider: IMarketInfoProvider, storage: IMarketInfoStorage, reachabilityManager: IReachabilityManager, expirationInterval: TimeInterval, retryInterval: TimeInterval, logger: Logger? = nil) {
+    init(marketsInfoManager: IMarketInfoManager, topMarketsManager: ITopMarketsManager, marketInfoProvider: IMarketInfoProvider, topMarketsProvider: ITopMarketsProvider,
+         storage: IMarketInfoStorage, reachabilityManager: IReachabilityManager, expirationInterval: TimeInterval, retryInterval: TimeInterval, logger: Logger? = nil) {
         self.marketInfoManager = marketsInfoManager
         self.topMarketsManager = topMarketsManager
-        self.provider = provider
+        self.marketInfoProvider = marketInfoProvider
+        self.topMarketsProvider = topMarketsProvider
         self.storage = storage
         self.reachabilityManager = reachabilityManager
         self.expirationInterval = expirationInterval
@@ -34,10 +37,10 @@ class MarketInfoSchedulerFactory {
     }
 
     func marketInfoSyncer(coinCodes: [String], currencyCode: String) -> IMarketInfoSyncer {
-        MarketInfoSyncer(coinCodes: coinCodes, currencyCode: currencyCode, provider: provider, manager: marketInfoManager)
+        MarketInfoSyncer(coinCodes: coinCodes, currencyCode: currencyCode, provider: marketInfoProvider, manager: marketInfoManager)
     }
 
     func topMarketsSyncer(currencyCode: String) -> IMarketInfoSyncer {
-        TopMarketsSyncer(currencyCode: currencyCode, provider: provider, manager: topMarketsManager)
+        TopMarketsSyncer(currencyCode: currencyCode, provider: topMarketsProvider, manager: topMarketsManager)
     }
 }

@@ -85,7 +85,7 @@ extension XRatesKit {
 
 extension XRatesKit {
 
-    public static func instance(currencyCode: String, marketInfoExpirationInterval: TimeInterval = 5 * 60, topMarketsCount: Int = 10, retryInterval: TimeInterval = 30, minLogLevel: Logger.Level = .error) -> XRatesKit {
+    public static func instance(currencyCode: String, coinMarketCapApiKey: String? = nil, marketInfoExpirationInterval: TimeInterval = 5 * 60, topMarketsCount: Int = 10, retryInterval: TimeInterval = 30, minLogLevel: Logger.Level = .error) -> XRatesKit {
         let logger = Logger(minLogLevel: minLogLevel)
 
         let reachabilityManager = ReachabilityManager()
@@ -93,24 +93,31 @@ extension XRatesKit {
         let storage = GrdbStorage()
 
         let networkManager = NetworkManager(logger: logger)
-        let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, baseUrl: "https://min-api.cryptocompare.com", timeoutInterval: 10, topMarketsCount: topMarketsCount)
+        let mainProvider = CryptoCompareProvider(networkManager: networkManager, baseUrl: "https://min-api.cryptocompare.com", timeoutInterval: 10, topMarketsCount: topMarketsCount)
+        let topMarketsProvider: ITopMarketsProvider
+
+        if let coinMarketCapApiKey = coinMarketCapApiKey {
+            topMarketsProvider = CoinMarketCapProvider(apiKey: coinMarketCapApiKey, marketInfoProvider: mainProvider, networkManager: networkManager, timeoutInterval: 10, topMarketsCount: topMarketsCount)
+        } else {
+            topMarketsProvider = mainProvider
+        }
 
         let marketInfoManager = MarketInfoManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
         let topMarketsManager = TopMarketsManager(storage: storage, expirationInterval: marketInfoExpirationInterval, marketsCount: topMarketsCount)
-        let marketInfoSchedulerFactory = MarketInfoSchedulerFactory(marketsInfoManager: marketInfoManager, topMarketsManager: topMarketsManager, provider: cryptoCompareProvider, storage: storage, reachabilityManager: reachabilityManager, expirationInterval: marketInfoExpirationInterval, retryInterval: retryInterval, logger: logger)
+        let marketInfoSchedulerFactory = MarketInfoSchedulerFactory(marketsInfoManager: marketInfoManager, topMarketsManager: topMarketsManager, marketInfoProvider: mainProvider, topMarketsProvider: topMarketsProvider, storage: storage, reachabilityManager: reachabilityManager, expirationInterval: marketInfoExpirationInterval, retryInterval: retryInterval, logger: logger)
         let marketInfoSyncManager = MarketInfoSyncManager(currencyCode: currencyCode, schedulerFactory: marketInfoSchedulerFactory)
         marketInfoManager.delegate = marketInfoSyncManager
         topMarketsManager.delegate = marketInfoSyncManager
 
-        let historicalRateManager = HistoricalRateManager(storage: storage, provider: cryptoCompareProvider)
+        let historicalRateManager = HistoricalRateManager(storage: storage, provider: mainProvider)
 
         let chartInfoManager = ChartInfoManager(storage: storage, marketInfoManager: marketInfoManager)
-        let chartPointSchedulerFactory = ChartPointSchedulerFactory(manager: chartInfoManager, provider: cryptoCompareProvider, reachabilityManager: reachabilityManager, retryInterval: retryInterval, logger: logger)
+        let chartPointSchedulerFactory = ChartPointSchedulerFactory(manager: chartInfoManager, provider: mainProvider, reachabilityManager: reachabilityManager, retryInterval: retryInterval, logger: logger)
         let chartInfoSyncManager = ChartInfoSyncManager(schedulerFactory: chartPointSchedulerFactory, chartInfoManager: chartInfoManager, marketInfoSyncManager: marketInfoSyncManager)
 
         chartInfoManager.delegate = chartInfoSyncManager
 
-        let newsPostManager = NewsManager(provider: cryptoCompareProvider, state: NewsState(expirationTime: 30 * 60))
+        let newsPostManager = NewsManager(provider: mainProvider, state: NewsState(expirationTime: 30 * 60))
 
         let kit = XRatesKit(
                 marketInfoManager: marketInfoManager,
