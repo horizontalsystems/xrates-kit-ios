@@ -62,7 +62,7 @@ class NetworkManager {
 
 extension NetworkManager {
 
-    func single<T>(urlString: String, httpMethod: HTTPMethod, basicAuth: (user: String, password: String)? = nil, parameters: [String: Any]?, timoutInterval: TimeInterval = 30, mapper: @escaping (Any) throws -> T) -> Single<T> {
+    func single<T>(urlString: String, httpMethod: HTTPMethod, basicAuth: (user: String, password: String)? = nil, headers: [String: String]? = nil, parameters: [String: Any]?, timoutInterval: TimeInterval = 30, mapper: @escaping (Any) throws -> T) -> Single<T> {
         guard let url = URL(string: urlString) else {
             return Single.error(NetworkError.invalidUrl)
         }
@@ -76,6 +76,12 @@ extension NetworkManager {
             urlRequest.setValue(header.value, forHTTPHeaderField: header.key)
         }
 
+        if let headers = headers {
+            for (key, value) in headers {
+                urlRequest.setValue(value, forHTTPHeaderField: key)
+            }
+        }
+
         let request = Request(urlRequest: urlRequest, encoding: httpMethod == .get ? URLEncoding.default : JSONEncoding.default, parameters: parameters)
 
         return single(forRequest: request, mapper: mapper)
@@ -84,8 +90,8 @@ extension NetworkManager {
                 })
     }
 
-    func single<T: ImmutableMappable>(urlString: String, httpMethod: HTTPMethod, parameters: [String: Any]? = nil, timoutInterval: TimeInterval = 30) -> Single<T> {
-        single(urlString: urlString, httpMethod: httpMethod, parameters: parameters, timoutInterval: timoutInterval) { response throws -> T in
+    func single<T: ImmutableMappable>(urlString: String, httpMethod: HTTPMethod, headers: [String: String]? = nil, parameters: [String: Any]? = nil, timoutInterval: TimeInterval = 30) -> Single<T> {
+        single(urlString: urlString, httpMethod: httpMethod, headers: headers, parameters: parameters, timoutInterval: timoutInterval) { response throws -> T in
             guard let jsonObject = response as? [String: Any] else {
                 throw NetworkError.mappingError
             }

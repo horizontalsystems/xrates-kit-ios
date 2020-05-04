@@ -83,6 +83,10 @@ extension CryptoCompareProvider: IMarketInfoProvider {
         return single
     }
 
+}
+
+extension CryptoCompareProvider: ITopMarketsProvider {
+
     func getTopMarketInfoRecords(currencyCode: String) -> Single<[MarketInfoRecord]> {
         let urlString = topMarketInfosUrl(currencyCode: currencyCode)
 

@@ -3,9 +3,9 @@ import RxSwift
 class TopMarketsSyncer {
     private let currencyCode: String
     private let manager: ITopMarketsManager
-    private let provider: IMarketInfoProvider
+    private let provider: ITopMarketsProvider
 
-    init(currencyCode: String, provider: IMarketInfoProvider, manager: ITopMarketsManager) {
+    init(currencyCode: String, provider: ITopMarketsProvider, manager: ITopMarketsManager) {
         self.currencyCode = currencyCode
         self.manager = manager
         self.provider = provider

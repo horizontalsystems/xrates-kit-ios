@@ -15,6 +15,9 @@ protocol IMarketInfoManagerDelegate: AnyObject {
 
 protocol IMarketInfoProvider: class {
     func getMarketInfoRecords(coinCodes: [String], currencyCode: String) -> Single<[MarketInfoRecord]>
+}
+
+protocol ITopMarketsProvider {
     func getTopMarketInfoRecords(currencyCode: String) -> Single<[MarketInfoRecord]>
 }
 
