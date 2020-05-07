@@ -3,6 +3,7 @@ use_modular_headers!
 
 target 'XRatesKitExample' do
   pod 'XRatesKit.swift', :path => '../'
+  pod 'HsToolKit.swift', git: 'https://github.com/horizontalsystems/hs-tool-kit-ios'
 
   pod 'SnapKit'
   pod 'Chart.swift'

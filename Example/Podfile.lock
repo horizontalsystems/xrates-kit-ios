@@ -1,17 +1,21 @@
 PODS:
-  - Alamofire (4.9.1)
+  - Alamofire (5.1.0)
   - Chart.swift (1.2):
     - SnapKit (~> 5.0)
-  - GRDB.swift (4.11.0):
-    - GRDB.swift/standard (= 4.11.0)
-  - GRDB.swift/standard (4.11.0)
+  - GRDB.swift (4.14.0):
+    - GRDB.swift/standard (= 4.14.0)
+  - GRDB.swift/standard (4.14.0)
+  - HsToolKit.swift (1.0):
+    - Alamofire (~> 5.0)
+    - ObjectMapper (~> 3.0)
+    - RxSwift (~> 5.0)
   - ObjectMapper (3.5.2)
-  - RxCocoa (5.1.0):
+  - RxCocoa (5.1.1):
     - RxRelay (~> 5)
     - RxSwift (~> 5)
-  - RxRelay (5.1.0):
+  - RxRelay (5.1.1):
     - RxSwift (~> 5)
-  - RxSwift (5.1.0)
+  - RxSwift (5.1.1)
   - RxSwiftExt (5.2.0):
     - RxSwiftExt/Core (= 5.2.0)
     - RxSwiftExt/RxCocoa (= 5.2.0)
@@ -22,14 +26,15 @@ PODS:
     - RxSwiftExt/Core
   - SnapKit (5.0.1)
   - XRatesKit.swift (0.5):
-    - Alamofire (~> 4.0)
     - GRDB.swift (~> 4.0)
+    - HsToolKit.swift (~> 1.0)
     - ObjectMapper (~> 3.5.2)
     - RxSwift (~> 5.0)
     - RxSwiftExt (~> 5)
 
 DEPENDENCIES:
   - Chart.swift
+  - HsToolKit.swift (from `https://github.com/horizontalsystems/hs-tool-kit-ios`)
   - SnapKit
   - XRatesKit.swift (from `../`)
 
@@ -46,21 +51,29 @@ SPEC REPOS:
     - SnapKit
 
 EXTERNAL SOURCES:
+  HsToolKit.swift:
+    :git: https://github.com/horizontalsystems/hs-tool-kit-ios
   XRatesKit.swift:
     :path: "../"
 
+CHECKOUT OPTIONS:
+  HsToolKit.swift:
+    :commit: 5800d2bd35c4ddb03cceac05343096ebe1b97d51
+    :git: https://github.com/horizontalsystems/hs-tool-kit-ios
+
 SPEC CHECKSUMS:
-  Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
+  Alamofire: 9d5c5f602928e512395b30950c5984eca840093c
   Chart.swift: 2634973317e2637347d160b99992b7b21cbf7644
-  GRDB.swift: 22e9d04cb732dfa9fa4440bc0bbb069ee8195183
+  GRDB.swift: 8cc3ab7c8b8b4ac1761deb8dca4b51c1c9d429f8
+  HsToolKit.swift: b89273c4018e3b70894e820c88cee8b684be9305
   ObjectMapper: b53ae947d370bf89423e86be7d4e2d2b2a8d3f40
-  RxCocoa: 13d2a4d7546a34b8ececae8c281e4ea1dbb94f2b
-  RxRelay: a168bd6caf712d00c676ac344e9295afc93b418e
-  RxSwift: ad5874f24bb0dbffd1e9bb8443604e3578796c7a
+  RxCocoa: 32065309a38d29b5b0db858819b5bf9ef038b601
+  RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
+  RxSwift: 81470a2074fa8780320ea5fe4102807cb7118178
   RxSwiftExt: 4ca80336f43c28f11a2825cdd2fc61dd6c044697
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
-  XRatesKit.swift: e7e4bf432961545cace5fe8be80a9fe3aef04b36
+  XRatesKit.swift: b09af5caafef556c489bf9b55b8c3dddbd710861
 
-PODFILE CHECKSUM: d8439d8c383e94827c017b9bea65356bdc87fc67
+PODFILE CHECKSUM: 09ceddc9ba237699ff4ff3920aa616534f1da670
 
 COCOAPODS: 1.9.1

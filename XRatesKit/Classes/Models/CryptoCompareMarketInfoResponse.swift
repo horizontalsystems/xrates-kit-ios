@@ -1,4 +1,5 @@
 import ObjectMapper
+import HsToolKit
 
 struct ResponseMarketInfo: ImmutableMappable {
     let timestamp: TimeInterval
@@ -40,19 +41,19 @@ struct CryptoCompareMarketInfoResponse: ImmutableMappable {
         let raw = map.JSON
 
         guard let rawDictionary = raw["RAW"] as? [String: Any] else {
-            throw CryptoCompareError.invalidData
+            throw NetworkManager.ObjectMapperError.mappingError
         }
 
         for (coinCode, coinCodeValue) in rawDictionary {
             guard let coinCodeDictionary = coinCodeValue as? [String: Any] else {
-                throw CryptoCompareError.invalidData
+                throw NetworkManager.ObjectMapperError.mappingError
             }
 
             var coinCodeValues = [String: ResponseMarketInfo]()
 
             for (currencyCode, currencyCodeValue) in coinCodeDictionary {
                 guard let currencyCodeDictionary = currencyCodeValue as? [String: Any] else {
-                    throw CryptoCompareError.invalidData
+                    throw NetworkManager.ObjectMapperError.mappingError
                 }
 
                 coinCodeValues[currencyCode] = try ResponseMarketInfo(JSON: currencyCodeDictionary)

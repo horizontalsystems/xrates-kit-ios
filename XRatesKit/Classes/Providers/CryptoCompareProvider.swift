@@ -1,5 +1,7 @@
 import RxSwift
 import RxSwiftExt
+import HsToolKit
+import Alamofire
 
 class CryptoCompareProvider {
 
@@ -47,25 +49,14 @@ class CryptoCompareProvider {
         return url
     }
 
-    private func singleWithRetry<T>(single: Single<T>) -> Single<T> {
-        single.asObservable()
-                .retry(.exponentialDelayed(maxCount: 3, initial: 3, multiplier: 1), scheduler: ConcurrentDispatchQueueScheduler(qos: .background)) { error in
-                    if let error = error as? CryptoCompareError, error == .rateLimitExceeded {
-                        return true
-                    }
-                    return false
-                }
-                .asSingle()
-    }
-
 }
 
 extension CryptoCompareProvider: IMarketInfoProvider {
 
     func getMarketInfoRecords(coinCodes: [String], currencyCode: String) -> Single<[MarketInfoRecord]> {
-        let urlString = marketInfoUrl(coinCodes: coinCodes, currencyCode: currencyCode)
+        let url = marketInfoUrl(coinCodes: coinCodes, currencyCode: currencyCode)
 
-        let single: Single<[MarketInfoRecord]> = networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: timeoutInterval)
+        return networkManager.single(request: networkManager.session.request(url, method: .get, interceptor: RateLimitRetrier()))
                     .map { (response: CryptoCompareMarketInfoResponse) -> [MarketInfoRecord] in
                         var records = [MarketInfoRecord]()
 
@@ -78,9 +69,6 @@ extension CryptoCompareProvider: IMarketInfoProvider {
 
                         return records
                     }
-
-//        return singleWithRetry(single: single)
-        return single
     }
 
 }
@@ -88,9 +76,9 @@ extension CryptoCompareProvider: IMarketInfoProvider {
 extension CryptoCompareProvider: ITopMarketsProvider {
 
     func getTopMarketInfoRecords(currencyCode: String) -> Single<[MarketInfoRecord]> {
-        let urlString = topMarketInfosUrl(currencyCode: currencyCode)
+        let url = topMarketInfosUrl(currencyCode: currencyCode)
 
-        let single: Single<[MarketInfoRecord]> = networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: timeoutInterval)
+        return networkManager.single(request: networkManager.session.request(url, method: .get, interceptor: RateLimitRetrier()))
                 .map { (response: CryptoCompareTopMarketInfosResponse) -> [MarketInfoRecord] in
                     var records = [MarketInfoRecord]()
 
@@ -105,8 +93,6 @@ extension CryptoCompareProvider: ITopMarketsProvider {
 
                     return records
                 }
-
-        return single
     }
 
 }
@@ -118,11 +104,12 @@ extension CryptoCompareProvider: IHistoricalRateProvider {
 
         let historicalType: HistoricalType = timestamp > Date().timeIntervalSince1970 - minuteThreshold ? .minute : .hour
 
-        let urlString = historicalRateUrl(coinCode: coinCode, currencyCode: currencyCode, historicalType: historicalType, timestamp: timestamp)
-        let single: Single<CryptoCompareHistoricalRateResponse> = networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: timeoutInterval)
+        let url = historicalRateUrl(coinCode: coinCode, currencyCode: currencyCode, historicalType: historicalType, timestamp: timestamp)
 
-        return singleWithRetry(single: single)
-                .map { $0.rateValue }
+        return networkManager.single(request: networkManager.session.request(url, method: .get, interceptor: RateLimitRetrier()))
+                .map { (response: CryptoCompareHistoricalRateResponse) -> Decimal in
+                    response.rateValue
+                }
     }
 
 }
@@ -130,14 +117,12 @@ extension CryptoCompareProvider: IHistoricalRateProvider {
 extension CryptoCompareProvider: IChartPointProvider {
 
     func chartPointsSingle(key: ChartInfoKey) -> Single<[ChartPoint]> {
-        let urlString = chartStatsUrl(key: key)
+        let url = chartStatsUrl(key: key)
 
-        let single: Single<[ChartPoint]> = networkManager.single(urlString: urlString, httpMethod: .get, timoutInterval: timeoutInterval)
+        return networkManager.single(request: networkManager.session.request(url, method: .get, interceptor: RateLimitRetrier()))
                 .map { (response: CryptoCompareChartStatsResponse) -> [ChartPoint] in
                     response.chartPoints
                 }
-
-        return singleWithRetry(single: single)
     }
 
 }
@@ -145,9 +130,46 @@ extension CryptoCompareProvider: IChartPointProvider {
 extension CryptoCompareProvider: INewsProvider {
 
     func newsSingle(for categories: String, latestTimestamp: TimeInterval?) -> Single<CryptoCompareNewsResponse> {
-        let single: Single<CryptoCompareNewsResponse> = networkManager.single(urlString: newsUrl(for: categories, latestTimeStamp: latestTimestamp), httpMethod: .get, timoutInterval: timeoutInterval)
+        let url = newsUrl(for: categories, latestTimeStamp: latestTimestamp)
 
-        return singleWithRetry(single: single)
+        return networkManager.single(request: networkManager.session.request(url, method: .get, interceptor: RateLimitRetrier()))
+    }
+
+}
+
+extension CryptoCompareProvider {
+
+    class RateLimitRetrier: RequestInterceptor {
+        private var attempt = 0
+
+        func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> ()) {
+            let error = NetworkManager.unwrap(error: error)
+
+            if case RequestError.rateLimitExceeded = error {
+                completion(resolveResult())
+            } else {
+                completion(.doNotRetry)
+            }
+        }
+
+        private func resolveResult() -> RetryResult {
+            attempt += 1
+
+            if attempt == 1 { return .retryWithDelay(3) }
+            if attempt == 2 { return .retryWithDelay(6) }
+
+            return .doNotRetry
+        }
+
+    }
+
+}
+
+extension CryptoCompareProvider {
+
+    enum RequestError: Error {
+        case rateLimitExceeded
+        case noDataForSymbol
     }
 
 }

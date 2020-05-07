@@ -1,4 +1,5 @@
 import RxSwift
+import HsToolKit
 
 public class XRatesKit {
     private let marketInfoManager: IMarketInfoManager
