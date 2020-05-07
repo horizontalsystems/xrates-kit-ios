@@ -43,7 +43,7 @@ extension ChartPointSchedulerProvider: IChartPointSchedulerProvider {
                 .do(onSuccess: { [weak self] chartPoints in
                     self?.handleUpdated(chartPoints: chartPoints)
                 }, onError: { [weak self] error in
-                    if let error = error as? CryptoCompareError, error == .noDataForSymbol {
+                    if case CryptoCompareProvider.RequestError.noDataForSymbol = error {
                         self?.handleNoChartPoints()
                     }
                 })

@@ -9,20 +9,13 @@ class CryptoCompareResponse {
 
         // rate limit exceeded
         if type == 99 {
-            throw CryptoCompareError.rateLimitExceeded
+            throw CryptoCompareProvider.RequestError.rateLimitExceeded
         }
 
         // no data for requested symbol
         if type == 2 {
-            throw CryptoCompareError.noDataForSymbol
+            throw CryptoCompareProvider.RequestError.noDataForSymbol
         }
     }
 
-}
-
-enum CryptoCompareError: Error {
-    case rateLimitExceeded
-    case noDataForSymbol
-    case unknownType
-    case invalidData
 }

@@ -1,4 +1,5 @@
 import ObjectMapper
+import HsToolKit
 
 struct CryptoCompareChartNewsPostResponse: ImmutableMappable {
     let id: Int
@@ -12,7 +13,7 @@ struct CryptoCompareChartNewsPostResponse: ImmutableMappable {
     init(map: Map) throws {
         let idString: String = try map.value("id")
         guard let idInt = Int(idString) else {
-            throw CryptoCompareError.invalidData
+            throw NetworkManager.ObjectMapperError.mappingError
         }
         id = idInt
 

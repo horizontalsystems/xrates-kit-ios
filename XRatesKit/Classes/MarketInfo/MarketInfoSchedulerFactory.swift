@@ -1,4 +1,5 @@
 import Foundation
+import HsToolKit
 
 class MarketInfoSchedulerFactory {
     private let marketInfoManager: IMarketInfoManager

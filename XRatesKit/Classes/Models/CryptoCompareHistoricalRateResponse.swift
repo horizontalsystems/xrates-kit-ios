@@ -1,4 +1,5 @@
 import ObjectMapper
+import HsToolKit
 
 class CryptoCompareHistoricalRateResponse: ImmutableMappable {
     let rateValue: Decimal
@@ -9,15 +10,15 @@ class CryptoCompareHistoricalRateResponse: ImmutableMappable {
         let data: [String: Any] = try map.value("Data") 
 
         guard let rateDataList = data["Data"] as? [[String: Any]] else {
-            throw CryptoCompareError.invalidData
+            throw NetworkManager.ObjectMapperError.mappingError
         }
 
         guard let lastRateData = rateDataList.last else {
-            throw CryptoCompareError.invalidData
+            throw NetworkManager.ObjectMapperError.mappingError
         }
 
         guard let value = lastRateData["close"] as? Double else {
-            throw CryptoCompareError.invalidData
+            throw NetworkManager.ObjectMapperError.mappingError
         }
 
         rateValue = NSNumber(value: value).decimalValue

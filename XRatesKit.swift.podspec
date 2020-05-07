@@ -17,7 +17,8 @@ Pod::Spec.new do |s|
 
   s.requires_arc = true
 
-  s.dependency 'Alamofire', '~> 4.0'
+  s.dependency 'HsToolKit.swift', '~> 1.0'
+
   s.dependency 'RxSwift', '~> 5.0'
   s.dependency 'RxSwiftExt', '~> 5'
   s.dependency 'GRDB.swift', '~> 4.0'

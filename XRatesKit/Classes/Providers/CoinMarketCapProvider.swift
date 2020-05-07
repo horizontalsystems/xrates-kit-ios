@@ -1,4 +1,6 @@
 import RxSwift
+import HsToolKit
+import Alamofire
 
 class CoinMarketCapProvider {
     private let apiKey: String
@@ -27,10 +29,12 @@ extension CoinMarketCapProvider: ITopMarketsProvider {
 
     func getTopMarketInfoRecords(currencyCode: String) -> Single<[MarketInfoRecord]> {
         let urlString = topMarketInfosUrl()
-        let headers: [String: String] = ["X-CMC_PRO_API_KEY": "51a3a136-adc9-4e38-8fc2-8c175c810e74"]
-        let parameters: [String: Any] = ["limit": topMarketsCount]
+        let headers = HTTPHeaders(["X-CMC_PRO_API_KEY": apiKey])
+        let parameters: Parameters = ["limit": topMarketsCount]
 
-        let single: Single<[MarketInfoRecord]> = networkManager.single(urlString: urlString, httpMethod: .get, headers: headers, parameters: parameters, timoutInterval: timeoutInterval)
+        let request = networkManager.session.request(urlString, method: .get, parameters: parameters, headers: headers)
+
+        return networkManager.single(request: request)
                 .flatMap { [weak self] (response: CoinMarketCapTopMarketsResponse) in
                     let coins: [Coin] = response.values
                     let marketInfosSingle: Single<[MarketInfoRecord]> = self?.marketInfoProvider.getMarketInfoRecords(coinCodes: coins.map { $0.code }, currencyCode: currencyCode) ?? Single.just([])
@@ -51,8 +55,6 @@ extension CoinMarketCapProvider: ITopMarketsProvider {
                         return orderedMarketInfos
                     }
                 }
-
-        return single
     }
 
 }

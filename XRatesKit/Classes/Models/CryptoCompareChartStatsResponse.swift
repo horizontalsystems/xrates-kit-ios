@@ -1,4 +1,5 @@
 import ObjectMapper
+import HsToolKit
 
 struct CryptoCompareChartStatsResponse: ImmutableMappable {
     let chartPoints: [ChartPoint]
@@ -9,7 +10,7 @@ struct CryptoCompareChartStatsResponse: ImmutableMappable {
         let data: [String: Any] = try map.value("Data")
 
         guard let rateDataList = data["Data"] as? [[String: Any]] else {
-            throw CryptoCompareError.invalidData
+            throw NetworkManager.ObjectMapperError.mappingError
         }
 
         var chartPoints = [ChartPoint]()

@@ -137,10 +137,3 @@ protocol INewsState {
     func set(posts: [CryptoNewsPost], coinName: String)
     func nonExpiredPosts(for coinName: String, timestamp: TimeInterval) -> [CryptoNewsPost]?
 }
-
-// Misc
-
-protocol IReachabilityManager {
-    var isReachable: Bool { get }
-    var reachabilityObservable: Observable<Bool> { get }
-}

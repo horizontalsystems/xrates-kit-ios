@@ -1,4 +1,5 @@
 import RxSwift
+import HsToolKit
 
 class MarketInfoScheduler {
     private let bufferInterval: TimeInterval = 5
