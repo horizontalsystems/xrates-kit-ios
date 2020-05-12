@@ -4,7 +4,6 @@ import HsToolKit
 class MarketInfoScheduler {
     private let bufferInterval: TimeInterval = 5
 
-    var syncers = [String: IMarketInfoSyncer]()
     private let provider: IMarketInfoSchedulerProvider
     private let reachabilityManager: IReachabilityManager
     private var logger: Logger?
@@ -43,16 +42,12 @@ class MarketInfoScheduler {
 
         syncInProgress = true
 
-        Single<Void>.zip(
-                        syncers.values.map { $0.syncSingle }
-                )
-                .subscribe(
-                        onSuccess: { [weak self] _ in
-                            self?.onSyncSuccess()
-                        }, onError: { [weak self] error in
-                            self?.onSyncError(error: error)
-                        }
-                )
+        provider.syncSingle
+                .subscribe(onSuccess: { [weak self] in
+                    self?.onSyncSuccess()
+                }, onError: { [weak self] error in
+                    self?.onSyncError(error: error)
+                })
                 .disposed(by: disposeBag)
     }
 
@@ -102,9 +97,7 @@ class MarketInfoScheduler {
 
         logger?.debug("MARKET INFO: Notifying expiration")
 
-        for (_, syncer) in syncers {
-            syncer.notifyExpired()
-        }
+        provider.notifyExpired()
         expirationNotified = true
     }
 

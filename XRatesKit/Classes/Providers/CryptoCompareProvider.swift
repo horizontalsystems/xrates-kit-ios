@@ -1,5 +1,4 @@
 import RxSwift
-import RxSwiftExt
 import HsToolKit
 import Alamofire
 
@@ -62,7 +61,7 @@ extension CryptoCompareProvider: IMarketInfoProvider {
 
                         for (coinCode, values) in response.values {
                             for (currencyCode, marketInfoResponse) in values {
-                                let record = MarketInfoRecord(coin: Coin(code: coinCode, title: ""), currencyCode: currencyCode, response: marketInfoResponse)
+                                let record = MarketInfoRecord(coinCode: coinCode, currencyCode: currencyCode, response: marketInfoResponse)
                                 records.append(record)
                             }
                         }
@@ -75,23 +74,23 @@ extension CryptoCompareProvider: IMarketInfoProvider {
 
 extension CryptoCompareProvider: ITopMarketsProvider {
 
-    func getTopMarketInfoRecords(currencyCode: String) -> Single<[MarketInfoRecord]> {
+    func topMarkets(currencyCode: String) -> Single<[(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]> {
         let url = topMarketInfosUrl(currencyCode: currencyCode)
 
         return networkManager.single(request: networkManager.session.request(url, method: .get, interceptor: RateLimitRetrier()))
-                .map { (response: CryptoCompareTopMarketInfosResponse) -> [MarketInfoRecord] in
-                    var records = [MarketInfoRecord]()
+                .map { (response: CryptoCompareTopMarketInfosResponse) -> [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)] in
+                    var topMarkets = [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]()
 
                     guard let values = response.values[currencyCode] else {
                         return []
                     }
 
                     for value in values {
-                        let record = MarketInfoRecord(coin: value.coin, currencyCode: currencyCode, response: value.marketInfo)
-                        records.append(record)
+                        let record = MarketInfoRecord(coinCode: value.coin.code, currencyCode: currencyCode, response: value.marketInfo)
+                        topMarkets.append((coin: value.coin, marketInfo: record))
                     }
 
-                    return records
+                    return topMarkets
                 }
     }
 

@@ -3,17 +3,29 @@ import RxSwift
 class MarketInfoSchedulerProvider {
     private var coinCodes: [String]
     private let currencyCode: String
-    private let storage: IMarketInfoStorage
+    private let manager: IMarketInfoManager
+    private let provider: IMarketInfoProvider
 
     let expirationInterval: TimeInterval
     let retryInterval: TimeInterval
 
-    init(coinCodes: [String], currencyCode: String, storage: IMarketInfoStorage, expirationInterval: TimeInterval, retryInterval: TimeInterval) {
+    init(coinCodes: [String], currencyCode: String, manager: IMarketInfoManager, provider: IMarketInfoProvider, expirationInterval: TimeInterval, retryInterval: TimeInterval) {
         self.coinCodes = coinCodes
         self.currencyCode = currencyCode
-        self.storage = storage
+        self.manager = manager
+        self.provider = provider
         self.expirationInterval = expirationInterval
         self.retryInterval = retryInterval
+    }
+
+    private func handle(updatedRecords: [MarketInfoRecord]) {
+        coinCodes.removeAll { coinCode in
+            !updatedRecords.contains { record in
+                record.key.coinCode == coinCode
+            }
+        }
+
+        manager.handleUpdated(records: updatedRecords, currencyCode: currencyCode)
     }
 
 }
@@ -21,15 +33,19 @@ class MarketInfoSchedulerProvider {
 extension MarketInfoSchedulerProvider: IMarketInfoSchedulerProvider {
 
     var lastSyncTimestamp: TimeInterval? {
-        let records = storage.marketInfoRecordsSortedByTimestamp(coinCodes: coinCodes, currencyCode: currencyCode)
+        manager.lastSyncTimestamp(coinCodes: coinCodes, currencyCode: currencyCode)
+    }
 
-        // not all records for coin codes are stored in database - force sync required
-        guard records.count == coinCodes.count else {
-            return nil
-        }
+    var syncSingle: Single<Void> {
+        provider.getMarketInfoRecords(coinCodes: coinCodes, currencyCode: currencyCode)
+                .do(onSuccess: { [weak self] records in
+                    self?.handle(updatedRecords: records)
+                })
+                .map { _ in () }
+    }
 
-        // return date of the most expired stored record
-        return records.first?.timestamp
+    func notifyExpired() {
+        manager.notifyExpired(coinCodes: coinCodes, currencyCode: currencyCode)
     }
 
 }

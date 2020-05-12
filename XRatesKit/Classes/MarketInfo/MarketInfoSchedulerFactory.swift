@@ -2,23 +2,16 @@ import Foundation
 import HsToolKit
 
 class MarketInfoSchedulerFactory {
-    private let marketInfoManager: IMarketInfoManager
-    private let topMarketsManager: ITopMarketsManager
-    private let marketInfoProvider: IMarketInfoProvider
-    private let topMarketsProvider: ITopMarketsProvider
-    private let storage: IMarketInfoStorage
+    private let manager: IMarketInfoManager
+    private let provider: IMarketInfoProvider
     private let reachabilityManager: IReachabilityManager
     private let expirationInterval: TimeInterval
     private let retryInterval: TimeInterval
     private var logger: Logger?
 
-    init(marketsInfoManager: IMarketInfoManager, topMarketsManager: ITopMarketsManager, marketInfoProvider: IMarketInfoProvider, topMarketsProvider: ITopMarketsProvider,
-         storage: IMarketInfoStorage, reachabilityManager: IReachabilityManager, expirationInterval: TimeInterval, retryInterval: TimeInterval, logger: Logger? = nil) {
-        self.marketInfoManager = marketsInfoManager
-        self.topMarketsManager = topMarketsManager
-        self.marketInfoProvider = marketInfoProvider
-        self.topMarketsProvider = topMarketsProvider
-        self.storage = storage
+    init(manager: IMarketInfoManager, provider: IMarketInfoProvider, reachabilityManager: IReachabilityManager, expirationInterval: TimeInterval, retryInterval: TimeInterval, logger: Logger? = nil) {
+        self.manager = manager
+        self.provider = provider
         self.reachabilityManager = reachabilityManager
         self.expirationInterval = expirationInterval
         self.retryInterval = retryInterval
@@ -29,7 +22,8 @@ class MarketInfoSchedulerFactory {
         let schedulerProvider = MarketInfoSchedulerProvider(
                 coinCodes: coinCodes,
                 currencyCode: currencyCode,
-                storage: storage,
+                manager: manager,
+                provider: provider,
                 expirationInterval: expirationInterval,
                 retryInterval: retryInterval
         )
@@ -37,11 +31,4 @@ class MarketInfoSchedulerFactory {
         return MarketInfoScheduler(provider: schedulerProvider, reachabilityManager: reachabilityManager, logger: logger)
     }
 
-    func marketInfoSyncer(coinCodes: [String], currencyCode: String) -> IMarketInfoSyncer {
-        MarketInfoSyncer(coinCodes: coinCodes, currencyCode: currencyCode, provider: marketInfoProvider, manager: marketInfoManager)
-    }
-
-    func topMarketsSyncer(currencyCode: String) -> IMarketInfoSyncer {
-        TopMarketsSyncer(currencyCode: currencyCode, provider: topMarketsProvider, manager: topMarketsManager)
-    }
 }

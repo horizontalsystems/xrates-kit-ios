@@ -21,7 +21,7 @@ class MarketInfoManager {
         records.forEach { record in
             let info = marketInfo(record: record)
             delegate?.didUpdate(marketInfo: info, key: record.key)
-            marketInfos[record.coinCode] = info
+            marketInfos[record.key.coinCode] = info
         }
 
         delegate?.didUpdate(marketInfos: marketInfos, currencyCode: currencyCode)
@@ -30,6 +30,18 @@ class MarketInfoManager {
 }
 
 extension MarketInfoManager: IMarketInfoManager {
+
+    func lastSyncTimestamp(coinCodes: [String], currencyCode: String) -> TimeInterval? {
+        let records = storage.marketInfoRecordsSortedByTimestamp(coinCodes: coinCodes, currencyCode: currencyCode)
+
+        // not all records for coin codes are stored in database - force sync required
+        guard records.count == coinCodes.count else {
+            return nil
+        }
+
+        // return date of the most expired stored record
+        return records.first?.timestamp
+    }
 
     func marketInfo(key: PairKey) -> MarketInfo? {
         storage.marketInfoRecord(key: key).map { marketInfo(record: $0) }

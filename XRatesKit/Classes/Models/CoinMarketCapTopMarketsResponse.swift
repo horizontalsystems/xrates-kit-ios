@@ -2,7 +2,7 @@ import ObjectMapper
 import HsToolKit
 
 struct CoinMarketCapTopMarketsResponse: ImmutableMappable {
-    let values: [Coin]
+    let values: [TopMarketCoin]
 
     init(map: Map) throws {
         let raw = map.JSON
@@ -18,7 +18,7 @@ struct CoinMarketCapTopMarketsResponse: ImmutableMappable {
                 throw NetworkManager.ObjectMapperError.mappingError
             }
 
-            return Coin(code: code, title: title)
+            return TopMarketCoin(code: code, title: title)
         }
     }
 

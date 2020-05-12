@@ -2,7 +2,6 @@ import GRDB
 
 class MarketInfoRecord: Record {
     let coinCode: String
-    var coinName: String
     let coinCurrency: String
     let timestamp: TimeInterval
     let rate: Decimal
@@ -12,9 +11,8 @@ class MarketInfoRecord: Record {
     let marketCap: Decimal
     let supply: Decimal
 
-    init(coin: Coin, currencyCode: String, response: ResponseMarketInfo) {
-        coinCode = coin.code
-        coinName = coin.title
+    init(coinCode: String, currencyCode: String, response: ResponseMarketInfo) {
+        self.coinCode = coinCode
         coinCurrency = currencyCode
         timestamp = Date().timeIntervalSince1970
         rate = response.rate
@@ -35,13 +33,12 @@ class MarketInfoRecord: Record {
         "market_info"
     }
 
-    enum Columns: String, ColumnExpression {
-        case coinCode, currencyCode, coinName, timestamp, rate, open24Hour, diff, volume, marketCap, supply
+    enum Columns: String, ColumnExpression, CaseIterable {
+        case coinCode, currencyCode, timestamp, rate, open24Hour, diff, volume, marketCap, supply
     }
 
     required init(row: Row) {
         coinCode = row[Columns.coinCode]
-        coinName = row[Columns.coinName]
         coinCurrency = row[Columns.currencyCode]
         timestamp = row[Columns.timestamp]
         rate = row[Columns.rate]
@@ -57,7 +54,6 @@ class MarketInfoRecord: Record {
     override open func encode(to container: inout PersistenceContainer) {
         container[Columns.coinCode] = coinCode
         container[Columns.currencyCode] = coinCurrency
-        container[Columns.coinName] = coinName
         container[Columns.timestamp] = timestamp
         container[Columns.rate] = rate
         container[Columns.open24Hour] = open24Hour
@@ -72,7 +68,7 @@ class MarketInfoRecord: Record {
 extension MarketInfoRecord: CustomStringConvertible {
 
     var description: String {
-        "MarketInfo [coinCode: \(coinCode); currencyCode: \(coinCurrency); coinName: \(coinName); timestamp: \(timestamp); rate: \(rate); open24Hour: \(open24Hour); diff: \(diff)]"
+        "MarketInfo [coinCode: \(coinCode); currencyCode: \(coinCurrency); timestamp: \(timestamp); rate: \(rate); open24Hour: \(open24Hour); diff: \(diff)]"
     }
 
 }
