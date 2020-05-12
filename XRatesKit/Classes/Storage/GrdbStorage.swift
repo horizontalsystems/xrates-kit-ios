@@ -155,7 +155,6 @@ extension GrdbStorage: ITopMarketsStorage {
             var position = 0
 
             for topMarket in topMarkets {
-                print(position)
                 topMarket.coin.position = position
                 position += 1
 
