@@ -27,7 +27,7 @@ class CoinMarketCapProvider {
 
 extension CoinMarketCapProvider: ITopMarketsProvider {
 
-    func getTopMarketInfoRecords(currencyCode: String) -> Single<[MarketInfoRecord]> {
+    func topMarkets(currencyCode: String) -> Single<[(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]> {
         let urlString = topMarketInfosUrl()
         let headers = HTTPHeaders(["X-CMC_PRO_API_KEY": apiKey])
         let parameters: Parameters = ["limit": topMarketsCount]
@@ -36,20 +36,18 @@ extension CoinMarketCapProvider: ITopMarketsProvider {
 
         return networkManager.single(request: request)
                 .flatMap { [weak self] (response: CoinMarketCapTopMarketsResponse) in
-                    let coins: [Coin] = response.values
-                    let marketInfosSingle: Single<[MarketInfoRecord]> = self?.marketInfoProvider.getMarketInfoRecords(coinCodes: coins.map { $0.code }, currencyCode: currencyCode) ?? Single.just([])
+                    let coins: [TopMarketCoin] = response.values
+                    let topMarkets: Single<[MarketInfoRecord]> = self?.marketInfoProvider.getMarketInfoRecords(coinCodes: coins.map { $0.code }, currencyCode: currencyCode) ?? Single.just([])
 
-                    return marketInfosSingle.map { marketInfos in
-                        var orderedMarketInfos = [MarketInfoRecord]()
+                    return topMarkets.map { marketInfos in
+                        var orderedMarketInfos = [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]()
 
                         for coin in coins {
                             guard let marketInfo = marketInfos.first(where: { $0.coinCode == coin.code }) else {
                                 continue
                             }
 
-                            marketInfo.coinName = coin.title
-
-                            orderedMarketInfos.append(marketInfo)
+                            orderedMarketInfos.append((coin: coin, marketInfo: marketInfo))
                         }
 
                         return orderedMarketInfos

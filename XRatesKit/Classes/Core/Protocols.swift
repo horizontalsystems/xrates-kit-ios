@@ -3,6 +3,7 @@ import RxSwift
 // Market Info
 
 protocol IMarketInfoManager {
+    func lastSyncTimestamp(coinCodes: [String], currencyCode: String) -> TimeInterval?
     func marketInfo(key: PairKey) -> MarketInfo?
     func handleUpdated(records: [MarketInfoRecord], currencyCode: String)
     func notifyExpired(coinCodes: [String], currencyCode: String)
@@ -17,16 +18,10 @@ protocol IMarketInfoProvider: class {
     func getMarketInfoRecords(coinCodes: [String], currencyCode: String) -> Single<[MarketInfoRecord]>
 }
 
-protocol ITopMarketsProvider {
-    func getTopMarketInfoRecords(currencyCode: String) -> Single<[MarketInfoRecord]>
-}
-
 protocol IMarketInfoStorage {
     func marketInfoRecord(key: PairKey) -> MarketInfoRecord?
     func marketInfoRecordsSortedByTimestamp(coinCodes: [String], currencyCode: String) -> [MarketInfoRecord]
-    func topMarketInfoRecordsSortedByMarketCap(currencyCode: String, limit: Int) -> [MarketInfoRecord]
     func save(marketInfoRecords: [MarketInfoRecord])
-    func save(topMarketInfoRecords: [MarketInfoRecord])
 }
 
 protocol IMarketInfoSyncManager {
@@ -35,11 +30,9 @@ protocol IMarketInfoSyncManager {
     func refresh()
     func marketInfoObservable(key: PairKey) -> Observable<MarketInfo>
     func marketInfosObservable(currencyCode: String) -> Observable<[String: MarketInfo]>
-    func topMarketsObservable() -> Observable<[MarketInfo]>
 }
 
 protocol IMarketInfoScheduler {
-    var syncers: [String: IMarketInfoSyncer] { get set }
     func schedule()
     func forceSchedule()
 }
@@ -48,17 +41,23 @@ protocol IMarketInfoSchedulerProvider {
     var lastSyncTimestamp: TimeInterval? { get }
     var expirationInterval: TimeInterval { get }
     var retryInterval: TimeInterval { get }
-}
-
-protocol IMarketInfoSyncer {
     var syncSingle: Single<Void> { get }
     func notifyExpired()
 }
 
+// Top Markets
+
+protocol ITopMarketsStorage {
+    func topMarkets(currencyCode: String, limit: Int) -> [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]
+    func save(topMarkets: [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)])
+}
+
+protocol ITopMarketsProvider {
+    func topMarkets(currencyCode: String) -> Single<[(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]>
+}
+
 protocol ITopMarketsManager {
-    func handleUpdated(records: [MarketInfoRecord])
-    func notifyExpired(currencyCode: String)
-    func topMarketInfos(currencyCode: String) -> [MarketInfo]
+    func topMarketInfos(currencyCode: String) -> Single<[TopMarket]>
 }
 
 protocol ITopMarketsManagerDelegate: AnyObject {

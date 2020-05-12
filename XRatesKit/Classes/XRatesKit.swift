@@ -50,11 +50,7 @@ extension XRatesKit {
         marketInfoSyncManager.marketInfosObservable(currencyCode: currencyCode)
     }
 
-    public func topMarketInfosObservable() -> Observable<[MarketInfo]> {
-        marketInfoSyncManager.topMarketsObservable()
-    }
-
-    public func topMarketInfos(currencyCode: String) -> [MarketInfo] {
+    public func topMarketInfos(currencyCode: String) -> Single<[TopMarket]> {
         topMarketsManager.topMarketInfos(currencyCode: currencyCode)
     }
 
@@ -104,11 +100,10 @@ extension XRatesKit {
         }
 
         let marketInfoManager = MarketInfoManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
-        let topMarketsManager = TopMarketsManager(storage: storage, expirationInterval: marketInfoExpirationInterval, marketsCount: topMarketsCount)
-        let marketInfoSchedulerFactory = MarketInfoSchedulerFactory(marketsInfoManager: marketInfoManager, topMarketsManager: topMarketsManager, marketInfoProvider: mainProvider, topMarketsProvider: topMarketsProvider, storage: storage, reachabilityManager: reachabilityManager, expirationInterval: marketInfoExpirationInterval, retryInterval: retryInterval, logger: logger)
+        let topMarketsManager = TopMarketsManager(storage: storage, provider: topMarketsProvider, expirationInterval: marketInfoExpirationInterval, marketsCount: topMarketsCount)
+        let marketInfoSchedulerFactory = MarketInfoSchedulerFactory(manager: marketInfoManager, provider: mainProvider, reachabilityManager: reachabilityManager, expirationInterval: marketInfoExpirationInterval, retryInterval: retryInterval, logger: logger)
         let marketInfoSyncManager = MarketInfoSyncManager(currencyCode: currencyCode, schedulerFactory: marketInfoSchedulerFactory)
         marketInfoManager.delegate = marketInfoSyncManager
-        topMarketsManager.delegate = marketInfoSyncManager
 
         let historicalRateManager = HistoricalRateManager(storage: storage, provider: mainProvider)
 

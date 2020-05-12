@@ -74,9 +74,15 @@ class GrdbStorage {
             }
         }
 
-        migrator.registerMigration("addCoinNameToMarketInfo") { db in
-            try db.alter(table: MarketInfoRecord.databaseTableName) { t in
-                t.add(column: MarketInfoRecord.Columns.coinName.name, .text).notNull().defaults(to: "")
+        migrator.registerMigration("createTopMarketCoin") { db in
+            try db.create(table: TopMarketCoin.databaseTableName) { t in
+                t.column(TopMarketCoin.Columns.code.name, .text).notNull()
+                t.column(TopMarketCoin.Columns.title.name, .text).notNull()
+                t.column(TopMarketCoin.Columns.position.name, .integer).notNull()
+
+                t.primaryKey([
+                    TopMarketCoin.Columns.code.name
+                ], onConflict: .replace)
             }
         }
 
@@ -102,32 +108,59 @@ extension GrdbStorage: IMarketInfoStorage {
         }
     }
 
-    func topMarketInfoRecordsSortedByMarketCap(currencyCode: String, limit: Int) -> [MarketInfoRecord] {
-        let records = try! dbPool.read { db in
-            try MarketInfoRecord
-                    .filter(MarketInfoRecord.Columns.currencyCode == currencyCode)
-                    .fetchAll(db)
-        }
-
-        return Array(records.sorted(by: { $0.marketCap > $1.marketCap }).prefix(limit))
-    }
-
     func save(marketInfoRecords: [MarketInfoRecord]) {
         _ = try! dbPool.write { db in
             for rate in marketInfoRecords {
-                if let old = marketInfoRecord(key: rate.key) {
-                    rate.coinName = old.coinName
-                }
-
                 try rate.insert(db)
             }
         }
     }
 
-    func save(topMarketInfoRecords: [MarketInfoRecord]) {
+}
+
+extension GrdbStorage: ITopMarketsStorage {
+
+    func topMarkets(currencyCode: String, limit: Int) -> [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)] {
+        try! dbPool.read { db -> [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)] in
+            let marketInfoC = MarketInfoRecord.Columns.allCases.count
+            let coinC = TopMarketCoin.Columns.allCases.count
+
+            let adapter = ScopeAdapter([
+                "marketInfo": RangeRowAdapter(0..<marketInfoC),
+                "coin": RangeRowAdapter(marketInfoC..<marketInfoC + coinC)
+            ])
+
+            let sql = """
+                      SELECT market_info.*, top_market_coin.*
+                      FROM market_info
+                      INNER JOIN top_market_coin ON market_info.coinCode = top_market_coin.code
+                      ORDER BY top_market_coin.position
+                      LIMIT \(limit)
+                      """
+
+            let rows = try Row.fetchCursor(db, sql: sql, adapter: adapter)
+            var topMarkets = [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]()
+
+            while let row = try rows.next() {
+                topMarkets.append((coin: row["coin"], marketInfo: row["marketInfo"]))
+            }
+
+            return topMarkets
+        }
+    }
+
+    func save(topMarkets: [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]) {
         _ = try! dbPool.write { db in
-            for marketInfo in topMarketInfoRecords {
-                try marketInfo.insert(db)
+            try TopMarketCoin.deleteAll(db)
+            var position = 0
+
+            for topMarket in topMarkets {
+                print(position)
+                topMarket.coin.position = position
+                position += 1
+
+                try topMarket.coin.insert(db)
+                try topMarket.marketInfo.insert(db)
             }
         }
     }
