@@ -44,10 +44,9 @@ class ChartInfoManager {
 
         if key.chartType == .day {
             firstTimestamp = marketInfo.timestamp - key.chartType.rangeInterval
-            let previousVolume = chartPoints.last(where: { $0.timestamp < firstTimestamp })?.volume ?? firstPoint.volume
 
             chartPoints.removeAll { $0.timestamp < firstTimestamp }
-            chartPoints = [ChartPoint(timestamp: firstTimestamp, value: marketInfo.open24hour, volume: previousVolume)] + chartPoints
+            chartPoints = [ChartPoint(timestamp: firstTimestamp, value: marketInfo.open24hour, volume: nil)] + chartPoints
         }
 
         chartPoints = chartPoints + [ChartPoint(timestamp: marketInfo.timestamp, value: marketInfo.rate, volume: nil)]
