@@ -7,7 +7,6 @@ class ChartInfoSyncManager {
 
     private var subjects = [ChartInfoKey: PublishSubject<ChartInfo>]()
     private var schedulers = [ChartInfoKey: ChartPointScheduler]()
-    private var marketInfoDisposables = [ChartInfoKey: Disposable]()
 
     private var failedKeys = [ChartInfoKey]()
 
@@ -37,14 +36,6 @@ class ChartInfoSyncManager {
         let scheduler = schedulerFactory.scheduler(key: key)
         schedulers[key] = scheduler
 
-        let disposable = marketInfoSyncManager.marketInfoObservable(key: PairKey(coinCode: key.coinCode, currencyCode: key.currencyCode))
-                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
-                .subscribe(onNext: { [weak self] marketInfo in
-                    self?.chartInfoManager.handleUpdated(marketInfo: marketInfo, key: key)
-                })
-
-        marketInfoDisposables[key] = disposable
-
         return scheduler
     }
 
@@ -55,8 +46,6 @@ class ChartInfoSyncManager {
 
         subjects[key] = nil
         schedulers[key] = nil
-        marketInfoDisposables[key]?.dispose()
-        marketInfoDisposables[key] = nil
     }
 
     private func onSubscribed(key: ChartInfoKey) {

@@ -15,12 +15,14 @@ class CryptoCompareProvider {
     private let baseUrl: String
     private let timeoutInterval: TimeInterval
     private let topMarketsCount: Int
+    private let indicatorPointCount: Int
 
-    init(networkManager: NetworkManager, baseUrl: String, timeoutInterval: TimeInterval, topMarketsCount: Int) {
+    init(networkManager: NetworkManager, baseUrl: String, timeoutInterval: TimeInterval, topMarketsCount: Int, indicatorPointCount: Int) {
         self.networkManager = networkManager
         self.baseUrl = baseUrl
         self.timeoutInterval = timeoutInterval
         self.topMarketsCount = min(100, max(10, topMarketsCount))
+        self.indicatorPointCount = indicatorPointCount
     }
 
     private func marketInfoUrl(coinCodes: [String], currencyCode: String) -> String {
@@ -36,8 +38,10 @@ class CryptoCompareProvider {
         "\(baseUrl)/data/v2/\(historicalType.rawValue)?fsym=\(coinCode)&tsym=\(currencyCode)&limit=1&toTs=\(Int(timestamp))"
     }
 
-    private func chartStatsUrl(key: ChartInfoKey) -> String {
-        "\(baseUrl)/data/v2/\(key.chartType.resource)?fsym=\(key.coinCode)&tsym=\(key.currencyCode)&limit=\(key.chartType.pointCount)&aggregate=\(key.chartType.interval)"
+    private func chartStatsUrl(key: ChartInfoKey, pointCount: Int, toTimestamp: Int?) -> String {
+        let ts = toTimestamp.map { "&toTs=\($0)" } ?? ""
+
+        return "\(baseUrl)/data/v2/\(key.chartType.resource)?fsym=\(key.coinCode)&tsym=\(key.currencyCode)&limit=\(pointCount)&aggregate=\(key.chartType.interval)" + ts
     }
 
     private func newsUrl(for categories: String, latestTimeStamp: TimeInterval?) -> String {
@@ -116,11 +120,26 @@ extension CryptoCompareProvider: IHistoricalRateProvider {
 extension CryptoCompareProvider: IChartPointProvider {
 
     func chartPointsSingle(key: ChartInfoKey) -> Single<[ChartPoint]> {
-        let url = chartStatsUrl(key: key)
+        let pointCount = key.chartType.pointCount + indicatorPointCount
 
-        return networkManager.single(request: networkManager.session.request(url, method: .get, interceptor: RateLimitRetrier()))
-                .map { (response: CryptoCompareChartStatsResponse) -> [ChartPoint] in
-                    response.chartPoints
+        return chartPoints(key: key, pointCount: pointCount)
+    }
+
+    private func chartPoints(key: ChartInfoKey, points: [ChartPoint] = [], pointCount: Int, toTimestamp: Int? = nil) -> Single<[ChartPoint]> {
+
+        let urlString = chartStatsUrl(key: key, pointCount: pointCount, toTimestamp: toTimestamp)
+        var points = points
+        return networkManager.single(request: networkManager.session.request(urlString, method: .get, interceptor: RateLimitRetrier()))
+                .flatMap { (response: CryptoCompareChartStatsResponse) -> Single<[ChartPoint]> in
+                    points.insert(contentsOf: response.chartPoints, at: 0)
+
+                    let remains = pointCount - response.chartPoints.count
+                    guard remains > 0 else {
+                        return Single.just(points)
+                    }
+
+                    let lastTimestamp = Int(response.timeFrom - key.chartType.expirationInterval)
+                    return self.chartPoints(key: key, points: points, pointCount: remains, toTimestamp: lastTimestamp)
                 }
     }
 
