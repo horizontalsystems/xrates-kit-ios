@@ -2,6 +2,7 @@ import ObjectMapper
 import HsToolKit
 
 struct CryptoCompareChartStatsResponse: ImmutableMappable {
+    let timeFrom: TimeInterval
     let chartPoints: [ChartPoint]
 
     init(map: Map) throws {
@@ -27,6 +28,7 @@ struct CryptoCompareChartStatsResponse: ImmutableMappable {
             }
         }
 
+        self.timeFrom = (data["TimeFrom"] as? TimeInterval) ?? 0
         self.chartPoints = chartPoints
     }
 

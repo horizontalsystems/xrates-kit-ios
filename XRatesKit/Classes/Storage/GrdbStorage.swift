@@ -186,11 +186,10 @@ extension GrdbStorage: IHistoricalRateStorage {
 
 extension GrdbStorage: IChartPointStorage {
 
-    func chartPointRecords(key: ChartInfoKey, fromTimestamp: TimeInterval) -> [ChartPointRecord] {
+    func chartPointRecords(key: ChartInfoKey) -> [ChartPointRecord] {
         try! dbPool.read { db in
             try ChartPointRecord
                     .filter(ChartPointRecord.Columns.coinCode == key.coinCode && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.chartType.rawValue)
-                    .filter(ChartPointRecord.Columns.timestamp >= fromTimestamp)
                     .order(ChartPointRecord.Columns.timestamp).fetchAll(db)
         }
     }

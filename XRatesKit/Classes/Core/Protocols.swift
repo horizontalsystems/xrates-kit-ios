@@ -87,7 +87,6 @@ protocol IChartInfoManager {
     func chartInfo(key: ChartInfoKey) -> ChartInfo?
     func handleUpdated(chartPoints: [ChartPoint], key: ChartInfoKey)
     func handleNoChartPoints(key: ChartInfoKey)
-    func handleUpdated(marketInfo: MarketInfo, key: ChartInfoKey)
 }
 
 protocol IChartInfoManagerDelegate: AnyObject {
@@ -100,7 +99,7 @@ protocol IChartPointProvider {
 }
 
 protocol IChartPointStorage {
-    func chartPointRecords(key: ChartInfoKey, fromTimestamp: TimeInterval) -> [ChartPointRecord]
+    func chartPointRecords(key: ChartInfoKey) -> [ChartPointRecord]
     func save(chartPointRecords: [ChartPointRecord])
     func deleteChartPointRecords(key: ChartInfoKey)
 }

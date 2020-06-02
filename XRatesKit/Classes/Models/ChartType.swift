@@ -29,7 +29,7 @@ public enum ChartType: Int, CaseIterable {
     var interval: Int {
         switch self {
         case .day: return 30
-        case .week: return 3
+        case .week: return 4
         case .month: return 12
         case .month3: return 2
         case .halfYear: return 3
@@ -53,7 +53,7 @@ public enum ChartType: Int, CaseIterable {
     var pointCount: Int {
         switch self {
         case .day: return 48
-        case .week: return 56
+        case .week: return 48
         case .month: return 60
         case .month3: return 45
         case .halfYear: return 60
