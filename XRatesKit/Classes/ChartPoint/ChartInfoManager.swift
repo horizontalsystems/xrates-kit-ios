@@ -20,6 +20,10 @@ class ChartInfoManager {
         let lastPointDiffInterval = currentTimestamp - lastPoint.timestamp
         let startTimestamp = lastPoint.timestamp - key.chartType.rangeInterval
 
+        guard lastPointDiffInterval < key.chartType.rangeInterval else {
+            return nil
+        }
+
         guard lastPointDiffInterval < key.chartType.expirationInterval else {
             // expired chart info, current timestamp more than last point
             return ChartInfo(
