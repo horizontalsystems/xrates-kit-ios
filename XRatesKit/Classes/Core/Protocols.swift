@@ -123,15 +123,15 @@ protocol IChartPointSchedulerProvider {
 // News Posts
 
 protocol INewsProvider {
-    func newsSingle(for categories: String, latestTimestamp: TimeInterval?) -> Single<CryptoCompareNewsResponse>
+    func newsSingle(latestTimestamp: TimeInterval?) -> Single<CryptoCompareNewsResponse>
 }
 
 protocol INewsManager {
-    func posts(for coinName: String, timestamp: TimeInterval) -> [CryptoNewsPost]?
-    func postsSingle(for coinName: String, latestTimestamp: TimeInterval?) -> Single<[CryptoNewsPost]>
+    func posts(timestamp: TimeInterval) -> [CryptoNewsPost]?
+    func postsSingle(latestTimestamp: TimeInterval?) -> Single<[CryptoNewsPost]>
 }
 
 protocol INewsState {
-    func set(posts: [CryptoNewsPost], coinName: String)
-    func nonExpiredPosts(for coinName: String, timestamp: TimeInterval) -> [CryptoNewsPost]?
+    func set(posts: [CryptoNewsPost])
+    func nonExpiredPosts(timestamp: TimeInterval) -> [CryptoNewsPost]?
 }

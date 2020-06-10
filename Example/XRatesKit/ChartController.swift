@@ -86,15 +86,15 @@ class ChartController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        let posts = xRatesKit.cryptoPosts(for: "BTC", timestamp: Date().timeIntervalSince1970)
+        let posts = xRatesKit.cryptoPosts(timestamp: Date().timeIntervalSince1970)
 
         if let posts = posts {
             self.posts = posts
             tableView.reloadData()
-            headerView.bind(title: "BTC News")
+            headerView.bind(title: "Crypto News")
         } else {
             headerView.bind(title: "Loading...")
-            xRatesKit.cryptoPostsSingle(for: "BTC")
+            xRatesKit.cryptoPostsSingle
                     .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
                     .observeOn(MainScheduler.instance)
                     .subscribe(onSuccess: { [weak self] posts in
