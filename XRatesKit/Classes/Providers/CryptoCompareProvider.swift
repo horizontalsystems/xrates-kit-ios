@@ -44,8 +44,8 @@ class CryptoCompareProvider {
         return "\(baseUrl)/data/v2/\(key.chartType.resource)?fsym=\(key.coinCode)&tsym=\(key.currencyCode)&limit=\(pointCount)&aggregate=\(key.chartType.interval)" + ts
     }
 
-    private func newsUrl(for categories: String, latestTimeStamp: TimeInterval?) -> String {
-        var url = "\(baseUrl)/data/v2/news/?categories=\(categories)&excludeCategories=Sponsored"
+    private func newsUrl(latestTimeStamp: TimeInterval?) -> String {
+        var url = "\(baseUrl)/data/v2/news/?excludeCategories=Sponsored"
         if let timestamp = latestTimeStamp {
             url.append("&lTs=\(Int(timestamp))")
         }
@@ -147,8 +147,8 @@ extension CryptoCompareProvider: IChartPointProvider {
 
 extension CryptoCompareProvider: INewsProvider {
 
-    func newsSingle(for categories: String, latestTimestamp: TimeInterval?) -> Single<CryptoCompareNewsResponse> {
-        let url = newsUrl(for: categories, latestTimeStamp: latestTimestamp)
+    func newsSingle(latestTimestamp: TimeInterval?) -> Single<CryptoCompareNewsResponse> {
+        let url = newsUrl(latestTimeStamp: latestTimestamp)
 
         return networkManager.single(request: networkManager.session.request(url, method: .get, interceptor: RateLimitRetrier()))
     }
