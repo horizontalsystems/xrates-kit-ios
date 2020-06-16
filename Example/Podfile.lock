@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (5.1.0)
+  - Alamofire (5.2.1)
   - Chart.swift (1.2):
     - SnapKit (~> 5.0)
   - GRDB.swift (4.14.0):
@@ -9,7 +9,7 @@ PODS:
     - Alamofire (~> 5.0)
     - ObjectMapper (~> 3.0)
     - RxSwift (~> 5.0)
-  - ObjectMapper (3.5.2)
+  - ObjectMapper (3.5.3)
   - RxCocoa (5.1.1):
     - RxRelay (~> 5)
     - RxSwift (~> 5)
@@ -58,15 +58,15 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   HsToolKit.swift:
-    :commit: 5800d2bd35c4ddb03cceac05343096ebe1b97d51
+    :commit: 2f4b640e92bf845a454cec3bbe74f68fdb402a8f
     :git: https://github.com/horizontalsystems/hs-tool-kit-ios
 
 SPEC CHECKSUMS:
-  Alamofire: 9d5c5f602928e512395b30950c5984eca840093c
+  Alamofire: e911732990610fe89af59ac0077f923d72dc3dfd
   Chart.swift: 2634973317e2637347d160b99992b7b21cbf7644
   GRDB.swift: 8cc3ab7c8b8b4ac1761deb8dca4b51c1c9d429f8
   HsToolKit.swift: b89273c4018e3b70894e820c88cee8b684be9305
-  ObjectMapper: b53ae947d370bf89423e86be7d4e2d2b2a8d3f40
+  ObjectMapper: 97111c97e054a6ee25917662106689f0b4127b37
   RxCocoa: 32065309a38d29b5b0db858819b5bf9ef038b601
   RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
   RxSwift: 81470a2074fa8780320ea5fe4102807cb7118178
