@@ -58,8 +58,11 @@ extension CryptoCompareProvider: IMarketInfoProvider {
 
     func getMarketInfoRecords(coinCodes: [String], currencyCode: String) -> Single<[MarketInfoRecord]> {
         let url = marketInfoUrl(coinCodes: coinCodes, currencyCode: currencyCode)
+        let request = networkManager.session
+                .request(url, method: .get, interceptor: RateLimitRetrier())
+                .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
 
-        return networkManager.single(request: networkManager.session.request(url, method: .get, interceptor: RateLimitRetrier()))
+        return networkManager.single(request: request)
                     .map { (response: CryptoCompareMarketInfoResponse) -> [MarketInfoRecord] in
                         var records = [MarketInfoRecord]()
 
@@ -80,8 +83,11 @@ extension CryptoCompareProvider: ITopMarketsProvider {
 
     func topMarkets(currencyCode: String) -> Single<[(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]> {
         let url = topMarketInfosUrl(currencyCode: currencyCode)
+        let request = networkManager.session
+                .request(url, method: .get, interceptor: RateLimitRetrier())
+                .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
 
-        return networkManager.single(request: networkManager.session.request(url, method: .get, interceptor: RateLimitRetrier()))
+        return networkManager.single(request: request)
                 .map { (response: CryptoCompareTopMarketInfosResponse) -> [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)] in
                     var topMarkets = [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]()
 
@@ -108,8 +114,11 @@ extension CryptoCompareProvider: IHistoricalRateProvider {
         let historicalType: HistoricalType = timestamp > Date().timeIntervalSince1970 - minuteThreshold ? .minute : .hour
 
         let url = historicalRateUrl(coinCode: coinCode, currencyCode: currencyCode, historicalType: historicalType, timestamp: timestamp)
+        let request = networkManager.session
+                .request(url, method: .get, interceptor: RateLimitRetrier())
+                .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
 
-        return networkManager.single(request: networkManager.session.request(url, method: .get, interceptor: RateLimitRetrier()))
+        return networkManager.single(request: request)
                 .map { (response: CryptoCompareHistoricalRateResponse) -> Decimal in
                     response.rateValue
                 }
@@ -127,9 +136,14 @@ extension CryptoCompareProvider: IChartPointProvider {
 
     private func chartPoints(key: ChartInfoKey, points: [ChartPoint] = [], pointCount: Int, toTimestamp: Int? = nil) -> Single<[ChartPoint]> {
 
-        let urlString = chartStatsUrl(key: key, pointCount: pointCount, toTimestamp: toTimestamp)
+        let url = chartStatsUrl(key: key, pointCount: pointCount, toTimestamp: toTimestamp)
         var points = points
-        return networkManager.single(request: networkManager.session.request(urlString, method: .get, interceptor: RateLimitRetrier()))
+
+        let request = networkManager.session
+                .request(url, method: .get, interceptor: RateLimitRetrier())
+                .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
+
+        return networkManager.single(request: request)
                 .flatMap { (response: CryptoCompareChartStatsResponse) -> Single<[ChartPoint]> in
                     points.insert(contentsOf: response.chartPoints, at: 0)
 
@@ -149,8 +163,11 @@ extension CryptoCompareProvider: INewsProvider {
 
     func newsSingle(latestTimestamp: TimeInterval?) -> Single<CryptoCompareNewsResponse> {
         let url = newsUrl(latestTimeStamp: latestTimestamp)
+        let request = networkManager.session
+                .request(url, method: .get, interceptor: RateLimitRetrier())
+                .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
 
-        return networkManager.single(request: networkManager.session.request(url, method: .get, interceptor: RateLimitRetrier()))
+        return networkManager.single(request: request)
     }
 
 }
