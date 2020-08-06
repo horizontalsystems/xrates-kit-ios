@@ -3,6 +3,7 @@ import GRDB
 public enum ChartType: Int, CaseIterable {
     case day
     case week
+    case week2
     case month
     case month3
     case halfYear
@@ -30,6 +31,7 @@ public enum ChartType: Int, CaseIterable {
         switch self {
         case .day: return 30
         case .week: return 4
+        case .week2: return 8
         case .month: return 12
         case .month3: return 2
         case .halfYear: return 3
@@ -42,6 +44,7 @@ public enum ChartType: Int, CaseIterable {
         switch self {
         case .day: return "histominute"
         case .week: return "histohour"
+        case .week2: return "histohour"
         case .month: return "histohour"
         case .month3: return "histoday"
         case .halfYear: return "histoday"
@@ -54,6 +57,7 @@ public enum ChartType: Int, CaseIterable {
         switch self {
         case .day: return 48
         case .week: return 48
+        case .week2: return 45
         case .month: return 60
         case .month3: return 45
         case .halfYear: return 60
