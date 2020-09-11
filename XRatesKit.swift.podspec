@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
 
   s.requires_arc = true
 
-  s.dependency 'HsToolKit.swift', '~> 1.0'
+  s.dependency 'HsToolKit.swift', '~> 1.1.0'
 
   s.dependency 'RxSwift', '~> 5.0'
   s.dependency 'RxSwiftExt', '~> 5'
