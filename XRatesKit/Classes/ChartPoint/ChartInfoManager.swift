@@ -16,9 +16,20 @@ class ChartInfoManager {
             return nil
         }
 
-        let currentTimestamp = Date().timeIntervalSince1970
-        let lastPointDiffInterval = currentTimestamp - lastPoint.timestamp
-        let startTimestamp = lastPoint.timestamp - key.chartType.rangeInterval
+        let startTimestamp: TimeInterval
+        var endTimestamp = Date().timeIntervalSince1970
+        let lastPointDiffInterval = endTimestamp - lastPoint.timestamp
+
+        if key.chartType == .today {
+            var calendar = Calendar.current
+            calendar.timeZone = TimeZone(secondsFromGMT: 0) ?? calendar.timeZone
+            startTimestamp = calendar.startOfDay(for: Date()).timeIntervalSince1970
+
+            let day = 24 * 60 * 60
+            endTimestamp = startTimestamp + TimeInterval(day)
+        } else {
+            startTimestamp = lastPoint.timestamp - key.chartType.rangeInterval
+        }
 
         guard lastPointDiffInterval < key.chartType.rangeInterval else {
             return nil
@@ -29,14 +40,16 @@ class ChartInfoManager {
             return ChartInfo(
                     points: chartPoints,
                     startTimestamp: startTimestamp,
-                    endTimestamp: currentTimestamp
+                    endTimestamp: endTimestamp,
+                    expired: true
             )
         }
 
         return ChartInfo(
                 points: chartPoints,
                 startTimestamp: startTimestamp,
-                endTimestamp: lastPoint.timestamp
+                endTimestamp: endTimestamp,
+                expired: false
         )
     }
 
