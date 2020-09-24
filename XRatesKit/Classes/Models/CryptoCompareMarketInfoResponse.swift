@@ -14,7 +14,7 @@ struct ResponseMarketInfo: ImmutableMappable {
         timestamp = try map.value("LASTUPDATE")
         rate = try map.value("PRICE", using: ResponseMarketInfo.decimalTransform)
         open24Hour = try map.value("OPEN24HOUR", using: ResponseMarketInfo.decimalTransform)
-        diff = try map.value("CHANGEPCT24HOUR", using: ResponseMarketInfo.decimalTransform)
+        diff = try map.value("CHANGEPCTDAY", using: ResponseMarketInfo.decimalTransform)
         volume = try map.value("VOLUME24HOURTO", using: ResponseMarketInfo.decimalTransform)
         marketCap = try map.value("MKTCAP", using: ResponseMarketInfo.decimalTransform)
         supply = try map.value("SUPPLY", using: ResponseMarketInfo.decimalTransform)

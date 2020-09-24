@@ -1,6 +1,7 @@
 import GRDB
 
 public enum ChartType: Int, CaseIterable {
+    case today
     case day
     case week
     case week2
@@ -29,6 +30,7 @@ public enum ChartType: Int, CaseIterable {
 
     var interval: Int {
         switch self {
+        case .today: return 30
         case .day: return 30
         case .week: return 4
         case .week2: return 8
@@ -42,6 +44,7 @@ public enum ChartType: Int, CaseIterable {
 
     var resource: String {
         switch self {
+        case .today: return "histominute"
         case .day: return "histominute"
         case .week: return "histohour"
         case .week2: return "histohour"
@@ -55,6 +58,7 @@ public enum ChartType: Int, CaseIterable {
 
     var pointCount: Int {
         switch self {
+        case .today: return 48
         case .day: return 48
         case .week: return 48
         case .week2: return 45
