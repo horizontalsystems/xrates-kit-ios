@@ -5,7 +5,7 @@ class MarketInfoRecord: Record {
     let coinCurrency: String
     let timestamp: TimeInterval
     let rate: Decimal
-    let open24Hour: Decimal
+    let openDay: Decimal
     let diff: Decimal
     let volume: Decimal
     let marketCap: Decimal
@@ -16,7 +16,7 @@ class MarketInfoRecord: Record {
         coinCurrency = currencyCode
         timestamp = Date().timeIntervalSince1970
         rate = response.rate
-        open24Hour = response.open24Hour
+        openDay = response.openDay
         diff = response.diff
         volume = response.volume
         marketCap = response.marketCap
@@ -34,7 +34,7 @@ class MarketInfoRecord: Record {
     }
 
     enum Columns: String, ColumnExpression, CaseIterable {
-        case coinCode, currencyCode, timestamp, rate, open24Hour, diff, volume, marketCap, supply
+        case coinCode, currencyCode, timestamp, rate, openDay, diff, volume, marketCap, supply
     }
 
     required init(row: Row) {
@@ -42,7 +42,7 @@ class MarketInfoRecord: Record {
         coinCurrency = row[Columns.currencyCode]
         timestamp = row[Columns.timestamp]
         rate = row[Columns.rate]
-        open24Hour = row[Columns.open24Hour]
+        openDay = row[Columns.openDay]
         diff = row[Columns.diff]
         volume = row[Columns.volume]
         marketCap = row[Columns.marketCap]
@@ -56,7 +56,7 @@ class MarketInfoRecord: Record {
         container[Columns.currencyCode] = coinCurrency
         container[Columns.timestamp] = timestamp
         container[Columns.rate] = rate
-        container[Columns.open24Hour] = open24Hour
+        container[Columns.openDay] = openDay
         container[Columns.diff] = diff
         container[Columns.volume] = volume
         container[Columns.marketCap] = marketCap
@@ -68,7 +68,7 @@ class MarketInfoRecord: Record {
 extension MarketInfoRecord: CustomStringConvertible {
 
     var description: String {
-        "MarketInfo [coinCode: \(coinCode); currencyCode: \(coinCurrency); timestamp: \(timestamp); rate: \(rate); open24Hour: \(open24Hour); diff: \(diff)]"
+        "MarketInfo [coinCode: \(coinCode); currencyCode: \(coinCurrency); timestamp: \(timestamp); rate: \(rate); openDay: \(openDay); diff: \(diff)]"
     }
 
 }

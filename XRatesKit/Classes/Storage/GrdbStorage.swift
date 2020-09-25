@@ -23,7 +23,6 @@ class GrdbStorage {
                 t.column(MarketInfoRecord.Columns.currencyCode.name, .text).notNull()
                 t.column(MarketInfoRecord.Columns.timestamp.name, .double).notNull()
                 t.column(MarketInfoRecord.Columns.rate.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.open24Hour.name, .text).notNull()
                 t.column(MarketInfoRecord.Columns.diff.name, .text).notNull()
                 t.column(MarketInfoRecord.Columns.volume.name, .text).notNull()
                 t.column(MarketInfoRecord.Columns.marketCap.name, .text).notNull()
@@ -67,7 +66,7 @@ class GrdbStorage {
                 ], onConflict: .replace)
             }
         }
-        migrator.registerMigration("addVolumeToChartPoints") { db in 
+        migrator.registerMigration("addVolumeToChartPoints") { db in
             try db.execute(sql: "DELETE from \(ChartPointRecord.databaseTableName)")
             try db.alter(table: ChartPointRecord.databaseTableName) { t in
                 t.add(column: ChartPointRecord.Columns.volume.name, .text)
@@ -83,6 +82,14 @@ class GrdbStorage {
                 t.primaryKey([
                     TopMarketCoin.Columns.code.name
                 ], onConflict: .replace)
+            }
+        }
+
+        migrator.registerMigration("addMarketInfoOpenDay") { db in
+            try MarketInfoRecord.deleteAll(db)
+
+            try db.alter(table: MarketInfoRecord.databaseTableName) { t in
+                t.add(column: MarketInfoRecord.Columns.openDay.name, .text).notNull().defaults(to: 0)
             }
         }
 
