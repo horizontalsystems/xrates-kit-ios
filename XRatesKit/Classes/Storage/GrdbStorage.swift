@@ -23,6 +23,7 @@ class GrdbStorage {
                 t.column(MarketInfoRecord.Columns.currencyCode.name, .text).notNull()
                 t.column(MarketInfoRecord.Columns.timestamp.name, .double).notNull()
                 t.column(MarketInfoRecord.Columns.rate.name, .text).notNull()
+                t.column("open24Hour", .text).notNull()
                 t.column(MarketInfoRecord.Columns.diff.name, .text).notNull()
                 t.column(MarketInfoRecord.Columns.volume.name, .text).notNull()
                 t.column(MarketInfoRecord.Columns.marketCap.name, .text).notNull()
@@ -86,10 +87,23 @@ class GrdbStorage {
         }
 
         migrator.registerMigration("addMarketInfoOpenDay") { db in
-            try MarketInfoRecord.deleteAll(db)
+            try db.drop(table: MarketInfoRecord.databaseTableName)
 
-            try db.alter(table: MarketInfoRecord.databaseTableName) { t in
-                t.add(column: MarketInfoRecord.Columns.openDay.name, .text).notNull().defaults(to: 0)
+            try db.create(table: MarketInfoRecord.databaseTableName) { t in
+                t.column(MarketInfoRecord.Columns.coinCode.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.currencyCode.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.timestamp.name, .double).notNull()
+                t.column(MarketInfoRecord.Columns.rate.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.openDay.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.diff.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.volume.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.marketCap.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.supply.name, .text).notNull()
+
+                t.primaryKey([
+                    MarketInfoRecord.Columns.coinCode.name,
+                    MarketInfoRecord.Columns.currencyCode.name,
+                ], onConflict: .replace)
             }
         }
 
