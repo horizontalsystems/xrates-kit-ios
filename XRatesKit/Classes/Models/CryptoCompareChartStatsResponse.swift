@@ -17,14 +17,13 @@ struct CryptoCompareChartStatsResponse: ImmutableMappable {
         var chartPoints = [ChartPoint]()
 
         for rateData in rateDataList {
-            if let timestamp = rateData["time"] as? Int, 
-               let open = rateData["open"] as? Double, 
-               let close = rateData["close"] as? Double,
+            if let timestamp = rateData["time"] as? Int,
+               let open = rateData["open"] as? Double,
                let volume = rateData["volumeto"] as? Double {
 
-                let rateValue = NSNumber(value: (open + close) / 2).decimalValue
+                let openValue = NSNumber(value: open).decimalValue
                 let volumeValue = NSNumber(value: volume).decimalValue
-                chartPoints.append(ChartPoint(timestamp: TimeInterval(timestamp), value: rateValue, volume: volumeValue))
+                chartPoints.append(ChartPoint(timestamp: TimeInterval(timestamp), value: openValue, volume: volumeValue))
             }
         }
 

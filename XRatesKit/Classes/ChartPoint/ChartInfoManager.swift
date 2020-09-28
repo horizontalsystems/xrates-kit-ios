@@ -11,6 +11,12 @@ class ChartInfoManager {
         self.marketInfoManager = marketInfoManager
     }
 
+    private var utcStartOfToday: Date {
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(secondsFromGMT: 0) ?? calendar.timeZone
+        return calendar.startOfDay(for: Date())
+    }
+
     private func chartInfo(chartPoints: [ChartPoint], key: ChartInfoKey) -> ChartInfo? {
         guard let lastPoint = chartPoints.last else {
             return nil
@@ -21,10 +27,7 @@ class ChartInfoManager {
         let lastPointDiffInterval = endTimestamp - lastPoint.timestamp
 
         if key.chartType == .today {
-            var calendar = Calendar.current
-            calendar.timeZone = TimeZone(secondsFromGMT: 0) ?? calendar.timeZone
-            startTimestamp = calendar.startOfDay(for: Date()).timeIntervalSince1970
-
+            startTimestamp = utcStartOfToday.timeIntervalSince1970
             let day = 24 * 60 * 60
             endTimestamp = startTimestamp + TimeInterval(day)
         } else {
@@ -70,8 +73,15 @@ extension ChartInfoManager: IChartInfoManager {
     }
 
     func handleUpdated(chartPoints: [ChartPoint], key: ChartInfoKey) {
-        let records = chartPoints.map {
+        var records = chartPoints.map {
             ChartPointRecord(key: key, chartPoint: $0)
+        }
+
+        let dayStartTimestamp = utcStartOfToday.timeIntervalSince1970
+        if let updatePointIndex = records.firstIndex(where: { $0.chartPoint.timestamp == dayStartTimestamp }),
+           let marketInfo = marketInfoManager.marketInfo(key: PairKey(coinCode: key.coinCode, currencyCode: key.currencyCode)) {
+            let updateRecord = records[updatePointIndex]
+            records[updatePointIndex] = ChartPointRecord(key: key, chartPoint: ChartPoint(timestamp: updateRecord.chartPoint.timestamp, value: marketInfo.openDay, volume: updateRecord.chartPoint.volume))
         }
 
         storage.deleteChartPointRecords(key: key)

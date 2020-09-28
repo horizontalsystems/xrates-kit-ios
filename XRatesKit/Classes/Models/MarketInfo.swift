@@ -3,7 +3,7 @@ import Foundation
 public struct MarketInfo {
     public let timestamp: TimeInterval
     public let rate: Decimal
-    public let open24hour: Decimal
+    public let openDay: Decimal
     public let diff: Decimal
     public let volume: Decimal
     public let marketCap: Decimal
@@ -14,7 +14,7 @@ public struct MarketInfo {
     init(record: MarketInfoRecord, expirationInterval: TimeInterval) {
         timestamp = record.timestamp
         rate = record.rate
-        open24hour = record.open24Hour
+        openDay = record.openDay
         diff = record.diff
         volume = record.volume
         marketCap = record.marketCap
