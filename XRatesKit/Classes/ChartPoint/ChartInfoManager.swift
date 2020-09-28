@@ -73,15 +73,15 @@ extension ChartInfoManager: IChartInfoManager {
     }
 
     func handleUpdated(chartPoints: [ChartPoint], key: ChartInfoKey) {
+        var records = chartPoints.map {
+            ChartPointRecord(key: key, chartPoint: $0)
+        }
+
         let dayStartTimestamp = utcStartOfToday.timeIntervalSince1970
-
-        let records: [ChartPointRecord] = chartPoints.map {
-            if let marketInfo = marketInfoManager.marketInfo(key: PairKey(coinCode: key.coinCode, currencyCode: key.currencyCode)),
-               $0.timestamp == dayStartTimestamp {
-                return ChartPointRecord(key: key, chartPoint: ChartPoint(timestamp: $0.timestamp, value: marketInfo.openDay, volume: $0.volume))
-            }
-
-            return ChartPointRecord(key: key, chartPoint: $0)
+        if let updatePointIndex = records.firstIndex(where: { $0.chartPoint.timestamp == dayStartTimestamp }),
+           let marketInfo = marketInfoManager.marketInfo(key: PairKey(coinCode: key.coinCode, currencyCode: key.currencyCode)) {
+            let updateRecord = records[updatePointIndex]
+            records[updatePointIndex] = ChartPointRecord(key: key, chartPoint: ChartPoint(timestamp: updateRecord.chartPoint.timestamp, value: marketInfo.openDay, volume: updateRecord.chartPoint.volume))
         }
 
         storage.deleteChartPointRecords(key: key)
