@@ -30,8 +30,8 @@ extension XRatesKit {
         marketInfoSyncManager.refresh()
     }
 
-    public func set(coinCodes: [String]) {
-        marketInfoSyncManager.set(coinCodes: coinCodes)
+    public func set(coins: [Coin]) {
+        marketInfoSyncManager.set(coins: coins)
     }
 
     public func set(currencyCode: String) {
@@ -82,7 +82,7 @@ extension XRatesKit {
 
 extension XRatesKit {
 
-    public static func instance(currencyCode: String, coinMarketCapApiKey: String? = nil, indicatorPointCount: Int = 60, marketInfoExpirationInterval: TimeInterval = 5 * 60, topMarketsCount: Int = 10, retryInterval: TimeInterval = 30, minLogLevel: Logger.Level = .error) -> XRatesKit {
+    public static func instance(currencyCode: String, coinMarketCapApiKey: String? = nil, uniswapUrl: String, indicatorPointCount: Int = 60, marketInfoExpirationInterval: TimeInterval = 5 * 60, topMarketsCount: Int = 10, retryInterval: TimeInterval = 30, minLogLevel: Logger.Level = .error) -> XRatesKit {
         let logger = Logger(minLogLevel: minLogLevel)
 
         let reachabilityManager = ReachabilityManager()
@@ -90,30 +90,32 @@ extension XRatesKit {
         let storage = GrdbStorage()
 
         let networkManager = NetworkManager(logger: logger)
-        let mainProvider = CryptoCompareProvider(networkManager: networkManager, baseUrl: "https://min-api.cryptocompare.com", timeoutInterval: 10, topMarketsCount: topMarketsCount, indicatorPointCount: indicatorPointCount)
+        let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, baseUrl: "https://min-api.cryptocompare.com", timeoutInterval: 10, topMarketsCount: topMarketsCount, indicatorPointCount: indicatorPointCount)
+        let uniswapSubgraphProvider = UniswapSubgraphProvider(fiatXRatesProvider: cryptoCompareProvider, networkManager: networkManager, baseUrl: uniswapUrl)
+        let baseMarketInfoProvider = BaseMarketInfoProvider(mainProvider: cryptoCompareProvider, uniswapGraphProvider: uniswapSubgraphProvider)
         let topMarketsProvider: ITopMarketsProvider
 
         if let coinMarketCapApiKey = coinMarketCapApiKey {
-            topMarketsProvider = CoinMarketCapProvider(apiKey: coinMarketCapApiKey, marketInfoProvider: mainProvider, networkManager: networkManager, timeoutInterval: 10, topMarketsCount: topMarketsCount)
+            topMarketsProvider = CoinMarketCapProvider(apiKey: coinMarketCapApiKey, marketInfoProvider: baseMarketInfoProvider, networkManager: networkManager, timeoutInterval: 10, topMarketsCount: topMarketsCount)
         } else {
-            topMarketsProvider = mainProvider
+            topMarketsProvider = cryptoCompareProvider
         }
 
         let marketInfoManager = MarketInfoManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
         let topMarketsManager = TopMarketsManager(storage: storage, provider: topMarketsProvider, expirationInterval: marketInfoExpirationInterval, marketsCount: topMarketsCount)
-        let marketInfoSchedulerFactory = MarketInfoSchedulerFactory(manager: marketInfoManager, provider: mainProvider, reachabilityManager: reachabilityManager, expirationInterval: marketInfoExpirationInterval, retryInterval: retryInterval, logger: logger)
+        let marketInfoSchedulerFactory = MarketInfoSchedulerFactory(manager: marketInfoManager, provider: baseMarketInfoProvider, reachabilityManager: reachabilityManager, expirationInterval: marketInfoExpirationInterval, retryInterval: retryInterval, logger: logger)
         let marketInfoSyncManager = MarketInfoSyncManager(currencyCode: currencyCode, schedulerFactory: marketInfoSchedulerFactory)
         marketInfoManager.delegate = marketInfoSyncManager
 
-        let historicalRateManager = HistoricalRateManager(storage: storage, provider: mainProvider)
+        let historicalRateManager = HistoricalRateManager(storage: storage, provider: cryptoCompareProvider)
 
         let chartInfoManager = ChartInfoManager(storage: storage, marketInfoManager: marketInfoManager)
-        let chartPointSchedulerFactory = ChartPointSchedulerFactory(manager: chartInfoManager, provider: mainProvider, reachabilityManager: reachabilityManager, retryInterval: retryInterval, logger: logger)
+        let chartPointSchedulerFactory = ChartPointSchedulerFactory(manager: chartInfoManager, provider: cryptoCompareProvider, reachabilityManager: reachabilityManager, retryInterval: retryInterval, logger: logger)
         let chartInfoSyncManager = ChartInfoSyncManager(schedulerFactory: chartPointSchedulerFactory, chartInfoManager: chartInfoManager, marketInfoSyncManager: marketInfoSyncManager)
 
         chartInfoManager.delegate = chartInfoSyncManager
 
-        let newsPostManager = NewsManager(provider: mainProvider, state: NewsState(expirationTime: 30 * 60))
+        let newsPostManager = NewsManager(provider: cryptoCompareProvider, state: NewsState(expirationTime: 30 * 60))
 
         let kit = XRatesKit(
                 marketInfoManager: marketInfoManager,
@@ -126,6 +128,35 @@ extension XRatesKit {
         )
 
         return kit
+    }
+
+}
+
+extension XRatesKit {
+
+    public struct Coin {
+        public let code: String
+        public let title: String
+        public let type: CoinType?
+
+        public init(code: String, title: String, type: CoinType?) {
+            self.code = code
+            self.title = title
+            self.type = type
+        }
+
+    }
+
+    public enum CoinType {
+        case bitcoin
+        case litecoin
+        case bitcoinCash
+        case dash
+        case ethereum
+        case erc20(address: String)
+        case binance
+        case zcash
+        case eos
     }
 
 }

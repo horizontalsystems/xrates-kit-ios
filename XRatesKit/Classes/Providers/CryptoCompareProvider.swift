@@ -9,8 +9,6 @@ class CryptoCompareProvider {
         case hour = "histohour"
     }
 
-    private let disposeBag = DisposeBag()
-
     private let networkManager: NetworkManager
     private let baseUrl: String
     private let timeoutInterval: TimeInterval
@@ -52,12 +50,16 @@ class CryptoCompareProvider {
         return url
     }
 
+    private func fiatRatesUrl(source: String, target: String) -> String {
+        "\(baseUrl)/data/price?fsym=\(source)&tsyms=\(target)"
+    }
+
 }
 
 extension CryptoCompareProvider: IMarketInfoProvider {
 
-    func getMarketInfoRecords(coinCodes: [String], currencyCode: String) -> Single<[MarketInfoRecord]> {
-        let url = marketInfoUrl(coinCodes: coinCodes, currencyCode: currencyCode)
+    func getMarketInfoRecords(coins: [XRatesKit.Coin], currencyCode: String) -> Single<[MarketInfoRecord]> {
+        let url = marketInfoUrl(coinCodes: coins.map { $0.code }, currencyCode: currencyCode)
         let request = networkManager.session
                 .request(url, method: .get, interceptor: RateLimitRetrier())
                 .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
@@ -168,6 +170,22 @@ extension CryptoCompareProvider: INewsProvider {
                 .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
 
         return networkManager.single(request: request)
+    }
+
+}
+
+extension CryptoCompareProvider: IFiatXRatesProvider {
+
+    func latestFiatXRates(sourceCurrency: String, targetCurrency: String) -> Single<Decimal> {
+        let url = fiatRatesUrl(source: sourceCurrency, target: targetCurrency)
+
+        let request = networkManager.session
+                .request(url, method: .get, interceptor: RateLimitRetrier())
+                .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
+
+        return networkManager.single(request: request).map { (rateResponse: CryptoCompareFiatRateResponse) in
+            rateResponse.rate
+        }
     }
 
 }

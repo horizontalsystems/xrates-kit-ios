@@ -36,8 +36,8 @@ extension CoinMarketCapProvider: ITopMarketsProvider {
 
         return networkManager.single(request: request)
                 .flatMap { [weak self] (response: CoinMarketCapTopMarketsResponse) in
-                    let coins: [TopMarketCoin] = response.values
-                    let topMarkets: Single<[MarketInfoRecord]> = self?.marketInfoProvider.getMarketInfoRecords(coinCodes: coins.map { $0.code }, currencyCode: currencyCode) ?? Single.just([])
+                    let coins: [XRatesKit.Coin] = response.values
+                    let topMarkets: Single<[MarketInfoRecord]> = self?.marketInfoProvider.getMarketInfoRecords(coins: coins, currencyCode: currencyCode) ?? Single.just([])
 
                     return topMarkets.map { marketInfos in
                         var orderedMarketInfos = [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]()
@@ -47,7 +47,7 @@ extension CoinMarketCapProvider: ITopMarketsProvider {
                                 continue
                             }
 
-                            orderedMarketInfos.append((coin: coin, marketInfo: marketInfo))
+                            orderedMarketInfos.append((coin: TopMarketCoin(code: coin.code, title: coin.title), marketInfo: marketInfo))
                         }
 
                         return orderedMarketInfos
