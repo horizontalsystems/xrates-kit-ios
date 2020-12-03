@@ -11,13 +11,19 @@ class CryptoCompareProvider {
 
     private let networkManager: NetworkManager
     private let baseUrl: String
+    private let apiKey: String
     private let timeoutInterval: TimeInterval
     private let topMarketsCount: Int
     private let indicatorPointCount: Int
 
-    init(networkManager: NetworkManager, baseUrl: String, timeoutInterval: TimeInterval, topMarketsCount: Int, indicatorPointCount: Int) {
+    init(networkManager: NetworkManager, baseUrl: String, apiKey: String?, timeoutInterval: TimeInterval, topMarketsCount: Int, indicatorPointCount: Int) {
         self.networkManager = networkManager
         self.baseUrl = baseUrl
+        if let apiKey = apiKey {
+            self.apiKey = "api_key=\(apiKey)"
+        } else {
+            self.apiKey = ""
+        }
         self.timeoutInterval = timeoutInterval
         self.topMarketsCount = min(100, max(10, topMarketsCount))
         self.indicatorPointCount = indicatorPointCount
@@ -25,25 +31,25 @@ class CryptoCompareProvider {
 
     private func marketInfoUrl(coinCodes: [String], currencyCode: String) -> String {
             let coinList = coinCodes.joined(separator: ",")
-            return "\(baseUrl)/data/pricemultifull?fsyms=\(coinList)&tsyms=\(currencyCode)"
+            return "\(baseUrl)/data/pricemultifull?\(apiKey)&fsyms=\(coinList)&tsyms=\(currencyCode)"
     }
 
     private func topMarketInfosUrl(currencyCode: String) -> String {
-        "\(baseUrl)/data/top/mktcapfull?&tsym=\(currencyCode)&limit=\(topMarketsCount)"
+        "\(baseUrl)/data/top/mktcapfull?\(apiKey)&tsym=\(currencyCode)&limit=\(topMarketsCount)"
     }
 
     private func historicalRateUrl(coinCode: String, currencyCode: String, historicalType: HistoricalType, timestamp: TimeInterval) -> String {
-        "\(baseUrl)/data/v2/\(historicalType.rawValue)?fsym=\(coinCode)&tsym=\(currencyCode)&limit=1&toTs=\(Int(timestamp))"
+        "\(baseUrl)/data/v2/\(historicalType.rawValue)?\(apiKey)&fsym=\(coinCode)&tsym=\(currencyCode)&limit=1&toTs=\(Int(timestamp))"
     }
 
     private func chartStatsUrl(key: ChartInfoKey, pointCount: Int, toTimestamp: Int?) -> String {
         let ts = toTimestamp.map { "&toTs=\($0)" } ?? ""
 
-        return "\(baseUrl)/data/v2/\(key.chartType.resource)?fsym=\(key.coinCode)&tsym=\(key.currencyCode)&limit=\(pointCount)&aggregate=\(key.chartType.interval)" + ts
+        return "\(baseUrl)/data/v2/\(key.chartType.resource)?\(apiKey)&fsym=\(key.coinCode)&tsym=\(key.currencyCode)&limit=\(pointCount)&aggregate=\(key.chartType.interval)" + ts
     }
 
     private func newsUrl(latestTimeStamp: TimeInterval?) -> String {
-        var url = "\(baseUrl)/data/v2/news/?excludeCategories=Sponsored"
+        var url = "\(baseUrl)/data/v2/news/?\(apiKey)&excludeCategories=Sponsored"
         if let timestamp = latestTimeStamp {
             url.append("&lTs=\(Int(timestamp))")
         }
@@ -51,7 +57,7 @@ class CryptoCompareProvider {
     }
 
     private func fiatRatesUrl(source: String, target: String) -> String {
-        "\(baseUrl)/data/price?fsym=\(source)&tsyms=\(target)"
+        "\(baseUrl)/data/price?\(apiKey)&fsym=\(source)&tsyms=\(target)"
     }
 
 }

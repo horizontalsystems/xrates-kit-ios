@@ -82,7 +82,7 @@ extension XRatesKit {
 
 extension XRatesKit {
 
-    public static func instance(currencyCode: String, coinMarketCapApiKey: String? = nil, uniswapUrl: String, indicatorPointCount: Int = 60, marketInfoExpirationInterval: TimeInterval = 5 * 60, topMarketsCount: Int = 10, retryInterval: TimeInterval = 30, minLogLevel: Logger.Level = .error) -> XRatesKit {
+    public static func instance(currencyCode: String, coinMarketCapApiKey: String? = nil, cryptoCompareApiKey: String? = nil, uniswapUrl: String, indicatorPointCount: Int = 60, marketInfoExpirationInterval: TimeInterval = 5 * 60, topMarketsCount: Int = 10, retryInterval: TimeInterval = 30, minLogLevel: Logger.Level = .error) -> XRatesKit {
         let logger = Logger(minLogLevel: minLogLevel)
 
         let reachabilityManager = ReachabilityManager()
@@ -90,7 +90,7 @@ extension XRatesKit {
         let storage = GrdbStorage()
 
         let networkManager = NetworkManager(logger: logger)
-        let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, baseUrl: "https://min-api.cryptocompare.com", timeoutInterval: 10, topMarketsCount: topMarketsCount, indicatorPointCount: indicatorPointCount)
+        let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, baseUrl: "https://min-api.cryptocompare.com", apiKey: cryptoCompareApiKey, timeoutInterval: 10, topMarketsCount: topMarketsCount, indicatorPointCount: indicatorPointCount)
         let uniswapSubgraphProvider = UniswapSubgraphProvider(fiatXRatesProvider: cryptoCompareProvider, networkManager: networkManager, baseUrl: uniswapUrl)
         let baseMarketInfoProvider = BaseMarketInfoProvider(mainProvider: cryptoCompareProvider, uniswapGraphProvider: uniswapSubgraphProvider)
         let topMarketsProvider: ITopMarketsProvider
