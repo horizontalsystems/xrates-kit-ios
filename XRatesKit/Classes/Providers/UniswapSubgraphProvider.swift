@@ -97,7 +97,7 @@ extension UniswapSubgraphProvider: IMarketInfoProvider {
                 let latestPrice = rate.latestPriceInETH * ethPrice
                 let dayOpenUSDPrice = rate.dayStartPriceInUSD ?? latestPrice
                 let dayOpenFiatPrice = fiatRate * dayOpenUSDPrice
-                let diff = ((latestPrice - dayOpenFiatPrice) * 100) / dayOpenFiatPrice
+                let diff = dayOpenFiatPrice > 0 ? ((latestPrice - dayOpenFiatPrice) * 100) / dayOpenFiatPrice : 0
 
                 marketInfos.append(MarketInfoRecord(
                         coinCode: coinCode,
