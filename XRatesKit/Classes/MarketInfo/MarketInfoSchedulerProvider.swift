@@ -1,7 +1,8 @@
 import RxSwift
 
 class MarketInfoSchedulerProvider {
-    private var coinCodes: [String]
+    private var coins: [XRatesKit.Coin]
+
     private let currencyCode: String
     private let manager: IMarketInfoManager
     private let provider: IMarketInfoProvider
@@ -9,8 +10,8 @@ class MarketInfoSchedulerProvider {
     let expirationInterval: TimeInterval
     let retryInterval: TimeInterval
 
-    init(coinCodes: [String], currencyCode: String, manager: IMarketInfoManager, provider: IMarketInfoProvider, expirationInterval: TimeInterval, retryInterval: TimeInterval) {
-        self.coinCodes = coinCodes
+    init(coins: [XRatesKit.Coin], currencyCode: String, manager: IMarketInfoManager, provider: IMarketInfoProvider, expirationInterval: TimeInterval, retryInterval: TimeInterval) {
+        self.coins = coins
         self.currencyCode = currencyCode
         self.manager = manager
         self.provider = provider
@@ -19,9 +20,9 @@ class MarketInfoSchedulerProvider {
     }
 
     private func handle(updatedRecords: [MarketInfoRecord]) {
-        coinCodes.removeAll { coinCode in
+        coins.removeAll { coin in
             !updatedRecords.contains { record in
-                record.key.coinCode == coinCode
+                record.key.coinCode == coin.code
             }
         }
 
@@ -33,11 +34,11 @@ class MarketInfoSchedulerProvider {
 extension MarketInfoSchedulerProvider: IMarketInfoSchedulerProvider {
 
     var lastSyncTimestamp: TimeInterval? {
-        manager.lastSyncTimestamp(coinCodes: coinCodes, currencyCode: currencyCode)
+        manager.lastSyncTimestamp(coinCodes: coins.map { $0.code }, currencyCode: currencyCode)
     }
 
     var syncSingle: Single<Void> {
-        provider.getMarketInfoRecords(coinCodes: coinCodes, currencyCode: currencyCode)
+        provider.getMarketInfoRecords(coins: coins, currencyCode: currencyCode)
                 .do(onSuccess: { [weak self] records in
                     self?.handle(updatedRecords: records)
                 })
@@ -45,7 +46,7 @@ extension MarketInfoSchedulerProvider: IMarketInfoSchedulerProvider {
     }
 
     func notifyExpired() {
-        manager.notifyExpired(coinCodes: coinCodes, currencyCode: currencyCode)
+        manager.notifyExpired(coinCodes: coins.map { $0.code }, currencyCode: currencyCode)
     }
 
 }

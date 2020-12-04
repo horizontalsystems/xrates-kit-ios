@@ -4,17 +4,25 @@ import XRatesKit
 class MainController: UITabBarController {
     private let currencyCode = "USD"
 
-    private let marketInfoCoinCodes = ["BTC", "ETH", "BCH", "DASH", "BNB", "EOS"]
+    private let marketInfoCoins = [
+        XRatesKit.Coin(code: "BTC", title: "Bitcoin", type: .bitcoin),
+        XRatesKit.Coin(code: "ETH", title: "Ethereum", type: .ethereum),
+        XRatesKit.Coin(code: "BCH", title: "Bitcoin Cash", type: .bitcoinCash),
+        XRatesKit.Coin(code: "DASH", title: "Dash", type: .dash),
+        XRatesKit.Coin(code: "BNB", title: "Binance", type: .binance),
+        XRatesKit.Coin(code: "EOS", title: "EOS", type: .eos),
+        XRatesKit.Coin(code: "UNI", title: "UNI Token", type: .erc20(address: "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"))
+    ]
     private let historicalCoinCode = "BTC"
     private let chartCoinCode = "BTC"
 
     init() {
         super.init(nibName: nil, bundle: nil)
 
-        let xRatesKit = XRatesKit.instance(currencyCode: currencyCode, minLogLevel: .verbose)
-        xRatesKit.set(coinCodes: marketInfoCoinCodes)
+        let xRatesKit = XRatesKit.instance(currencyCode: currencyCode, uniswapUrl: "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2", minLogLevel: .verbose)
+        xRatesKit.set(coins: marketInfoCoins)
 
-        let marketInfoController = MarketInfoController(xRatesKit: xRatesKit, currencyCode: currencyCode, coinCodes: marketInfoCoinCodes)
+        let marketInfoController = MarketInfoController(xRatesKit: xRatesKit, currencyCode: currencyCode, coinCodes: marketInfoCoins.map { $0.code })
         marketInfoController.tabBarItem = UITabBarItem(title: "Market Info", image: UIImage(systemName: "dollarsign.circle"), tag: 0)
 
         let historicalController = HistoricalController(xRatesKit: xRatesKit, currencyCode: currencyCode, coinCode: historicalCoinCode)

@@ -18,9 +18,9 @@ class MarketInfoSchedulerFactory {
         self.logger = logger
     }
 
-    func scheduler(coinCodes: [String], currencyCode: String) -> MarketInfoScheduler {
+    func scheduler(coins: [XRatesKit.Coin], currencyCode: String) -> MarketInfoScheduler {
         let schedulerProvider = MarketInfoSchedulerProvider(
-                coinCodes: coinCodes,
+                coins: coins,
                 currencyCode: currencyCode,
                 manager: manager,
                 provider: provider,

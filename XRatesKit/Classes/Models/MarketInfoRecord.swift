@@ -11,18 +11,31 @@ class MarketInfoRecord: Record {
     let marketCap: Decimal
     let supply: Decimal
 
-    init(coinCode: String, currencyCode: String, response: ResponseMarketInfo) {
+    init(coinCode: String, currencyCode: String, rate: Decimal, openDay: Decimal, diff: Decimal, volume: Decimal, marketCap: Decimal, supply: Decimal) {
         self.coinCode = coinCode
         coinCurrency = currencyCode
         timestamp = Date().timeIntervalSince1970
-        rate = response.rate
-        openDay = response.openDay
-        diff = response.diff
-        volume = response.volume
-        marketCap = response.marketCap
-        supply = response.supply
+        self.rate = rate
+        self.openDay = openDay
+        self.diff = diff
+        self.volume = volume
+        self.marketCap = marketCap
+        self.supply = supply
 
         super.init()
+    }
+
+    convenience init(coinCode: String, currencyCode: String, response: ResponseMarketInfo) {
+        self.init(
+                coinCode: coinCode,
+                currencyCode: currencyCode,
+                rate: response.rate,
+                openDay: response.openDay,
+                diff: response.diff,
+                volume: response.volume,
+                marketCap: response.marketCap,
+                supply: response.supply
+        )
     }
 
     var key: PairKey {

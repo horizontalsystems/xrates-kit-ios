@@ -9,57 +9,41 @@ class CryptoCompareProvider {
         case hour = "histohour"
     }
 
-    private let disposeBag = DisposeBag()
-
     private let networkManager: NetworkManager
     private let baseUrl: String
+    private let apiKey: String?
     private let timeoutInterval: TimeInterval
     private let topMarketsCount: Int
     private let indicatorPointCount: Int
 
-    init(networkManager: NetworkManager, baseUrl: String, timeoutInterval: TimeInterval, topMarketsCount: Int, indicatorPointCount: Int) {
+    init(networkManager: NetworkManager, baseUrl: String, apiKey: String?, timeoutInterval: TimeInterval, topMarketsCount: Int, indicatorPointCount: Int) {
         self.networkManager = networkManager
         self.baseUrl = baseUrl
+        self.apiKey = apiKey
         self.timeoutInterval = timeoutInterval
         self.topMarketsCount = min(100, max(10, topMarketsCount))
         self.indicatorPointCount = indicatorPointCount
     }
 
-    private func marketInfoUrl(coinCodes: [String], currencyCode: String) -> String {
-            let coinList = coinCodes.joined(separator: ",")
-            return "\(baseUrl)/data/pricemultifull?fsyms=\(coinList)&tsyms=\(currencyCode)"
-    }
-
-    private func topMarketInfosUrl(currencyCode: String) -> String {
-        "\(baseUrl)/data/top/mktcapfull?&tsym=\(currencyCode)&limit=\(topMarketsCount)"
-    }
-
-    private func historicalRateUrl(coinCode: String, currencyCode: String, historicalType: HistoricalType, timestamp: TimeInterval) -> String {
-        "\(baseUrl)/data/v2/\(historicalType.rawValue)?fsym=\(coinCode)&tsym=\(currencyCode)&limit=1&toTs=\(Int(timestamp))"
-    }
-
-    private func chartStatsUrl(key: ChartInfoKey, pointCount: Int, toTimestamp: Int?) -> String {
-        let ts = toTimestamp.map { "&toTs=\($0)" } ?? ""
-
-        return "\(baseUrl)/data/v2/\(key.chartType.resource)?fsym=\(key.coinCode)&tsym=\(key.currencyCode)&limit=\(pointCount)&aggregate=\(key.chartType.interval)" + ts
-    }
-
-    private func newsUrl(latestTimeStamp: TimeInterval?) -> String {
-        var url = "\(baseUrl)/data/v2/news/?excludeCategories=Sponsored"
-        if let timestamp = latestTimeStamp {
-            url.append("&lTs=\(Int(timestamp))")
+    private func urlAndParams(path: String, parameters: Parameters) -> (String, Parameters) {
+        var params = parameters
+        if let apiKey = self.apiKey {
+            params["apiKey"] = apiKey
         }
-        return url
+
+        return (baseUrl + path, params)
     }
 
 }
 
 extension CryptoCompareProvider: IMarketInfoProvider {
 
-    func getMarketInfoRecords(coinCodes: [String], currencyCode: String) -> Single<[MarketInfoRecord]> {
-        let url = marketInfoUrl(coinCodes: coinCodes, currencyCode: currencyCode)
+    func getMarketInfoRecords(coins: [XRatesKit.Coin], currencyCode: String) -> Single<[MarketInfoRecord]> {
+        let coinList = coins.map { $0.code }.joined(separator: ",")
+        let (url, parameters) = urlAndParams(path: "/data/pricemultifull", parameters: ["fsyms": coinList, "tsyms": currencyCode])
+
         let request = networkManager.session
-                .request(url, method: .get, interceptor: RateLimitRetrier())
+                .request(url, method: .get, parameters: parameters, interceptor: RateLimitRetrier())
                 .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
 
         return networkManager.single(request: request)
@@ -82,9 +66,10 @@ extension CryptoCompareProvider: IMarketInfoProvider {
 extension CryptoCompareProvider: ITopMarketsProvider {
 
     func topMarkets(currencyCode: String) -> Single<[(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]> {
-        let url = topMarketInfosUrl(currencyCode: currencyCode)
+        let (url, parameters) = urlAndParams(path: "/data/top/mktcapfull", parameters: ["tsym": currencyCode, "limit": topMarketsCount])
+
         let request = networkManager.session
-                .request(url, method: .get, interceptor: RateLimitRetrier())
+                .request(url, method: .get, parameters: parameters, interceptor: RateLimitRetrier())
                 .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
 
         return networkManager.single(request: request)
@@ -110,12 +95,14 @@ extension CryptoCompareProvider: IHistoricalRateProvider {
 
     func getHistoricalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
         let minuteThreshold: TimeInterval = 60 * 60 * 24 * 7
-
         let historicalType: HistoricalType = timestamp > Date().timeIntervalSince1970 - minuteThreshold ? .minute : .hour
+        let (url, parameters) = urlAndParams(
+                path: "/data/v2/\(historicalType.rawValue)",
+                parameters: ["fsym": coinCode, "tsym": currencyCode, "limit": 1, "toTs": Int(timestamp)]
+        )
 
-        let url = historicalRateUrl(coinCode: coinCode, currencyCode: currencyCode, historicalType: historicalType, timestamp: timestamp)
         let request = networkManager.session
-                .request(url, method: .get, interceptor: RateLimitRetrier())
+                .request(url, method: .get, parameters: parameters, interceptor: RateLimitRetrier())
                 .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
 
         return networkManager.single(request: request)
@@ -135,12 +122,16 @@ extension CryptoCompareProvider: IChartPointProvider {
     }
 
     private func chartPoints(key: ChartInfoKey, points: [ChartPoint] = [], pointCount: Int, toTimestamp: Int? = nil) -> Single<[ChartPoint]> {
+        var chartPointParams: Parameters = ["fsym": key.coinCode, "tsym": key.currencyCode, "limit": pointCount, "aggregate": key.chartType.interval]
+        if let ts = toTimestamp {
+            chartPointParams["toTs"] = ts
+        }
+        let (url, parameters) = urlAndParams(path: "/data/v2/\(key.chartType.resource)", parameters: chartPointParams)
 
-        let url = chartStatsUrl(key: key, pointCount: pointCount, toTimestamp: toTimestamp)
         var points = points
 
         let request = networkManager.session
-                .request(url, method: .get, interceptor: RateLimitRetrier())
+                .request(url, method: .get, parameters: parameters, interceptor: RateLimitRetrier())
                 .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
 
         return networkManager.single(request: request)
@@ -162,12 +153,33 @@ extension CryptoCompareProvider: IChartPointProvider {
 extension CryptoCompareProvider: INewsProvider {
 
     func newsSingle(latestTimestamp: TimeInterval?) -> Single<CryptoCompareNewsResponse> {
-        let url = newsUrl(latestTimeStamp: latestTimestamp)
+        var newsParams: Parameters = ["excludeCategories": "Sponsored"]
+        if let timestamp = latestTimestamp {
+            newsParams["lTs"] = Int(timestamp)
+        }
+        let (url, parameters) = urlAndParams(path: "/data/v2/news/", parameters: newsParams)
+
         let request = networkManager.session
-                .request(url, method: .get, interceptor: RateLimitRetrier())
+                .request(url, method: .get, parameters: parameters, interceptor: RateLimitRetrier())
                 .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
 
         return networkManager.single(request: request)
+    }
+
+}
+
+extension CryptoCompareProvider: IFiatXRatesProvider {
+
+    func latestFiatXRates(sourceCurrency: String, targetCurrency: String) -> Single<Decimal> {
+        let (url, parameters) = urlAndParams(path: "/data/price", parameters: ["fsym": sourceCurrency, "tsyms": targetCurrency])
+
+        let request = networkManager.session
+                .request(url, method: .get, parameters: parameters, interceptor: RateLimitRetrier())
+                .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
+
+        return networkManager.single(request: request).map { (rateResponse: CryptoCompareFiatRateResponse) in
+            rateResponse.rate
+        }
     }
 
 }

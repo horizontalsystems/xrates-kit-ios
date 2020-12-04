@@ -3,7 +3,7 @@ import RxSwift
 class MarketInfoSyncManager {
     private let schedulerFactory: MarketInfoSchedulerFactory
 
-    private var coinCodes = [String]()
+    private var coins = [XRatesKit.Coin]()
     private var currencyCode: String
 
     private var subjects = [PairKey: PublishSubject<MarketInfo>]()
@@ -40,11 +40,11 @@ class MarketInfoSyncManager {
     private func updateScheduler() {
         scheduler = nil
 
-        guard !coinCodes.isEmpty else {
+        guard !coins.isEmpty else {
             return
         }
 
-        scheduler = schedulerFactory.scheduler(coinCodes: coinCodes, currencyCode: currencyCode)
+        scheduler = schedulerFactory.scheduler(coins: coins, currencyCode: currencyCode)
         scheduler?.schedule()
     }
 
@@ -52,8 +52,8 @@ class MarketInfoSyncManager {
 
 extension MarketInfoSyncManager: IMarketInfoSyncManager {
 
-    func set(coinCodes: [String]) {
-        self.coinCodes = coinCodes
+    func set(coins: [XRatesKit.Coin]) {
+        self.coins = coins
         updateScheduler()
     }
 
