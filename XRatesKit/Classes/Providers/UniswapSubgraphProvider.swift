@@ -73,7 +73,7 @@ extension UniswapSubgraphProvider: IMarketInfoProvider {
         let addresses = tokenAddresses(coins: coins)
 
         return Single.zip(
-                ratesSingle(addresses: addresses, timestamp: Int(Date().timeIntervalSince1970) - 24*60*60),
+                ratesSingle(addresses: addresses, timestamp: Int(Date().timeIntervalSince1970) - 24 * 60 * 60),
                 ethPriceSingle(),
                 currencyCode == UniswapSubgraphProvider.baseFiatCurrency ? Single.just(1.0) :
                         fiatXRatesProvider.latestFiatXRates(sourceCurrency: UniswapSubgraphProvider.baseFiatCurrency, targetCurrency: currencyCode)

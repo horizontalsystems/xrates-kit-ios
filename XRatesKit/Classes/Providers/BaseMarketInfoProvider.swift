@@ -17,12 +17,9 @@ extension BaseMarketInfoProvider: IMarketInfoProvider {
         var otherCoins = [XRatesKit.Coin]()
 
         for coin in coins {
-            if case .erc20 = coin.type {
-                ethereumCoins.append(coin)
-            } else if case .ethereum = coin.type {
-                ethereumCoins.append(coin)
-            } else {
-                otherCoins.append(coin)
+            switch coin.type {
+            case .erc20, .ethereum: ethereumCoins.append(coin)
+            default: otherCoins.append(coin)
             }
         }
 

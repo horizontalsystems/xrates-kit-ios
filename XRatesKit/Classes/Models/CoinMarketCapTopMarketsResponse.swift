@@ -27,6 +27,8 @@ struct CoinMarketCapTopMarketsResponse: ImmutableMappable {
                let token_address = platform["token_address"] as? String,
                let name = platform["name"] as? String, name == "Ethereum" {
                 coinType = .erc20(address: token_address)
+            } else if let slug = marketDictionary["slug"] as? String, slug == "ethereum" {
+                coinType = .ethereum
             }
 
             return XRatesKit.Coin(code: code, title: title, type: coinType)
