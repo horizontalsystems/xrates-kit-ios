@@ -20,13 +20,22 @@ class MarketInfoSchedulerProvider {
     }
 
     private func handle(updatedRecords: [MarketInfoRecord]) {
+        var records = updatedRecords.compactMap { record -> MarketInfoRecord? in
+            if let matchedCoin = coins.first { $0.code.uppercased() == record.coinCode.uppercased() } {
+                record.coinCode = matchedCoin.code
+                return record
+            }
+
+            return nil
+        }
+
         coins.removeAll { coin in
-            !updatedRecords.contains { record in
+            !records.contains { record in
                 record.key.coinCode == coin.code
             }
         }
 
-        manager.handleUpdated(records: updatedRecords, currencyCode: currencyCode)
+        manager.handleUpdated(records: records, currencyCode: currencyCode)
     }
 
 }

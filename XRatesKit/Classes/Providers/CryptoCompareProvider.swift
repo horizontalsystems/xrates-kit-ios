@@ -39,6 +39,10 @@ class CryptoCompareProvider {
 extension CryptoCompareProvider: IMarketInfoProvider {
 
     func getMarketInfoRecords(coins: [XRatesKit.Coin], currencyCode: String) -> Single<[MarketInfoRecord]> {
+        guard !coins.isEmpty else {
+            return Single.just([])
+        }
+
         let coinList = coins.map { $0.code }.joined(separator: ",")
         let (url, parameters) = urlAndParams(path: "/data/pricemultifull", parameters: ["fsyms": coinList, "tsyms": currencyCode])
 
