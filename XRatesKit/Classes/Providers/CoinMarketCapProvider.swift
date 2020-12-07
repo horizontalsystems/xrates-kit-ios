@@ -43,7 +43,7 @@ extension CoinMarketCapProvider: ITopMarketsProvider {
                         var orderedMarketInfos = [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]()
 
                         for coin in coins {
-                            guard let marketInfo = marketInfos.first(where: { $0.coinCode == coin.code }) else {
+                            guard let marketInfo = marketInfos.first(where: { $0.coinCode.uppercased() == coin.code.uppercased() }) else {
                                 continue
                             }
 

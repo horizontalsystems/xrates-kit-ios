@@ -70,6 +70,10 @@ class UniswapSubgraphProvider {
 extension UniswapSubgraphProvider: IMarketInfoProvider {
 
     func getMarketInfoRecords(coins: [XRatesKit.Coin], currencyCode: String) -> Single<[MarketInfoRecord]> {
+        guard !coins.isEmpty else {
+            return Single.just([])
+        }
+
         let addresses = tokenAddresses(coins: coins)
 
         return Single.zip(

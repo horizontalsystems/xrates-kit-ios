@@ -1,7 +1,7 @@
 import GRDB
 
 class MarketInfoRecord: Record {
-    let coinCode: String
+    var coinCode: String
     let coinCurrency: String
     let timestamp: TimeInterval
     let rate: Decimal
