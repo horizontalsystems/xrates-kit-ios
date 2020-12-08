@@ -21,7 +21,7 @@ struct UniswapSubgraphRatesResponse: ImmutableMappable {
                   let tokenDictionary = rateDictionary["token"] as? [String: Any],
                   let coinCode = tokenDictionary["symbol"] as? String,
                   let latestPriceString = tokenDictionary["derivedETH"] as? String,
-                  let latestPrice = Decimal(string: latestPriceString) else {
+                  let latestPrice = Decimal(string: latestPriceString), latestPrice > 0 else {
                 continue
             }
 
