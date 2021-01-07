@@ -107,6 +107,49 @@ class GrdbStorage {
             }
         }
 
+        migrator.registerMigration("createGlobalMarketInfo") { db in
+            try db.create(table: GlobalMarketInfo.databaseTableName) { t in
+                t.column(GlobalMarketInfo.Columns.currencyCode.name, .text).notNull()
+                t.column(GlobalMarketInfo.Columns.volume24h.name, .text).notNull()
+                t.column(GlobalMarketInfo.Columns.volume24hDiff24h.name, .text).notNull()
+                t.column(GlobalMarketInfo.Columns.marketCap.name, .text).notNull()
+                t.column(GlobalMarketInfo.Columns.marketCapDiff24h.name, .text).notNull()
+                t.column(GlobalMarketInfo.Columns.btcDominance.name, .text).notNull()
+                t.column(GlobalMarketInfo.Columns.btcDominanceDiff24h.name, .text).notNull()
+                t.column(GlobalMarketInfo.Columns.defiMarketCap.name, .text).notNull()
+                t.column(GlobalMarketInfo.Columns.defiMarketCapDiff24h.name, .text).notNull()
+                t.column(GlobalMarketInfo.Columns.defiTvl.name, .text).notNull()
+                t.column(GlobalMarketInfo.Columns.defiTvlDiff24h.name, .text).notNull()
+
+                t.primaryKey([
+                    GlobalMarketInfo.Columns.currencyCode.name
+                ], onConflict: .replace)
+            }
+        }
+
+        migrator.registerMigration("addMarketInfoLiquidityAndDiffPeriod") { db in
+            try db.drop(table: MarketInfoRecord.databaseTableName)
+
+            try db.create(table: MarketInfoRecord.databaseTableName) { t in
+                t.column(MarketInfoRecord.Columns.coinCode.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.currencyCode.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.timestamp.name, .double).notNull()
+                t.column(MarketInfoRecord.Columns.rate.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.openDay.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.diff.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.volume.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.marketCap.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.supply.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.liquidity.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.rateDiffPeriod.name, .text).notNull()
+
+                t.primaryKey([
+                    MarketInfoRecord.Columns.coinCode.name,
+                    MarketInfoRecord.Columns.currencyCode.name,
+                ], onConflict: .replace)
+            }
+        }
+
         return migrator
     }
 
@@ -228,6 +271,24 @@ extension GrdbStorage: IChartPointStorage {
             try ChartPointRecord
                     .filter(ChartPointRecord.Columns.coinCode == key.coinCode && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.chartType.rawValue)
                     .deleteAll(db)
+        }
+    }
+
+}
+
+extension GrdbStorage: IGlobalMarketInfoStorage {
+
+    func save(globalMarketInfo: GlobalMarketInfo) {
+        _ = try! dbPool.write { db in
+            try globalMarketInfo.insert(db)
+        }
+    }
+
+    func globalMarketInfo(currencyCode: String) -> GlobalMarketInfo? {
+        try! dbPool.read { db in
+            try GlobalMarketInfo
+                .filter(GlobalMarketInfo.Columns.currencyCode == currencyCode)
+                .fetchOne(db)
         }
     }
 

@@ -9,6 +9,8 @@ struct ResponseMarketInfo: ImmutableMappable {
     let volume: Decimal
     let marketCap: Decimal
     let supply: Decimal
+    let liquidity: Decimal
+    let rateDiffPeriod: Decimal
 
     init(map: Map) throws {
         timestamp = try map.value("LASTUPDATE")
@@ -18,6 +20,9 @@ struct ResponseMarketInfo: ImmutableMappable {
         volume = try map.value("VOLUME24HOURTO", using: ResponseMarketInfo.decimalTransform)
         marketCap = try map.value("MKTCAP", using: ResponseMarketInfo.decimalTransform)
         supply = try map.value("SUPPLY", using: ResponseMarketInfo.decimalTransform)
+
+        liquidity = 0
+        rateDiffPeriod = 0
     }
 
     private static let decimalTransform: TransformOf<Decimal, Double> = TransformOf(fromJSON: { double -> Decimal? in

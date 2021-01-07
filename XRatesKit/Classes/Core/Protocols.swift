@@ -53,15 +53,26 @@ protocol ITopMarketsStorage {
 }
 
 protocol ITopMarketsProvider {
-    func topMarkets(currencyCode: String) -> Single<[(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]>
+    func topMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int) -> Single<[TopMarket]>
+}
+
+protocol ITopDefiMarketsProvider {
+    func topDefiMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemsCount: Int) -> Single<[TopMarket]>
 }
 
 protocol ITopMarketsManager {
-    func topMarketInfos(currencyCode: String) -> Single<[TopMarket]>
+    func topMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemsCount: Int) -> Single<[TopMarket]>
+    func topDefiMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemsCount: Int) -> Single<[TopMarket]>
 }
 
 protocol ITopMarketsManagerDelegate: AnyObject {
     func didUpdate(topMarketInfos: [MarketInfo])
+}
+
+// Global Info
+
+protocol IGlobalMarketInfoProvider {
+    func globalMarketInfo(currencyCode: String) -> Single<GlobalMarketInfo>
 }
 
 // Historical Rates
@@ -78,6 +89,11 @@ protocol IHistoricalRateProvider {
 protocol IHistoricalRateStorage {
     func rate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> HistoricalRate?
     func save(historicalRate: HistoricalRate)
+}
+
+protocol IGlobalMarketInfoStorage {
+    func save(globalMarketInfo: GlobalMarketInfo)
+    func globalMarketInfo(currencyCode: String) -> GlobalMarketInfo?
 }
 
 // Chart Points

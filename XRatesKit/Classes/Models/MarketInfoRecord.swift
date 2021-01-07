@@ -3,25 +3,29 @@ import GRDB
 class MarketInfoRecord: Record {
     var coinCode: String
     let coinCurrency: String
-    let timestamp: TimeInterval
     let rate: Decimal
-    let openDay: Decimal
-    let diff: Decimal
+    let rateOpenDay: Decimal
+    let rateDiff: Decimal
     let volume: Decimal
     let marketCap: Decimal
     let supply: Decimal
+    let liquidity: Decimal
+    let rateDiffPeriod: Decimal
+    let timestamp: TimeInterval
 
-    init(coinCode: String, currencyCode: String, rate: Decimal, openDay: Decimal, diff: Decimal, volume: Decimal, marketCap: Decimal, supply: Decimal) {
+    init(coinCode: String, currencyCode: String, rate: Decimal, openDay: Decimal, diff: Decimal, volume: Decimal, marketCap: Decimal, supply: Decimal, liquidity: Decimal = 0, rateDiffPeriod: Decimal = 0) {
         self.coinCode = coinCode
         coinCurrency = currencyCode
-        timestamp = Date().timeIntervalSince1970
         self.rate = rate
-        self.openDay = openDay
-        self.diff = diff
+        rateOpenDay = openDay
+        rateDiff = diff
         self.volume = volume
         self.marketCap = marketCap
         self.supply = supply
+        self.liquidity = liquidity
+        self.rateDiffPeriod = rateDiffPeriod
 
+        timestamp = Date().timeIntervalSince1970
         super.init()
     }
 
@@ -34,7 +38,9 @@ class MarketInfoRecord: Record {
                 diff: response.diff,
                 volume: response.volume,
                 marketCap: response.marketCap,
-                supply: response.supply
+                supply: response.supply,
+                liquidity: response.liquidity,
+                rateDiffPeriod: response.rateDiffPeriod
         )
     }
 
@@ -47,7 +53,7 @@ class MarketInfoRecord: Record {
     }
 
     enum Columns: String, ColumnExpression, CaseIterable {
-        case coinCode, currencyCode, timestamp, rate, openDay, diff, volume, marketCap, supply
+        case coinCode, currencyCode, timestamp, rate, openDay, diff, volume, marketCap, supply, liquidity, rateDiffPeriod
     }
 
     required init(row: Row) {
@@ -55,11 +61,13 @@ class MarketInfoRecord: Record {
         coinCurrency = row[Columns.currencyCode]
         timestamp = row[Columns.timestamp]
         rate = row[Columns.rate]
-        openDay = row[Columns.openDay]
-        diff = row[Columns.diff]
+        rateOpenDay = row[Columns.openDay]
+        rateDiff = row[Columns.diff]
         volume = row[Columns.volume]
         marketCap = row[Columns.marketCap]
         supply = row[Columns.supply]
+        liquidity = row[Columns.liquidity]
+        rateDiffPeriod = row[Columns.rateDiffPeriod]
 
         super.init(row: row)
     }
@@ -69,11 +77,13 @@ class MarketInfoRecord: Record {
         container[Columns.currencyCode] = coinCurrency
         container[Columns.timestamp] = timestamp
         container[Columns.rate] = rate
-        container[Columns.openDay] = openDay
-        container[Columns.diff] = diff
+        container[Columns.openDay] = rateOpenDay
+        container[Columns.diff] = rateDiff
         container[Columns.volume] = volume
         container[Columns.marketCap] = marketCap
         container[Columns.supply] = supply
+        container[Columns.liquidity] = liquidity
+        container[Columns.rateDiffPeriod] = rateDiffPeriod
     }
 
 }
@@ -81,7 +91,7 @@ class MarketInfoRecord: Record {
 extension MarketInfoRecord: CustomStringConvertible {
 
     var description: String {
-        "MarketInfo [coinCode: \(coinCode); currencyCode: \(coinCurrency); timestamp: \(timestamp); rate: \(rate); openDay: \(openDay); diff: \(diff)]"
+        "MarketInfo [coinCode: \(coinCode); currencyCode: \(coinCurrency); timestamp: \(timestamp); rate: \(rate); openDay: \(rateOpenDay); diff: \(rateDiff)]"
     }
 
 }
