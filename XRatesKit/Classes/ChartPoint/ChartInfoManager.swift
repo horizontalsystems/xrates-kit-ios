@@ -81,7 +81,7 @@ extension ChartInfoManager: IChartInfoManager {
         if let updatePointIndex = records.firstIndex(where: { $0.chartPoint.timestamp == dayStartTimestamp }),
            let marketInfo = marketInfoManager.marketInfo(key: PairKey(coinCode: key.coinCode, currencyCode: key.currencyCode)) {
             let updateRecord = records[updatePointIndex]
-            records[updatePointIndex] = ChartPointRecord(key: key, chartPoint: ChartPoint(timestamp: updateRecord.chartPoint.timestamp, value: marketInfo.openDay, volume: updateRecord.chartPoint.volume))
+            records[updatePointIndex] = ChartPointRecord(key: key, chartPoint: ChartPoint(timestamp: updateRecord.chartPoint.timestamp, value: marketInfo.rateOpenDay, volume: updateRecord.chartPoint.volume))
         }
 
         storage.deleteChartPointRecords(key: key)

@@ -70,7 +70,7 @@ class MarketInfoCell: UITableViewCell {
             rateLabel.text = MarketInfoCell.rateFormatter.string(from: marketInfo.rate as NSNumber)
             rateLabel.textColor = marketInfo.expired ? .lightGray : .black
 
-            diffLabel.text = MarketInfoCell.rateFormatter.string(from: marketInfo.diff as NSNumber)
+            diffLabel.text = MarketInfoCell.rateFormatter.string(from: marketInfo.rateDiff as NSNumber)
 
             let volumeText = MarketInfoCell.marketInfoFormatter.string(from: marketInfo.volume as NSNumber) ?? "n/a"
             let marketCapText = MarketInfoCell.marketInfoFormatter.string(from: marketInfo.marketCap as NSNumber) ?? "n/a"

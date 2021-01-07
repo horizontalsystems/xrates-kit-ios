@@ -23,6 +23,9 @@ class MainController: UITabBarController {
         let xRatesKit = XRatesKit.instance(currencyCode: currencyCode, uniswapSubgraphUrl: "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2", minLogLevel: .verbose)
         xRatesKit.set(coins: marketInfoCoins)
 
+        let topMarketInfoController = TopMarketController(xRatesKit: xRatesKit, currencyCode: currencyCode)
+        topMarketInfoController.tabBarItem = UITabBarItem(title: "Top Markets", image: UIImage(systemName: "dollarsign.circle"), tag: 0)
+
         let marketInfoController = MarketInfoController(xRatesKit: xRatesKit, currencyCode: currencyCode, coinCodes: marketInfoCoins.map { $0.code })
         marketInfoController.tabBarItem = UITabBarItem(title: "Market Info", image: UIImage(systemName: "dollarsign.circle"), tag: 0)
 
@@ -33,6 +36,7 @@ class MainController: UITabBarController {
         chartController.tabBarItem = UITabBarItem(title: "Chart", image: UIImage(systemName: "chart.bar"), tag: 2)
 
         viewControllers = [
+            UINavigationController(rootViewController: topMarketInfoController),
             UINavigationController(rootViewController: marketInfoController),
             UINavigationController(rootViewController: historicalController),
             UINavigationController(rootViewController: chartController)
