@@ -36,10 +36,10 @@ fileprivate class CoinGeckoTopMarketMapper: IApiMapper {
 
             let priceDiffFieldName: String
             switch fetchDiffPeriod {
-            case .hour1: priceDiffFieldName = "price_change_percentage_24h"
-            case .day7: priceDiffFieldName = "price_change_percentage_24h"
-            case .day30: priceDiffFieldName = "price_change_percentage_24h"
-            case .year1: priceDiffFieldName = "price_change_percentage_24h"
+            case .hour1: priceDiffFieldName = "price_change_percentage_1h_in_currency"
+            case .day7: priceDiffFieldName = "price_change_percentage_7d_in_currency"
+            case .day30: priceDiffFieldName = "price_change_percentage_30d_in_currency"
+            case .year1: priceDiffFieldName = "price_change_percentage_1y_in_currency"
             default: priceDiffFieldName = "price_change_percentage_24h"
             }
 
