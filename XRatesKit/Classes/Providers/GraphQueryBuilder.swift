@@ -47,7 +47,7 @@ class GraphQueryBuilder {
         return """
                tokens(
                        first:\(addresses.count), 
-                       where:{id_in:[\(joined)}
+                       where:{id_in:[\(joined)]}
                        \(blockNumberFilter(blockHeight: blockHeight).map { ",\($0)"} ?? ""))
                        {  id,
                           symbol,
@@ -90,7 +90,7 @@ extension GraphQueryBuilder {
         "\(bundlesQuery(blockHeight: blockHeight)), \(tokensQuery(itemsCount: itemCount, blockHeight: blockHeight))"
     }
 
-    static func marketInfo(tokenAddresses: [String], blockHeight: Int? = nil) -> String {
+    static func coinMarkets(tokenAddresses: [String], blockHeight: Int? = nil) -> String {
         "\(bundlesQuery(blockHeight: blockHeight)), \(tokensQuery(addresses: tokenAddresses, blockHeight: blockHeight))"
     }
 

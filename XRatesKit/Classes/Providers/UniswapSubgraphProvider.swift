@@ -9,18 +9,18 @@ class UniswapSubgraphProvider {
     static private let WETHTokenCode = "WETH"
     static private let WETHTokenAddress = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
 
+    private let provider = InfoProvider.GraphNetwork
+    private let subUrl = "/uniswap/uniswap-v2"
+
     private let fiatXRatesProvider: IFiatXRatesProvider
     private let ethBlocksGraphProvider: EthBlocksGraphProvider
     private let networkManager: NetworkManager
-    private let baseUrl: String
     private let expirationInterval: TimeInterval
 
-
-    init(fiatXRatesProvider: IFiatXRatesProvider, networkManager: NetworkManager, baseUrl: String, expirationInterval: TimeInterval) {
+    init(fiatXRatesProvider: IFiatXRatesProvider, networkManager: NetworkManager, expirationInterval: TimeInterval) {
         self.fiatXRatesProvider = fiatXRatesProvider
         ethBlocksGraphProvider = EthBlocksGraphProvider(networkManager: networkManager)
         self.networkManager = networkManager
-        self.baseUrl = baseUrl
         self.expirationInterval = expirationInterval
     }
 
@@ -39,7 +39,7 @@ class UniswapSubgraphProvider {
     }
 
     private func request<T: ImmutableMappable>(query: String) -> Single<T> {
-        let request = networkManager.session.request(baseUrl, method: .post, parameters: ["query": "{\(query)}"], encoding: JSONEncoding())
+        let request = networkManager.session.request(provider.baseUrl + subUrl, method: .post, parameters: ["query": "{\(query)}"], encoding: JSONEncoding())
 
         return networkManager.single(request: request)
     }
@@ -74,15 +74,15 @@ class UniswapSubgraphProvider {
         request(query: GraphQueryBuilder.topTokens(itemCount: itemCount, blockHeight: blockHeight))
     }
 
-    private func marketInfoSingle(tokenAddresses: [String], blockHeight: Int? = nil) -> Single<UniswapGraphTokensResponse> {
-        request(query: GraphQueryBuilder.marketInfo(tokenAddresses: tokenAddresses, blockHeight: blockHeight))
+    private func coinMarketsSingle(tokenAddresses: [String], blockHeight: Int? = nil) -> Single<UniswapGraphTokensResponse> {
+        request(query: GraphQueryBuilder.coinMarkets(tokenAddresses: tokenAddresses, blockHeight: blockHeight))
     }
 
 }
 
 extension UniswapSubgraphProvider: IMarketInfoProvider {
 
-    func getMarketInfoRecords(coins: [XRatesKit.Coin], currencyCode: String) -> Single<[MarketInfoRecord]> {
+    func marketInfoRecords(coins: [XRatesKit.Coin], currencyCode: String) -> Single<[MarketInfoRecord]> {
         guard !coins.isEmpty else {
             return Single.just([])
         }
@@ -128,7 +128,7 @@ extension UniswapSubgraphProvider: IMarketInfoProvider {
         }
     }
 
-    private func topMarketBlockHeights(fetchDiffPeriod: TimePeriod) -> Single<(blockHeight24: Int?, fetchBlockHeight: Int?)> {
+    private func marketBlockHeights(fetchDiffPeriod: TimePeriod) -> Single<(blockHeight24: Int?, fetchBlockHeight: Int?)> {
         let currentTimestamp = Date().timeIntervalSince1970
         var periods = [TimePeriod: TimeInterval]()
 
@@ -142,7 +142,7 @@ extension UniswapSubgraphProvider: IMarketInfoProvider {
             }
     }
 
-    private func topMarkets(currencyCode: String, tokens: UniswapGraphTokensResponse, tokens24: UniswapGraphTokensResponse, tokensPeriod: UniswapGraphTokensResponse? = nil) -> [TopMarket] {
+    private func coinMarkets(currencyCode: String, tokens: UniswapGraphTokensResponse, tokens24: UniswapGraphTokensResponse, tokensPeriod: UniswapGraphTokensResponse? = nil) -> [CoinMarket] {
         tokens.tokens.map { token in
             let latestRate = token.latestRateInETH * tokens.ethPriceInUSD
 
@@ -174,46 +174,59 @@ extension UniswapSubgraphProvider: IMarketInfoProvider {
                     title: token.coinTitle,
                     type: .erc20(address: token.tokenAddress))
 
-            return TopMarket(coin: coin, record: marketInfoRecord, expirationInterval: expirationInterval)
+            return CoinMarket(coin: coin, record: marketInfoRecord, expirationInterval: expirationInterval)
         }
     }
 
-}
-
-extension UniswapSubgraphProvider: ITopMarketsProvider {
-
-    public func topMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int) -> Single<[TopMarket]> {
+    private func requestedCoinMarketsSingle(factory: @escaping (Int?) -> Single<UniswapGraphTokensResponse>, currencyCode: String, fetchDiffPeriod: TimePeriod) -> Single<[CoinMarket]> {
         Single.zip(
-                topMarketBlockHeights(fetchDiffPeriod: fetchDiffPeriod),
-                topTokensSingle(itemCount: itemCount)
+                marketBlockHeights(fetchDiffPeriod: fetchDiffPeriod),
+                factory(nil)
         ).flatMap { [weak self] heights, topTokens in
-            guard let provider = self else {
-                return Single.just([])
-            }
-
             guard heights.fetchBlockHeight != heights.blockHeight24 else {
-                return provider.topTokensSingle(itemCount: itemCount, blockHeight: heights.blockHeight24)
-                    .map { tokens24 in
-                        provider.topMarkets(currencyCode: currencyCode, tokens: topTokens, tokens24: tokens24)
+                return factory(heights.blockHeight24)
+                    .map { [weak self] tokens24 in
+                        self?.coinMarkets(currencyCode: currencyCode, tokens: topTokens, tokens24: tokens24) ?? []
                     }
             }
 
             return Single.zip(
-                    provider.topTokensSingle(itemCount: itemCount, blockHeight: heights.blockHeight24),
-                    provider.topTokensSingle(itemCount: itemCount, blockHeight: heights.fetchBlockHeight)
-            ).map { tokens24, tokensPeriod in
-                provider.topMarkets(currencyCode: currencyCode, tokens: topTokens, tokens24: tokens24, tokensPeriod: tokensPeriod)
+                factory(heights.blockHeight24),
+                factory(heights.fetchBlockHeight)
+            ).map { [weak self] tokens24, tokensPeriod in
+                self?.coinMarkets(currencyCode: currencyCode, tokens: topTokens, tokens24: tokens24, tokensPeriod: tokensPeriod) ?? []
             }
         }
-
     }
 
 }
 
-extension UniswapSubgraphProvider: ITopDefiMarketsProvider {
+extension UniswapSubgraphProvider: ICoinMarketsProvider {
 
-    func topDefiMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemsCount: Int) -> Single<[TopMarket]> {
-        topMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: itemsCount)
+    public func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int) -> Single<[CoinMarket]> {
+        let factory = { [weak self] (blockHeight: Int?) in
+            self?.topTokensSingle(itemCount: itemCount, blockHeight: blockHeight) ?? Single.error(Self.ProviderError.badSelfAccess)
+        }
+
+        return requestedCoinMarketsSingle(factory: factory, currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod)
+    }
+
+    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coins: [XRatesKit.Coin]) -> Single<[CoinMarket]> {
+        let addresses = tokenAddresses(coins: coins)
+
+        let factory = { [weak self] (blockHeight: Int?) in
+            self?.coinMarketsSingle(tokenAddresses: addresses, blockHeight: blockHeight) ?? Single.error(Self.ProviderError.badSelfAccess)
+        }
+
+        return requestedCoinMarketsSingle(factory: factory, currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod)
+    }
+
+}
+
+extension UniswapSubgraphProvider {
+
+    enum ProviderError: Error {
+        case badSelfAccess
     }
 
 }

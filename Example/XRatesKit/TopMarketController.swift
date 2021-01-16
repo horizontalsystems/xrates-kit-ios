@@ -10,6 +10,7 @@ class TopMarketController: UIViewController {
     private var topMarketsDisposable: Disposable?
 
     private let xRatesKit: XRatesKit
+    private let storage: UserDefaultsStorage
     private let currencyCode: String
 
     private var period: TimePeriod = .hour24
@@ -24,11 +25,14 @@ class TopMarketController: UIViewController {
     private let tableView = UITableView(frame: .zero, style: .plain)
     private let headerView = NewsHeaderView()
 
-    private var topMarkets = [TopMarket]()
-    private var globalMarketInfo: GlobalMarketInfo?
+    private var topMarkets = [CoinMarket]()
+    private var globalMarketInfo: GlobalCoinMarket?
 
-    init(xRatesKit: XRatesKit, currencyCode: String) {
+    private var favoriteCoins = [XRatesKit.Coin]()
+
+    init(xRatesKit: XRatesKit, storage: UserDefaultsStorage, currencyCode: String) {
         self.xRatesKit = xRatesKit
+        self.storage = storage
         self.currencyCode = currencyCode
 
         super.init(nibName: nil, bundle: nil)
@@ -146,11 +150,15 @@ class TopMarketController: UIViewController {
 
         headerView.bind(title: "Loading...")
 
-        let single: Single<[TopMarket]>
+        topMarkets = []
+        tableView.reloadData()
+
+        let single: Single<[CoinMarket]>
 
         switch segmentedView.selectedSegmentIndex {
+        case 0: single = xRatesKit.topMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: period, itemsCount: 200)
         case 1: single = xRatesKit.topDefiMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: period, itemsCount: 200)
-        default: single = xRatesKit.topMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: period, itemsCount: 200)
+        default: single = xRatesKit.favorites(currencyCode: currencyCode, fetchDiffPeriod: period, coins: favoriteCoins)
         }
 
         topMarketsDisposable = single
@@ -169,7 +177,12 @@ class TopMarketController: UIViewController {
         reloadTopMarkets()
     }
 
-    private func set(globalInfo: GlobalMarketInfo?, error: Error? = nil) {
+    private func string(from value: Decimal, fractionDigits: Int = 2) -> String {
+        Self.rateFormatter.maximumFractionDigits = fractionDigits
+        return Self.rateFormatter.string(from: value as NSNumber) ?? "N/A"
+    }
+
+    private func set(globalInfo: GlobalCoinMarket?, error: Error? = nil) {
         globalMarketInfo = globalInfo
 
         guard let globalInfo = globalInfo else {
@@ -181,16 +194,25 @@ class TopMarketController: UIViewController {
             return
         }
 
-        globalVolumeLabel.text = "Vol: \(Self.rateFormatter.string(from: globalInfo.volume24h as NSNumber) ?? "N/A")"
-        globalVolumeDiffLabel.text = "VolDiff: \(globalInfo.volume24hDiff24h.description)"
-        globalDominanceLabel.text = "Dom: \(globalInfo.btcDominance)"
-        globalDominanceDiffLabel.text = "DomDiff: \(globalInfo.btcDominance)"
+        globalVolumeLabel.text = "Vol: \(string(from: globalInfo.volume24h))"
+        globalVolumeDiffLabel.text = "VolDiff: \(string(from: globalInfo.volume24hDiff24h))"
+        globalDominanceLabel.text = "Dom: \(string(from: globalInfo.btcDominance))"
+        globalDominanceDiffLabel.text = "DomDiff: \(string(from: globalInfo.btcDominanceDiff24h))"
     }
 
-    private func set(topMarkets: [TopMarket]?, error: Error? = nil) {
+    private func set(topMarkets: [CoinMarket]?, error: Error? = nil) {
         self.topMarkets = topMarkets ?? []
         tableView.reloadData()
         headerView.bind(title: error != nil ? (error?.localizedDescription ?? "Failed") : "Success")
+    }
+
+    private func toggle(coin: XRatesKit.Coin) {
+        if let index = favoriteCoins.firstIndex(where: { $0.code == coin.code }) {
+            favoriteCoins.remove(at: index)
+        } else {
+            favoriteCoins.append(coin)
+        }
+        tableView.reloadData()
     }
 
 }
@@ -232,7 +254,10 @@ extension TopMarketController: UITableViewDataSource, UITableViewDelegate {
         }
 
         let topMarket = topMarkets[indexPath.row]
-        cell.bind(topMarket: topMarket)
+        let favorite = favoriteCoins.contains { coin in topMarket.coin.code == coin.code }
+        cell.bind(topMarket: topMarket, favorite: favorite) { [weak self] in
+            self?.toggle(coin: topMarket.coin)
+        }
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

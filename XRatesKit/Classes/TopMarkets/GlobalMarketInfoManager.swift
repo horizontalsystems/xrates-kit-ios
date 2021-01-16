@@ -13,9 +13,9 @@ class GlobalMarketInfoManager {
 
 extension GlobalMarketInfoManager {
 
-    func globalMarketInfo(currencyCode: String) -> Single<GlobalMarketInfo> {
+    func globalMarketInfo(currencyCode: String) -> Single<GlobalCoinMarket> {
         globalMarketInfoProvider
-            .globalMarketInfo(currencyCode: currencyCode)
+            .globalCoinMarketsInfo(currencyCode: currencyCode)
             .do { [weak self] globalMarketInfo in
                 self?.storage.save(globalMarketInfo: globalMarketInfo)
             }

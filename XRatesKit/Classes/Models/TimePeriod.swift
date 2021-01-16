@@ -21,4 +21,16 @@ public enum TimePeriod: String {
         }
     }
 
+    var title: String {
+        switch self {
+        case .all: return "All"
+        case .hour1: return "1h"
+        case .dayStart: return "DayStart"
+        case .hour24: return "24h"
+        case .day7: return "7d"
+        case .day30: return "30d"
+        case .year1: return "1y"
+        }
+    }
+
 }

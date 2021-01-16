@@ -47,7 +47,7 @@ extension MarketInfoSchedulerProvider: IMarketInfoSchedulerProvider {
     }
 
     var syncSingle: Single<Void> {
-        provider.getMarketInfoRecords(coins: coins, currencyCode: currencyCode)
+        provider.marketInfoRecords(coins: coins, currencyCode: currencyCode)
                 .do(onSuccess: { [weak self] records in
                     self?.handle(updatedRecords: records)
                 })

@@ -7,11 +7,11 @@ class MarketInfoRecord: Record {
     let rateOpenDay: Decimal
     let rateDiff: Decimal
     let volume: Decimal
-    let marketCap: Decimal
     let supply: Decimal
-    let liquidity: Decimal
     let rateDiffPeriod: Decimal
     let timestamp: TimeInterval
+    let liquidity: Decimal
+    let marketCap: Decimal
 
     init(coinCode: String, currencyCode: String, rate: Decimal, openDay: Decimal, diff: Decimal, volume: Decimal, marketCap: Decimal, supply: Decimal, liquidity: Decimal = 0, rateDiffPeriod: Decimal = 0) {
         self.coinCode = coinCode
