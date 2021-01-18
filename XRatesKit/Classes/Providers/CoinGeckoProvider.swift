@@ -84,7 +84,7 @@ fileprivate class CoinGeckoTopMarketMapper: IApiMapper {
                     rateDiffPeriod: rateDiffPeriod
             )
 
-            return CoinMarket(coin: XRatesKit.Coin(code: coinCode, title: coinTitle), record: record, expirationInterval: expirationInterval)
+            return CoinMarket(coin: XRatesKit.Coin(code: coinCode.uppercased(), title: coinTitle), record: record, expirationInterval: expirationInterval)
         }
     }
 

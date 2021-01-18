@@ -1,39 +1,45 @@
-extension XRatesKit.CoinType {
+extension XRatesKit.CoinType: RawRepresentable {
+    public typealias RawValue = String
 
-    var id: Int {
-        switch self {
-        case .bitcoin: return 0
-        case .litecoin: return 1
-        case .bitcoinCash: return 2
-        case .dash: return 3
-        case .ethereum: return 4
-        case .erc20: return 5
-        case .binance: return 6
-        case .zcash: return 7
-        case .eos: return 8
+    public init?(rawValue: RawValue) {
+        if rawValue.contains("erc20"), let address = rawValue.split(separator: ":").last {
+            self = .erc20(address: String(address))
+            return
         }
-    }
 
-    static func baseType(id: Int) -> Self? {
-        switch id {
-        case 0: return .bitcoin
-        case 1: return .litecoin
-        case 2: return .bitcoinCash
-        case 3: return .dash
-        case 4: return .ethereum
-        case 6: return .binance
-        case 7: return .zcash
-        case 8: return .eos
-        default:
+        var type: Self?
+
+        switch rawValue {
+        case "bitcoin": type = .bitcoin
+        case "litecoin": type = .litecoin
+        case "bitcoinCash": type = .bitcoinCash
+        case "dash": type = .dash
+        case "ethereum": type = .ethereum
+        case "binance": type = .binance
+        case "zcash": type = .zcash
+        case "eos": type = .eos
+        default: type = nil
+        }
+
+        guard let coinType = type else {
             return nil
         }
+
+        self = coinType
     }
 
-    var contractAddress: String? {
-        if case .erc20(let address) = self {
-            return address
+    public var rawValue: RawValue {
+        switch self {
+        case .bitcoin: return "bitcoin"
+        case .litecoin: return "litecoin"
+        case .bitcoinCash: return "bitcoinCash"
+        case .dash: return "dash"
+        case .ethereum: return "ethereum"
+        case .erc20(let address): return "erc20:\(address)"
+        case .binance: return "binance"
+        case .zcash: return "zcash"
+        case .eos: return "eos"
         }
-        return nil
     }
 
 }

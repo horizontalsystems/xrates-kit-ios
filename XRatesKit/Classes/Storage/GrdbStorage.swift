@@ -154,8 +154,7 @@ class GrdbStorage {
             try db.create(table: CoinInfoRecord.databaseTableName) { t in
                 t.column(CoinInfoRecord.Columns.code.name, .text).notNull()
                 t.column(CoinInfoRecord.Columns.title.name, .text).notNull()
-                t.column(CoinInfoRecord.Columns.type.name, .integer)
-                t.column(CoinInfoRecord.Columns.contractAddress.name, .text).notNull()
+                t.column(CoinInfoRecord.Columns.type.name, .text)
 
                 t.primaryKey([
                     CoinInfoRecord.Columns.code.name,

@@ -1,5 +1,4 @@
 import RxSwift
-import XRatesKit
 
 class CoinInfoManager {
     private let disposeBag = DisposeBag()
@@ -35,7 +34,7 @@ extension CoinInfoManager {
 
     func save(coins: [XRatesKit.Coin]) {
         let coinInfos = coins.map { coin in
-            CoinInfoRecord(code: coin.code, title: coin.title, type: coin.type?.id, contractAddress: coin.type?.contractAddress)
+            CoinInfoRecord(code: coin.code, title: coin.title, type: coin.type?.rawValue)
         }
 
         storage.save(coinInfos: coinInfos)
@@ -43,23 +42,19 @@ extension CoinInfoManager {
 
     func identify(coinMarkets: [CoinMarket]) -> [CoinMarket] {
         let codes = coinMarkets.map { $0.coin.code }
-        var coinDictionary: [String: CoinMarket] = Dictionary(coinMarkets.map { ($0.coin.code, $0) }, uniquingKeysWith: { (first, _) in first })
-        storage
-            .coinInfos(coinCodes: codes)
-            .forEach { coinInfo in
-                let type: XRatesKit.CoinType?
-                if let address = coinInfo.contractAddress {
-                    type = .erc20(address: address)
-                } else {
-                    type = coinInfo.type.flatMap { XRatesKit.CoinType.baseType(id: $0) }
-                }
-                if let coinMarket = coinDictionary[coinInfo.code] {
-                    let coin = XRatesKit.Coin(code: coinInfo.code, title: coinInfo.title, type: type)
-                    coinDictionary[coinInfo.code] = CoinMarket(coin: coin, marketInfo: coinMarket.marketInfo)
-                }
-            }
+        let coinInfos = storage.coinInfos(coinCodes: codes)
 
-        return Array(coinDictionary.values)
+        return coinMarkets.map { coinMarket in
+            if let coinInfo = coinInfos.first(where: { $0.code == coinMarket.coin.code }) {
+                let type = coinInfo.type.flatMap {
+                    XRatesKit.CoinType(rawValue: $0)
+                }
+
+                let coin = XRatesKit.Coin(code: coinInfo.code, title: coinInfo.title, type: type)
+                return CoinMarket(coin: coin, marketInfo: coinMarket.marketInfo)
+            }
+            return coinMarket
+        }
     }
 
 }

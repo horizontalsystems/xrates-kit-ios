@@ -4,14 +4,12 @@ import GRDB
 class CoinInfoRecord: Record {
     let code: String
     let title: String
-    let type: Int?
-    let contractAddress: String?
+    let type: String?
 
-    init(code: String, title: String, type: Int?, contractAddress: String?) {
+    init(code: String, title: String, type: String?) {
         self.code = code
         self.title = title
         self.type = type
-        self.contractAddress = contractAddress
 
         super.init()
     }
@@ -21,14 +19,13 @@ class CoinInfoRecord: Record {
     }
 
     enum Columns: String, ColumnExpression {
-        case code, title, type, contractAddress
+        case code, title, type
     }
 
     required init(row: Row) {
         code = row[Columns.code]
         title = row[Columns.title]
         type = row[Columns.type]
-        contractAddress = row[Columns.contractAddress]
 
         super.init(row: row)
     }
@@ -37,7 +34,6 @@ class CoinInfoRecord: Record {
         container[Columns.code] = code
         container[Columns.title] = title
         container[Columns.type] = type
-        container[Columns.contractAddress] = contractAddress
     }
 
 }
