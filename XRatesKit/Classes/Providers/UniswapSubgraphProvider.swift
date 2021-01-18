@@ -175,7 +175,7 @@ extension UniswapSubgraphProvider: IMarketInfoProvider {
                     type: .erc20(address: token.tokenAddress))
 
             return CoinMarket(coin: coin, record: marketInfoRecord, expirationInterval: expirationInterval)
-        }
+        }.sorted { $0.marketInfo.liquidity > $1.marketInfo.liquidity }
     }
 
     private func requestedCoinMarketsSingle(factory: @escaping (Int?) -> Single<UniswapGraphTokensResponse>, currencyCode: String, fetchDiffPeriod: TimePeriod) -> Single<[CoinMarket]> {
