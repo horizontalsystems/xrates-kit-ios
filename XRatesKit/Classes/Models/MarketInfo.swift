@@ -6,11 +6,11 @@ public struct MarketInfo {
     public let rateOpenDay: Decimal
     public let rateDiff: Decimal
     public let volume: Decimal
-    public let marketCap: Decimal
     public let supply: Decimal
-    public let liquidity: Decimal
     public let rateDiffPeriod: Decimal
     public let timestamp: TimeInterval
+    public let liquidity: Decimal
+    public let marketCap: Decimal
 
     private let expirationInterval: TimeInterval
 

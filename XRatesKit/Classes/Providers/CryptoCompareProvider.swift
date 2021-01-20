@@ -9,16 +9,16 @@ class CryptoCompareProvider {
         case hour = "histohour"
     }
 
+    let provider = InfoProvider.CryptoCompare
+
     private let networkManager: NetworkManager
-    private let baseUrl: String
     private let apiKey: String?
     private let timeoutInterval: TimeInterval
     private let expirationInterval: TimeInterval
     private let indicatorPointCount: Int
 
-    init(networkManager: NetworkManager, baseUrl: String, apiKey: String?, timeoutInterval: TimeInterval, expirationInterval: TimeInterval, topMarketsCount: Int, indicatorPointCount: Int) {
+    init(networkManager: NetworkManager, apiKey: String?, timeoutInterval: TimeInterval, expirationInterval: TimeInterval, topMarketsCount: Int, indicatorPointCount: Int) {
         self.networkManager = networkManager
-        self.baseUrl = baseUrl
         self.apiKey = apiKey
         self.timeoutInterval = timeoutInterval
         self.expirationInterval = expirationInterval
@@ -31,14 +31,14 @@ class CryptoCompareProvider {
             params["apiKey"] = apiKey
         }
 
-        return (baseUrl + path, params)
+        return (provider.baseUrl + path, params)
     }
 
 }
 
 extension CryptoCompareProvider: IMarketInfoProvider {
 
-    func getMarketInfoRecords(coins: [XRatesKit.Coin], currencyCode: String) -> Single<[MarketInfoRecord]> {
+    func marketInfoRecords(coins: [XRatesKit.Coin], currencyCode: String) -> Single<[MarketInfoRecord]> {
         guard !coins.isEmpty else {
             return Single.just([])
         }
@@ -63,38 +63,6 @@ extension CryptoCompareProvider: IMarketInfoProvider {
 
                         return records
                     }
-    }
-
-}
-
-extension CryptoCompareProvider: ITopMarketsProvider {
-
-    func topMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int) -> Single<[TopMarket]> {
-        let (url, parameters) = urlAndParams(path: "/data/top/mktcapfull", parameters: ["tsym": currencyCode, "limit": itemCount])
-        let expirationInterval = self.expirationInterval
-
-        let request = networkManager.session
-                .request(url, method: .get, parameters: parameters, interceptor: RateLimitRetrier())
-                .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
-
-        return networkManager.single(request: request)
-                .map { (response: CryptoCompareTopMarketInfosResponse) -> [TopMarket] in
-                    var topMarkets = [TopMarket]()
-
-                    guard let values = response.values[currencyCode] else {
-                        return []
-                    }
-
-                    for value in values {
-                        let coin = XRatesKit.Coin(code: value.coin.code, title: value.coin.title)
-                        let record = MarketInfoRecord(coinCode: value.coin.code, currencyCode: currencyCode, response: value.marketInfo)
-                        let topMarket = TopMarket(coin: coin, record: record, expirationInterval: expirationInterval)
-
-                        topMarkets.append(topMarket)
-                    }
-
-                    return topMarkets
-                }
     }
 
 }
@@ -226,5 +194,11 @@ extension CryptoCompareProvider {
         case rateLimitExceeded
         case noDataForSymbol
     }
+
+}
+
+extension CryptoCompareProvider: IInfoProvider {
+
+    func initProvider() {}
 
 }

@@ -12,7 +12,7 @@ class BaseMarketInfoProvider {
 
 extension BaseMarketInfoProvider: IMarketInfoProvider {
 
-    func getMarketInfoRecords(coins: [XRatesKit.Coin], currencyCode: String) -> Single<[MarketInfoRecord]> {
+    func marketInfoRecords(coins: [XRatesKit.Coin], currencyCode: String) -> Single<[MarketInfoRecord]> {
         var ethereumCoins = [XRatesKit.Coin]()
         var otherCoins = [XRatesKit.Coin]()
 
@@ -24,8 +24,8 @@ extension BaseMarketInfoProvider: IMarketInfoProvider {
         }
 
         return Single.zip(
-                mainProvider.getMarketInfoRecords(coins: otherCoins, currencyCode: currencyCode),
-                uniswapGraphProvider.getMarketInfoRecords(coins: ethereumCoins, currencyCode: currencyCode)
+                mainProvider.marketInfoRecords(coins: otherCoins, currencyCode: currencyCode),
+                uniswapGraphProvider.marketInfoRecords(coins: ethereumCoins, currencyCode: currencyCode)
         ).map { $0 + $1 }
     }
 

@@ -31,7 +31,9 @@ fileprivate class EthBlockHeightMapper: IApiMapper {
 
 class EthBlocksGraphProvider {
     private let networkManager: NetworkManager
-    private let baseUrl = "https://api.thegraph.com/subgraphs/name/blocklytics/ethereum-blocks"
+
+    let provider = InfoProvider.GraphNetwork
+    private let subUrl = "/blocklytics/ethereum-blocks"
 
     init(networkManager: NetworkManager) {
         self.networkManager = networkManager
@@ -54,9 +56,15 @@ class EthBlocksGraphProvider {
     }
 
     func blockHeight(data: [TimePeriod: TimeInterval]) -> Single<[TimePeriod: Int]> {
-        let request = networkManager.session.request(baseUrl, method: .post, parameters: ["query": "{\(blockNumberQuery(data: data))}"], encoding: JSONEncoding())
+        let request = networkManager.session.request(provider.baseUrl + subUrl, method: .post, parameters: ["query": "{\(blockNumberQuery(data: data))}"], encoding: JSONEncoding())
 
         return networkManager.single(request: request, mapper: EthBlockHeightMapper())
     }
+
+}
+
+extension EthBlocksGraphProvider: IInfoProvider {
+
+    func initProvider() {}
 
 }

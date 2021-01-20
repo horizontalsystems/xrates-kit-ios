@@ -108,21 +108,21 @@ class GrdbStorage {
         }
 
         migrator.registerMigration("createGlobalMarketInfo") { db in
-            try db.create(table: GlobalMarketInfo.databaseTableName) { t in
-                t.column(GlobalMarketInfo.Columns.currencyCode.name, .text).notNull()
-                t.column(GlobalMarketInfo.Columns.volume24h.name, .text).notNull()
-                t.column(GlobalMarketInfo.Columns.volume24hDiff24h.name, .text).notNull()
-                t.column(GlobalMarketInfo.Columns.marketCap.name, .text).notNull()
-                t.column(GlobalMarketInfo.Columns.marketCapDiff24h.name, .text).notNull()
-                t.column(GlobalMarketInfo.Columns.btcDominance.name, .text).notNull()
-                t.column(GlobalMarketInfo.Columns.btcDominanceDiff24h.name, .text).notNull()
-                t.column(GlobalMarketInfo.Columns.defiMarketCap.name, .text).notNull()
-                t.column(GlobalMarketInfo.Columns.defiMarketCapDiff24h.name, .text).notNull()
-                t.column(GlobalMarketInfo.Columns.defiTvl.name, .text).notNull()
-                t.column(GlobalMarketInfo.Columns.defiTvlDiff24h.name, .text).notNull()
+            try db.create(table: GlobalCoinMarket.databaseTableName) { t in
+                t.column(GlobalCoinMarket.Columns.currencyCode.name, .text).notNull()
+                t.column(GlobalCoinMarket.Columns.volume24h.name, .text).notNull()
+                t.column(GlobalCoinMarket.Columns.volume24hDiff24h.name, .text).notNull()
+                t.column(GlobalCoinMarket.Columns.marketCap.name, .text).notNull()
+                t.column(GlobalCoinMarket.Columns.marketCapDiff24h.name, .text).notNull()
+                t.column(GlobalCoinMarket.Columns.btcDominance.name, .text).notNull()
+                t.column(GlobalCoinMarket.Columns.btcDominanceDiff24h.name, .text).notNull()
+                t.column(GlobalCoinMarket.Columns.defiMarketCap.name, .text).notNull()
+                t.column(GlobalCoinMarket.Columns.defiMarketCapDiff24h.name, .text).notNull()
+                t.column(GlobalCoinMarket.Columns.defiTvl.name, .text).notNull()
+                t.column(GlobalCoinMarket.Columns.defiTvlDiff24h.name, .text).notNull()
 
                 t.primaryKey([
-                    GlobalMarketInfo.Columns.currencyCode.name
+                    GlobalCoinMarket.Columns.currencyCode.name
                 ], onConflict: .replace)
             }
         }
@@ -146,6 +146,32 @@ class GrdbStorage {
                 t.primaryKey([
                     MarketInfoRecord.Columns.coinCode.name,
                     MarketInfoRecord.Columns.currencyCode.name,
+                ], onConflict: .replace)
+            }
+        }
+
+        migrator.registerMigration("createCoinInfo") { db in
+            try db.create(table: CoinInfoRecord.databaseTableName) { t in
+                t.column(CoinInfoRecord.Columns.code.name, .text).notNull()
+                t.column(CoinInfoRecord.Columns.title.name, .text).notNull()
+                t.column(CoinInfoRecord.Columns.type.name, .text)
+
+                t.primaryKey([
+                    CoinInfoRecord.Columns.code.name,
+                    CoinInfoRecord.Columns.title.name,
+                ], onConflict: .replace)
+            }
+        }
+
+        migrator.registerMigration("createProviderCoinInfo") { db in
+            try db.create(table: ProviderCoinInfoRecord.databaseTableName) { t in
+                t.column(ProviderCoinInfoRecord.Columns.code.name, .text).notNull()
+                t.column(ProviderCoinInfoRecord.Columns.providerId.name, .integer).notNull()
+                t.column(ProviderCoinInfoRecord.Columns.providerCoinId.name, .text).notNull()
+
+                t.primaryKey([
+                    ProviderCoinInfoRecord.Columns.providerId.name,
+                    ProviderCoinInfoRecord.Columns.code.name,
                 ], onConflict: .replace)
             }
         }
@@ -278,17 +304,72 @@ extension GrdbStorage: IChartPointStorage {
 
 extension GrdbStorage: IGlobalMarketInfoStorage {
 
-    func save(globalMarketInfo: GlobalMarketInfo) {
+    func save(globalMarketInfo: GlobalCoinMarket) {
         _ = try! dbPool.write { db in
             try globalMarketInfo.insert(db)
         }
     }
 
-    func globalMarketInfo(currencyCode: String) -> GlobalMarketInfo? {
+    func globalMarketInfo(currencyCode: String) -> GlobalCoinMarket? {
         try! dbPool.read { db in
-            try GlobalMarketInfo
-                .filter(GlobalMarketInfo.Columns.currencyCode == currencyCode)
+            try GlobalCoinMarket
+                .filter(GlobalCoinMarket.Columns.currencyCode == currencyCode)
                 .fetchOne(db)
+        }
+    }
+
+}
+
+extension GrdbStorage: ICoinInfoStorage {
+
+    func save(coinInfos: [CoinInfoRecord]) {
+        _ = try! dbPool.write { db in
+            for coinInfo in coinInfos {
+                try coinInfo.insert(db)
+            }
+        }
+
+    }
+
+    func coinInfos(coinCodes: [String]) -> [CoinInfoRecord] {
+        try! dbPool.read { db in
+            try CoinInfoRecord
+                    .filter(coinCodes.contains(CoinInfoRecord.Columns.code))
+                    .fetchAll(db)
+        }
+    }
+
+    var coinInfoCount: Int {
+        try! dbPool.read { db in
+            try CoinInfoRecord.fetchCount(db)
+        }
+    }
+
+}
+
+extension GrdbStorage: IProviderCoinInfoStorage {
+
+    func providerCoinInfoCount(providerId: Int) -> Int {
+        try! dbPool.read { db in
+            try ProviderCoinInfoRecord
+                    .filter(ProviderCoinInfoRecord.Columns.providerId == providerId)
+                    .fetchCount(db)
+        }
+    }
+
+    func save(providerCoinInfos: [ProviderCoinInfoRecord]) {
+        _ = try! dbPool.write { db in
+            for providerCoinInfo in providerCoinInfos {
+                try providerCoinInfo.insert(db)
+            }
+        }
+    }
+
+    func providerCoinInfos(providerId: Int, coinCodes: [String]) -> [ProviderCoinInfoRecord] {
+        try! dbPool.read { db in
+            try ProviderCoinInfoRecord
+                .filter(ProviderCoinInfoRecord.Columns.providerId == providerId && coinCodes.contains(CoinInfoRecord.Columns.code))
+                .fetchAll(db)
         }
     }
 
