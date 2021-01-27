@@ -3,13 +3,11 @@ import GRDB
 
 class ProviderCoinInfoRecord: Record {
     let code: String
-    let providerId: Int
-    let providerCoinId: String
+    let coinId: String
 
-    init(code: String, providerId: Int, providerCoinId: String) {
+    init(code: String, coinId: String) {
         self.code = code
-        self.providerId = providerId
-        self.providerCoinId = providerCoinId
+        self.coinId = coinId
 
         super.init()
     }
@@ -19,21 +17,19 @@ class ProviderCoinInfoRecord: Record {
     }
 
     enum Columns: String, ColumnExpression {
-        case code, providerId, providerCoinId
+        case code, coinId
     }
 
     required init(row: Row) {
         code = row[Columns.code]
-        providerId = row[Columns.providerId]
-        providerCoinId = row[Columns.providerCoinId]
+        coinId = row[Columns.coinId]
 
         super.init(row: row)
     }
 
     override open func encode(to container: inout PersistenceContainer) {
         container[Columns.code] = code
-        container[Columns.providerId] = providerId
-        container[Columns.providerCoinId] = providerCoinId
+        container[Columns.coinId] = coinId
     }
 
 }

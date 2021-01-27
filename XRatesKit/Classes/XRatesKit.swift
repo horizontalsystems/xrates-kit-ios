@@ -5,7 +5,7 @@ public class XRatesKit {
     private let marketInfoManager: IMarketInfoManager
     private let marketInfoSyncManager: IMarketInfoSyncManager
     private let coinMarketsManager: CoinMarketsManager
-    private let coinInfoManager: CoinInfoManager
+    private let coinInfoManager: CoinGeckoManager
     private let globalMarketInfoManager: GlobalMarketInfoManager
     private let historicalRateManager: IHistoricalRateManager
     private let chartInfoManager: IChartInfoManager
@@ -13,7 +13,7 @@ public class XRatesKit {
     private let newsPostsManager: INewsManager
 
     init(marketInfoManager: IMarketInfoManager, globalMarketInfoManager: GlobalMarketInfoManager, marketInfoSyncManager: IMarketInfoSyncManager,
-         coinMarketsManager: CoinMarketsManager, coinInfoManager: CoinInfoManager, historicalRateManager: IHistoricalRateManager,
+         coinMarketsManager: CoinMarketsManager, coinInfoManager: CoinGeckoManager, historicalRateManager: IHistoricalRateManager,
          chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager, newsPostsManager: INewsManager) {
         self.globalMarketInfoManager = globalMarketInfoManager
         self.marketInfoManager = marketInfoManager
@@ -82,10 +82,6 @@ extension XRatesKit {
         coinMarketsManager.topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemsCount: itemsCount)
     }
 
-    public func topDefiMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod = .hour24, itemsCount: Int = 200) -> Single<[CoinMarket]> {
-        coinMarketsManager.topDefiMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemsCount: itemsCount)
-    }
-
     public func favorites(currencyCode: String, fetchDiffPeriod: TimePeriod = .hour24, coins: [Coin]) -> Single<[CoinMarket]> {
         coinMarketsManager.coinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, coins: coins)
     }
@@ -106,17 +102,17 @@ extension XRatesKit {
         let storage = GrdbStorage()
 
         let networkManager = NetworkManager(logger: logger)
+        let coinPaprikaProvider = CoinPaprikaProvider(networkManager: networkManager)
         let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, apiKey: cryptoCompareApiKey, timeoutInterval: 10, expirationInterval: marketInfoExpirationInterval, topMarketsCount: topMarketsCount, indicatorPointCount: indicatorPointCount)
         let uniswapSubgraphProvider = UniswapSubgraphProvider(fiatXRatesProvider: cryptoCompareProvider, networkManager: networkManager, expirationInterval: marketInfoExpirationInterval)
         let baseMarketInfoProvider = BaseMarketInfoProvider(mainProvider: cryptoCompareProvider, uniswapGraphProvider: uniswapSubgraphProvider)
-        let coinPaprikaInfoProvider = CoinPaprikaProvider(networkManager: networkManager)
 
-        let coinInfoManager = CoinInfoManager(coinInfoProvider: coinPaprikaInfoProvider, storage: storage)
-        let topMarketsProvider = CoinGeckoProvider(coinInfoManager: coinInfoManager, networkManager: networkManager, expirationInterval: marketInfoExpirationInterval)
+        let coinGeckoProvider = CoinGeckoProvider(networkManager: networkManager, expirationInterval: marketInfoExpirationInterval)
+        let coinGeckoManager = CoinGeckoManager(provider: coinGeckoProvider, storage: storage)
 
         let marketInfoManager = MarketInfoManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
-        let coinMarketsManager = CoinMarketsManager(coinMarketsProvider: topMarketsProvider, defiMarketsProvider: uniswapSubgraphProvider, coinInfoManager: coinInfoManager)
-        let globalMarketInfoManager = GlobalMarketInfoManager(globalMarketInfoProvider: coinPaprikaInfoProvider, storage: storage)
+        let coinMarketsManager = CoinMarketsManager(coinMarketsProvider: coinGeckoManager, defiMarketsProvider: uniswapSubgraphProvider)
+        let globalMarketInfoManager = GlobalMarketInfoManager(globalMarketInfoProvider: coinPaprikaProvider, defiMarketCapProvider: coinGeckoProvider, storage: storage)
 
         let marketInfoSchedulerFactory = MarketInfoSchedulerFactory(manager: marketInfoManager, provider: baseMarketInfoProvider, reachabilityManager: reachabilityManager, expirationInterval: marketInfoExpirationInterval, retryInterval: retryInterval, logger: logger)
         let marketInfoSyncManager = MarketInfoSyncManager(currencyCode: currencyCode, schedulerFactory: marketInfoSchedulerFactory)
@@ -137,7 +133,7 @@ extension XRatesKit {
                 globalMarketInfoManager: globalMarketInfoManager,
                 marketInfoSyncManager: marketInfoSyncManager,
                 coinMarketsManager: coinMarketsManager,
-                coinInfoManager: coinInfoManager,
+                coinInfoManager: coinGeckoManager,
                 historicalRateManager: historicalRateManager,
                 chartInfoManager: chartInfoManager,
                 chartInfoSyncManager: chartInfoSyncManager,

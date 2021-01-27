@@ -1,11 +1,13 @@
 import RxSwift
 
 class GlobalMarketInfoManager {
-    private let globalMarketInfoProvider: IGlobalMarketInfoProvider
+    private let globalMarketInfoProvider: CoinPaprikaProvider
+    private let defiMarketCapProvider: CoinGeckoProvider
     private let storage: IGlobalMarketInfoStorage
 
-    init(globalMarketInfoProvider: IGlobalMarketInfoProvider, storage: IGlobalMarketInfoStorage) {
+    init(globalMarketInfoProvider: CoinPaprikaProvider, defiMarketCapProvider: CoinGeckoProvider, storage: IGlobalMarketInfoStorage) {
         self.globalMarketInfoProvider = globalMarketInfoProvider
+        self.defiMarketCapProvider = defiMarketCapProvider
         self.storage = storage
     }
 
@@ -14,18 +16,21 @@ class GlobalMarketInfoManager {
 extension GlobalMarketInfoManager {
 
     func globalMarketInfo(currencyCode: String) -> Single<GlobalCoinMarket> {
-        globalMarketInfoProvider
-            .globalCoinMarketsInfo(currencyCode: currencyCode)
-            .do { [weak self] globalMarketInfo in
+        Single.zip(
+        globalMarketInfoProvider.globalCoinMarketsInfo(currencyCode: currencyCode),
+        defiMarketCapProvider.globalDefiMarketCap(currencyCode: currencyCode)
+        ).map { marketInfo, defiMarketCap in
+            marketInfo.defiMarketCap = defiMarketCap
+            return marketInfo
+        }.do { [weak self] globalMarketInfo in
                 self?.storage.save(globalMarketInfo: globalMarketInfo)
+        }.catchError { [weak self] error in
+            guard let globalMarketInfo = self?.storage.globalMarketInfo(currencyCode: currencyCode) else {
+                return Single.error(error)
             }
-            .catchError { [weak self] error in
-                guard let globalMarketInfo = self?.storage.globalMarketInfo(currencyCode: currencyCode) else {
-                    return Single.error(error)
-                }
 
-                return Single.just(globalMarketInfo)
-            }
+            return Single.just(globalMarketInfo)
+        }
     }
 
 }

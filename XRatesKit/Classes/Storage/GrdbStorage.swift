@@ -166,12 +166,10 @@ class GrdbStorage {
         migrator.registerMigration("createProviderCoinInfo") { db in
             try db.create(table: ProviderCoinInfoRecord.databaseTableName) { t in
                 t.column(ProviderCoinInfoRecord.Columns.code.name, .text).notNull()
-                t.column(ProviderCoinInfoRecord.Columns.providerId.name, .integer).notNull()
-                t.column(ProviderCoinInfoRecord.Columns.providerCoinId.name, .text).notNull()
+                t.column(ProviderCoinInfoRecord.Columns.coinId.name, .text).notNull()
 
                 t.primaryKey([
-                    ProviderCoinInfoRecord.Columns.providerId.name,
-                    ProviderCoinInfoRecord.Columns.code.name,
+                    ProviderCoinInfoRecord.Columns.code.name
                 ], onConflict: .replace)
             }
         }
@@ -320,39 +318,11 @@ extension GrdbStorage: IGlobalMarketInfoStorage {
 
 }
 
-extension GrdbStorage: ICoinInfoStorage {
-
-    func save(coinInfos: [CoinInfoRecord]) {
-        _ = try! dbPool.write { db in
-            for coinInfo in coinInfos {
-                try coinInfo.insert(db)
-            }
-        }
-
-    }
-
-    func coinInfos(coinCodes: [String]) -> [CoinInfoRecord] {
-        try! dbPool.read { db in
-            try CoinInfoRecord
-                    .filter(coinCodes.contains(CoinInfoRecord.Columns.code))
-                    .fetchAll(db)
-        }
-    }
-
-    var coinInfoCount: Int {
-        try! dbPool.read { db in
-            try CoinInfoRecord.fetchCount(db)
-        }
-    }
-
-}
-
 extension GrdbStorage: IProviderCoinInfoStorage {
 
-    func providerCoinInfoCount(providerId: Int) -> Int {
+    var providerCoinInfoCount: Int {
         try! dbPool.read { db in
             try ProviderCoinInfoRecord
-                    .filter(ProviderCoinInfoRecord.Columns.providerId == providerId)
                     .fetchCount(db)
         }
     }
@@ -365,10 +335,10 @@ extension GrdbStorage: IProviderCoinInfoStorage {
         }
     }
 
-    func providerCoinInfos(providerId: Int, coinCodes: [String]) -> [ProviderCoinInfoRecord] {
+    func providerCoinInfos(coinCodes: [String]) -> [ProviderCoinInfoRecord] {
         try! dbPool.read { db in
             try ProviderCoinInfoRecord
-                .filter(ProviderCoinInfoRecord.Columns.providerId == providerId && coinCodes.contains(CoinInfoRecord.Columns.code))
+                .filter(coinCodes.contains(CoinInfoRecord.Columns.code))
                 .fetchAll(db)
         }
     }
