@@ -59,7 +59,6 @@ protocol ICoinMarketsProvider {
 
 protocol ICoinMarketsManager {
     func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemsCount: Int) -> Single<[CoinMarket]>
-    func topDefiMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemsCount: Int) -> Single<[CoinMarket]>
     func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coins: [XRatesKit.Coin]) -> Single<[CoinMarket]>
 }
 
@@ -94,16 +93,10 @@ protocol IGlobalMarketInfoStorage {
     func globalMarketInfo(currencyCode: String) -> GlobalCoinMarket?
 }
 
-protocol ICoinInfoStorage {
-    var coinInfoCount: Int { get }
-    func save(coinInfos: [CoinInfoRecord])
-    func coinInfos(coinCodes: [String]) -> [CoinInfoRecord]
-}
-
 protocol IProviderCoinInfoStorage {
-    func providerCoinInfoCount(providerId: Int) -> Int
+    var providerCoinInfoCount: Int { get }
     func save(providerCoinInfos: [ProviderCoinInfoRecord])
-    func providerCoinInfos(providerId: Int, coinCodes: [String]) -> [ProviderCoinInfoRecord]
+    func providerCoinInfos(coinCodes: [String]) -> [ProviderCoinInfoRecord]
 }
 
 // Chart Points

@@ -19,9 +19,9 @@ class TopMarketController: UIViewController {
     private let globalVolumeLabel = UILabel()
     private let globalVolumeDiffLabel = UILabel()
     private let globalDominanceLabel = UILabel()
-    private let globalDominanceDiffLabel = UILabel()
+    private let defiMarketCapLabel = UILabel()
 
-    private let segmentedView = UISegmentedControl(items: ["Top100", "Defi", "Favorites"])
+    private let segmentedView = UISegmentedControl(items: ["Overview", "Favorites"])
     private let tableView = UITableView(frame: .zero, style: .plain)
     private let headerView = NewsHeaderView()
 
@@ -85,16 +85,16 @@ class TopMarketController: UIViewController {
         globalDominanceLabel.font = .systemFont(ofSize: 14)
         globalDominanceLabel.textColor = .black
 
-        globalWrapper.addSubview(globalDominanceDiffLabel)
-        globalDominanceDiffLabel.snp.makeConstraints { maker in
+        globalWrapper.addSubview(defiMarketCapLabel)
+        defiMarketCapLabel.snp.makeConstraints { maker in
             maker.top.equalTo(globalVolumeLabel.snp.bottom).offset(4)
             maker.leading.equalTo(globalVolumeLabel.snp.trailing).offset(8)
             maker.trailing.equalToSuperview()
             maker.height.equalTo(28)
         }
 
-        globalDominanceDiffLabel.font = .systemFont(ofSize: 14)
-        globalDominanceDiffLabel.textColor = .black
+        defiMarketCapLabel.font = .systemFont(ofSize: 14)
+        defiMarketCapLabel.textColor = .black
 
         view.addSubview(segmentedView)
         segmentedView.snp.makeConstraints { maker in
@@ -104,7 +104,7 @@ class TopMarketController: UIViewController {
         }
 
         segmentedView.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
-        segmentedView.selectedSegmentIndex = 1
+        segmentedView.selectedSegmentIndex = 0
 
         view.addSubview(tableView)
         tableView.snp.makeConstraints { maker in
@@ -157,7 +157,6 @@ class TopMarketController: UIViewController {
 
         switch segmentedView.selectedSegmentIndex {
         case 0: single = xRatesKit.topMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: period, itemsCount: 200)
-        case 1: single = xRatesKit.topDefiMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: period, itemsCount: 200)
         default: single = xRatesKit.favorites(currencyCode: currencyCode, fetchDiffPeriod: period, coins: favoriteCoins)
         }
 
@@ -189,7 +188,7 @@ class TopMarketController: UIViewController {
             globalVolumeLabel.text = nil
             globalVolumeDiffLabel.text = nil
             globalDominanceLabel.text = nil
-            globalDominanceDiffLabel.text = nil
+            defiMarketCapLabel.text = nil
 
             return
         }
@@ -197,7 +196,7 @@ class TopMarketController: UIViewController {
         globalVolumeLabel.text = "Vol: \(string(from: globalInfo.volume24h))"
         globalVolumeDiffLabel.text = "VolDiff: \(string(from: globalInfo.volume24hDiff24h))"
         globalDominanceLabel.text = "Dom: \(string(from: globalInfo.btcDominance))"
-        globalDominanceDiffLabel.text = "DomDiff: \(string(from: globalInfo.btcDominanceDiff24h))"
+        defiMarketCapLabel.text = "DefiCap: \(string(from: globalInfo.defiMarketCap / 1_000_000))M"
     }
 
     private func set(topMarkets: [CoinMarket]?, error: Error? = nil) {
