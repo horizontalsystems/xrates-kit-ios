@@ -201,28 +201,6 @@ extension UniswapSubgraphProvider: IMarketInfoProvider {
 
 }
 
-extension UniswapSubgraphProvider: ICoinMarketsProvider {
-
-    public func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int) -> Single<[CoinMarket]> {
-        let factory = { [weak self] (blockHeight: Int?) in
-            self?.topTokensSingle(itemCount: itemCount, blockHeight: blockHeight) ?? Single.error(Self.ProviderError.badSelfAccess)
-        }
-
-        return requestedCoinMarketsSingle(factory: factory, currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod)
-    }
-
-    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coins: [XRatesKit.Coin]) -> Single<[CoinMarket]> {
-        let addresses = tokenAddresses(coins: coins)
-
-        let factory = { [weak self] (blockHeight: Int?) in
-            self?.coinMarketsSingle(tokenAddresses: addresses, blockHeight: blockHeight) ?? Single.error(Self.ProviderError.badSelfAccess)
-        }
-
-        return requestedCoinMarketsSingle(factory: factory, currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod)
-    }
-
-}
-
 extension UniswapSubgraphProvider {
 
     enum ProviderError: Error {

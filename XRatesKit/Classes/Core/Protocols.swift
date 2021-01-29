@@ -52,14 +52,9 @@ protocol ITopMarketsStorage {
     func save(topMarkets: [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)])
 }
 
-protocol ICoinMarketsProvider {
-    func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int) -> Single<[CoinMarket]>
-    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coins: [XRatesKit.Coin]) -> Single<[CoinMarket]>
-}
-
 protocol ICoinMarketsManager {
-    func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemsCount: Int) -> Single<[CoinMarket]>
-    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coins: [XRatesKit.Coin]) -> Single<[CoinMarket]>
+    func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int) -> Single<[CoinMarket]>
+    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coinCodes: [String]) -> Single<[CoinMarket]>
 }
 
 protocol ITopMarketsManagerDelegate: AnyObject {
