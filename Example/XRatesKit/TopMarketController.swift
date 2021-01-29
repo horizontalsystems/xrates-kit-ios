@@ -157,7 +157,7 @@ class TopMarketController: UIViewController {
 
         switch segmentedView.selectedSegmentIndex {
         case 0: single = xRatesKit.topMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: period, itemsCount: 200)
-        default: single = xRatesKit.favorites(currencyCode: currencyCode, fetchDiffPeriod: period, coins: favoriteCoins)
+        default: single = xRatesKit.favorites(currencyCode: currencyCode, fetchDiffPeriod: period, coinCodes: favoriteCoins.map { $0.code })
         }
 
         topMarketsDisposable = single

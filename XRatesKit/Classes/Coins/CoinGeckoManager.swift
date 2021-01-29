@@ -11,15 +11,16 @@ class CoinGeckoManager {
         self.storage = storage
     }
 
-    private func coinIds(coins: [XRatesKit.Coin]) -> Single<String> {
+    private func coinIds(coinCodes: [String]) -> Single<String> {
         let coinInfosSingle: Single<[ProviderCoinInfoRecord]>
 
         if storage.providerCoinInfoCount != 0 {
-            let providerCoinInfos = storage.providerCoinInfos(coinCodes: coins.map { $0.code })
+            let providerCoinInfos = storage.providerCoinInfos(coinCodes: coinCodes)
             coinInfosSingle = Single.just(providerCoinInfos)
         } else {
-            coinInfosSingle = provider.coinInfosSingle().do { [weak self] in
-                self?.storage.save(providerCoinInfos: $0)
+            coinInfosSingle = provider.coinInfosSingle().map { [weak self] coinInfos in
+                self?.storage.save(providerCoinInfos: coinInfos)
+                return coinInfos.filter { coinInfo in coinCodes.contains { coinInfo.code == $0 } }
             }
         }
 
@@ -35,14 +36,14 @@ class CoinGeckoManager {
 
 }
 
-extension CoinGeckoManager: ICoinMarketsProvider {
+extension CoinGeckoManager: ICoinMarketsManager {
 
     func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int) -> Single<[CoinMarket]> {
         provider.topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: itemCount)
     }
 
-    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coins: [XRatesKit.Coin]) -> Single<[CoinMarket]> {
-        coinIds(coins: coins).flatMap { [weak self] coinIds in
+    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coinCodes: [String]) -> Single<[CoinMarket]> {
+        coinIds(coinCodes: coinCodes).flatMap { [weak self] coinIds in
             guard let provider = self?.provider, !coinIds.isEmpty else {
                 return Single.just([])
             }

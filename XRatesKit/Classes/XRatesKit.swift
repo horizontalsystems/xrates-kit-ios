@@ -4,8 +4,7 @@ import HsToolKit
 public class XRatesKit {
     private let marketInfoManager: IMarketInfoManager
     private let marketInfoSyncManager: IMarketInfoSyncManager
-    private let coinMarketsManager: CoinMarketsManager
-    private let coinInfoManager: CoinGeckoManager
+    private let coinMarketsManager: ICoinMarketsManager
     private let globalMarketInfoManager: GlobalMarketInfoManager
     private let historicalRateManager: IHistoricalRateManager
     private let chartInfoManager: IChartInfoManager
@@ -13,13 +12,12 @@ public class XRatesKit {
     private let newsPostsManager: INewsManager
 
     init(marketInfoManager: IMarketInfoManager, globalMarketInfoManager: GlobalMarketInfoManager, marketInfoSyncManager: IMarketInfoSyncManager,
-         coinMarketsManager: CoinMarketsManager, coinInfoManager: CoinGeckoManager, historicalRateManager: IHistoricalRateManager,
+         coinInfoManager: ICoinMarketsManager, historicalRateManager: IHistoricalRateManager,
          chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager, newsPostsManager: INewsManager) {
         self.globalMarketInfoManager = globalMarketInfoManager
         self.marketInfoManager = marketInfoManager
         self.marketInfoSyncManager = marketInfoSyncManager
-        self.coinMarketsManager = coinMarketsManager
-        self.coinInfoManager = coinInfoManager
+        self.coinMarketsManager = coinInfoManager
         self.historicalRateManager = historicalRateManager
         self.chartInfoManager = chartInfoManager
         self.chartInfoSyncManager = chartInfoSyncManager
@@ -79,11 +77,11 @@ extension XRatesKit {
     }
 
     public func topMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod = .hour24, itemsCount: Int = 200) -> Single<[CoinMarket]> {
-        coinMarketsManager.topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemsCount: itemsCount)
+        coinMarketsManager.topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: itemsCount)
     }
 
-    public func favorites(currencyCode: String, fetchDiffPeriod: TimePeriod = .hour24, coins: [Coin]) -> Single<[CoinMarket]> {
-        coinMarketsManager.coinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, coins: coins)
+    public func favorites(currencyCode: String, fetchDiffPeriod: TimePeriod = .hour24, coinCodes: [String]) -> Single<[CoinMarket]> {
+        coinMarketsManager.coinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, coinCodes: coinCodes)
     }
 
     public func globalMarketInfoSingle(currencyCode: String) -> Single<GlobalCoinMarket> {
@@ -111,7 +109,6 @@ extension XRatesKit {
         let coinGeckoManager = CoinGeckoManager(provider: coinGeckoProvider, storage: storage)
 
         let marketInfoManager = MarketInfoManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
-        let coinMarketsManager = CoinMarketsManager(coinMarketsProvider: coinGeckoManager, defiMarketsProvider: uniswapSubgraphProvider)
         let globalMarketInfoManager = GlobalMarketInfoManager(globalMarketInfoProvider: coinPaprikaProvider, defiMarketCapProvider: coinGeckoProvider, storage: storage)
 
         let marketInfoSchedulerFactory = MarketInfoSchedulerFactory(manager: marketInfoManager, provider: baseMarketInfoProvider, reachabilityManager: reachabilityManager, expirationInterval: marketInfoExpirationInterval, retryInterval: retryInterval, logger: logger)
@@ -132,7 +129,6 @@ extension XRatesKit {
                 marketInfoManager: marketInfoManager,
                 globalMarketInfoManager: globalMarketInfoManager,
                 marketInfoSyncManager: marketInfoSyncManager,
-                coinMarketsManager: coinMarketsManager,
                 coinInfoManager: coinGeckoManager,
                 historicalRateManager: historicalRateManager,
                 chartInfoManager: chartInfoManager,
