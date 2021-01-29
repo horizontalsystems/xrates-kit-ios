@@ -13,6 +13,22 @@ class MarketInfoRecord: Record {
     let liquidity: Decimal
     let marketCap: Decimal
 
+    init(marketInfo: MarketInfo, coin: XRatesKit.Coin) {
+        coinCode = coin.code
+        coinCurrency = marketInfo.currencyCode
+        rate = marketInfo.rate
+        rateOpenDay = marketInfo.rateOpenDay
+        rateDiff = marketInfo.rateDiff
+        volume = marketInfo.volume
+        supply = marketInfo.supply
+        rateDiffPeriod = marketInfo.rateDiffPeriod
+        timestamp = marketInfo.timestamp
+        liquidity = marketInfo.liquidity
+        marketCap = marketInfo.marketCap
+
+        super.init()
+    }
+
     init(coinCode: String, currencyCode: String, rate: Decimal, openDay: Decimal, diff: Decimal, volume: Decimal, marketCap: Decimal, supply: Decimal, liquidity: Decimal = 0, rateDiffPeriod: Decimal = 0) {
         self.coinCode = coinCode
         coinCurrency = currencyCode
