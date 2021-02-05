@@ -58,7 +58,8 @@ fileprivate class CoinGeckoTopMarketMapper: IApiMapper {
 
         return array.compactMap { tokenData in
             guard let coinCode = tokenData["symbol"] as? String,
-                  let coinTitle = tokenData["name"] as? String else {
+                  let coinTitle = tokenData["name"] as? String,
+                  let coinId = tokenData["id"] as? String else {
 
                 return nil
             }
@@ -82,6 +83,7 @@ fileprivate class CoinGeckoTopMarketMapper: IApiMapper {
             let rateDiff24h = Decimal(convertibleValue: tokenData["price_change_percentage_24h"]) ?? 0
 
             let record = MarketInfoRecord(
+                    coinId: coinId,
                     coinCode: coinCode.uppercased(),
                     currencyCode: currencyCode,
                     rate: rate, openDay: rateOpenDay,

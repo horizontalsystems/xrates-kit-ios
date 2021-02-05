@@ -113,6 +113,7 @@ extension UniswapSubgraphProvider: IMarketInfoProvider {
                 let diff = dayOpenFiatPrice > 0 ? ((latestPrice - dayOpenFiatPrice) * 100) / dayOpenFiatPrice : 0
 
                 marketInfos.append(MarketInfoRecord(
+                        coinId: "",
                         coinCode: coinCode,
                         currencyCode: currencyCode,
                         rate: latestPrice,
@@ -158,6 +159,7 @@ extension UniswapSubgraphProvider: IMarketInfoProvider {
             let rateDiffPeriod = tokenPeriodRate == 0 ? 0 : (100 * (latestRate - tokenPeriodRate) / tokenPeriodRate)
 
             let marketInfoRecord = MarketInfoRecord(
+                    coinId: "",
                     coinCode: token.coinCode,
                     currencyCode: currencyCode,
                     rate: latestRate,
