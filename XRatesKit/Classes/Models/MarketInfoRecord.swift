@@ -1,6 +1,7 @@
 import GRDB
 
 class MarketInfoRecord: Record {
+    let coinId: String
     var coinCode: String
     let coinCurrency: String
     let rate: Decimal
@@ -14,6 +15,7 @@ class MarketInfoRecord: Record {
     let marketCap: Decimal
 
     init(marketInfo: MarketInfo, coin: XRatesKit.Coin) {
+        coinId = marketInfo.coinId
         coinCode = coin.code
         coinCurrency = marketInfo.currencyCode
         rate = marketInfo.rate
@@ -29,7 +31,8 @@ class MarketInfoRecord: Record {
         super.init()
     }
 
-    init(coinCode: String, currencyCode: String, rate: Decimal, openDay: Decimal, diff: Decimal, volume: Decimal, marketCap: Decimal, supply: Decimal, liquidity: Decimal = 0, rateDiffPeriod: Decimal = 0) {
+    init(coinId: String, coinCode: String, currencyCode: String, rate: Decimal, openDay: Decimal, diff: Decimal, volume: Decimal, marketCap: Decimal, supply: Decimal, liquidity: Decimal = 0, rateDiffPeriod: Decimal = 0) {
+        self.coinId = coinId
         self.coinCode = coinCode
         coinCurrency = currencyCode
         self.rate = rate
@@ -47,6 +50,7 @@ class MarketInfoRecord: Record {
 
     convenience init(coinCode: String, currencyCode: String, response: ResponseMarketInfo) {
         self.init(
+                coinId: "",
                 coinCode: coinCode,
                 currencyCode: currencyCode,
                 rate: response.rate,
@@ -69,10 +73,11 @@ class MarketInfoRecord: Record {
     }
 
     enum Columns: String, ColumnExpression, CaseIterable {
-        case coinCode, currencyCode, timestamp, rate, openDay, diff, volume, marketCap, supply, liquidity, rateDiffPeriod
+        case coinId, coinCode, currencyCode, timestamp, rate, openDay, diff, volume, marketCap, supply, liquidity, rateDiffPeriod
     }
 
     required init(row: Row) {
+        coinId = row[Columns.coinId]
         coinCode = row[Columns.coinCode]
         coinCurrency = row[Columns.currencyCode]
         timestamp = row[Columns.timestamp]
@@ -89,6 +94,7 @@ class MarketInfoRecord: Record {
     }
 
     override open func encode(to container: inout PersistenceContainer) {
+        container[Columns.coinId] = coinId
         container[Columns.coinCode] = coinCode
         container[Columns.currencyCode] = coinCurrency
         container[Columns.timestamp] = timestamp
