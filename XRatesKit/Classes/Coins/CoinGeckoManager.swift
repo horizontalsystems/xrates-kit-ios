@@ -2,20 +2,17 @@ import RxSwift
 private struct CoinGeckoDuplicateMap {
 
     static let coinIds = [
-        "bowl-a-coin", "blockidcoin", "bifi",
-        "bitcoin-file", "cactus-finance","coin-artist",
-        "stake-coin-2", "derogold", "daily-funds",
-        "deipool", "dipper", "dipper-network", "demos",
-        "defi-nation-signals-dao", "digitalusd", "seed2need",
-        "fin-token", "funkeypay", "freetip",
-        "golden-ratio-token", "gdac-token", "bonded-finance",
-        "compound-coin", "hydro-protocol", "thorchain",
-        "holy-trinity", "wrapped-terra", "memetic",
-        "mir-coin", "morpher", "master-usd", "payperex",
-        "baby-power-index-pool-token", "san-diego-coin",
-        "siambitcoin", "soft-bitcoin", "stakehound-staked-ether",
-        "super-bitcoin", "socketfinance", "unicorn-token",
-        "universe-token", "dollars", "usdx-stablecoin", "usdx-wallet"
+        "ankreth", "baby-power-index-pool-token", "bifi", "bitcoin-file", "blockidcoin",
+        "bonded-finance", "bowl-a-coin", "btc-alpha-token", "cactus-finance", "coin-artist",
+        "compound-coin", "daily-funds", "defi-bids", "defi-nation-signals-dao", "deipool",
+        "demos", "derogold", "digitalusd", "dipper", "dipper-network", "dollars",
+        "fin-token", "freetip", "funkeypay", "gdac-token", "golden-ratio-token",
+        "holy-trinity", "hotnow", "hydro-protocol", "lition", "master-usd",
+        "memetic", "mir-coin", "morpher", "name-changing-token", "payperex",
+        "radium", "san-diego-coin", "seed2need", "shardus", "siambitcoin",
+        "socketfinance", "soft-bitcoin", "spacechain", "stake-coin-2", "stakehound-staked-ether",
+        "super-bitcoin", "thorchain-erc20", "unicorn-token", "unit-protocol-duck", "universe-token",
+        "usdx-stablecoin", "usdx-wallet", "wrapped-terra", "yield",
     ]
 
 }
@@ -33,6 +30,7 @@ class CoinGeckoManager {
 
     private func coinIds(coinCodes: [String]) -> Single<String> {
         let coinInfosSingle: Single<[ProviderCoinInfoRecord]>
+        let coinCodes = coinCodes.map { $0.uppercased() }
 
         if storage.providerCoinInfoCount != 0 {
             let providerCoinInfos = storage.providerCoinInfos(coinCodes: coinCodes)
