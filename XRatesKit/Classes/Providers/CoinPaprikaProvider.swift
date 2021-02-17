@@ -5,13 +5,14 @@ import Alamofire
 import ObjectMapper
 
 fileprivate class CoinPaprikaGlobalMarketInfoMapper: IApiMapper {
-    typealias T = GlobalCoinMarket
-
-    private let currencyCode: String
-
-    init(currencyCode: String) {
-        self.currencyCode = currencyCode
+    struct MarketPartialInfo {
+            let volume24h: Decimal
+            let volume24hDiff24h: Decimal
+            let marketCap: Decimal
+            let marketCapDiff24h: Decimal
+            let btcDominance: Decimal
     }
+    typealias T = MarketPartialInfo
 
     func map(statusCode: Int, data: Any?) throws -> T {
         guard let dictionary = data as? [String: Any] else {
@@ -24,18 +25,14 @@ fileprivate class CoinPaprikaGlobalMarketInfoMapper: IApiMapper {
         let marketCapDiff = Decimal(convertibleValue: dictionary["market_cap_change_24h"]) ?? 0
         let btcDominance = Decimal(convertibleValue: dictionary["bitcoin_dominance_percentage"]) ?? 0
 
-        return GlobalCoinMarket(currencyCode: currencyCode,
+        return MarketPartialInfo(
                 volume24h: volume24h,
                 volume24hDiff24h: volume24hDiff,
                 marketCap: marketCap,
                 marketCapDiff24h: marketCapDiff,
-                btcDominance: btcDominance,
-                btcDominanceDiff24h: 0,
-                defiMarketCap: 0,
-                defiMarketCapDiff24h: 0,
-                defiTvl: 0,
-                defiTvlDiff24h: 0)
-        }
+                btcDominance: btcDominance
+        )
+    }
 }
 
 fileprivate class CoinPaprikaMarketCapMapper: IApiMapper {
@@ -104,10 +101,10 @@ class CoinPaprikaProvider {
         return networkManager.single(request: request)
     }
 
-    private func marketOverviewData(currencyCode: String) -> Single<GlobalCoinMarket> {
+    private func marketOverviewData(currencyCode: String) -> Single<CoinPaprikaGlobalMarketInfoMapper.MarketPartialInfo> {
         let request = networkManager.session.request("\(baseUrl)/global", method: .get, encoding: JSONEncoding())
 
-        return networkManager.single(request: request, mapper: CoinPaprikaGlobalMarketInfoMapper(currencyCode: currencyCode))
+        return networkManager.single(request: request, mapper: CoinPaprikaGlobalMarketInfoMapper())
     }
 
     private func marketCap(coinId: String = CoinPaprikaProvider.btcId, timestamp: TimeInterval) -> Single<Decimal> {
@@ -132,18 +129,24 @@ class CoinPaprikaProvider {
 
 }
 
-extension CoinPaprikaProvider: IGlobalMarketInfoProvider {
+extension CoinPaprikaProvider {
 
-    func globalCoinMarketsInfo(currencyCode: String) -> RxSwift.Single<GlobalCoinMarket> {
+    func globalCoinMarketsInfo(currencyCode: String) -> RxSwift.Single<AllMarketInfo> {
         Single.zip(
             marketOverviewData(currencyCode: currencyCode),
             marketCap(timestamp: Date().timeIntervalSince1970 - Self.hours24InSeconds)
-        ) { globalMarketInfo, btcMarketCap in
-            let openingMarketCap = 100 * globalMarketInfo.marketCap / (globalMarketInfo.marketCapDiff24h + 100)
+        ) { partialOverview, btcMarketCap in
+            let openingMarketCap = 100 * partialOverview.marketCap / (partialOverview.marketCapDiff24h + 100)
             let openingBtcDominanceDiff = (100 * btcMarketCap) / openingMarketCap
-            globalMarketInfo.btcDominanceDiff24h = globalMarketInfo.btcDominance - openingBtcDominanceDiff
 
-            return globalMarketInfo
+            return AllMarketInfo(
+                    volume24h: partialOverview.volume24h,
+                    volume24hDiff24h: partialOverview.volume24hDiff24h,
+                    marketCap: partialOverview.marketCap,
+                    marketCapDiff24h: partialOverview.marketCapDiff24h,
+                    btcDominance: partialOverview.btcDominance,
+                    btcDominanceDiff24h: partialOverview.btcDominance - openingBtcDominanceDiff
+            )
         }
     }
 

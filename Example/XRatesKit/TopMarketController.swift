@@ -20,6 +20,7 @@ class TopMarketController: UIViewController {
     private let globalVolumeDiffLabel = UILabel()
     private let globalDominanceLabel = UILabel()
     private let defiMarketCapLabel = UILabel()
+    private let defiTvl = UILabel()
 
     private let segmentedView = UISegmentedControl(items: ["Overview", "Favorites"])
     private let tableView = UITableView(frame: .zero, style: .plain)
@@ -51,7 +52,7 @@ class TopMarketController: UIViewController {
         globalWrapper.snp.makeConstraints { maker in
             maker.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             maker.leading.trailing.equalToSuperview().inset(20)
-            maker.height.equalTo(64)
+            maker.height.equalTo(96)
         }
 
         globalWrapper.addSubview(globalVolumeLabel)
@@ -95,6 +96,17 @@ class TopMarketController: UIViewController {
 
         defiMarketCapLabel.font = .systemFont(ofSize: 14)
         defiMarketCapLabel.textColor = .black
+
+        globalWrapper.addSubview(defiTvl)
+        defiTvl.snp.makeConstraints { maker in
+            maker.top.equalTo(globalDominanceLabel.snp.bottom).offset(4)
+            maker.leading.equalTo(globalDominanceLabel.snp.leading)
+            maker.trailing.equalToSuperview()
+            maker.height.equalTo(28)
+        }
+
+        defiTvl.font = .systemFont(ofSize: 14)
+        defiTvl.textColor = .black
 
         view.addSubview(segmentedView)
         segmentedView.snp.makeConstraints { maker in
@@ -189,6 +201,7 @@ class TopMarketController: UIViewController {
             globalVolumeDiffLabel.text = nil
             globalDominanceLabel.text = nil
             defiMarketCapLabel.text = nil
+            defiTvl.text = nil
 
             return
         }
@@ -197,6 +210,7 @@ class TopMarketController: UIViewController {
         globalVolumeDiffLabel.text = "VolDiff: \(string(from: globalInfo.volume24hDiff24h))"
         globalDominanceLabel.text = "Dom: \(string(from: globalInfo.btcDominance))"
         defiMarketCapLabel.text = "DefiCap: \(string(from: globalInfo.defiMarketCap / 1_000_000))M"
+        defiTvl.text = "TVL: \(string(from: globalInfo.defiTvl / 1_000_000))M"
     }
 
     private func set(topMarkets: [CoinMarket]?, error: Error? = nil) {

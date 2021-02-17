@@ -2,10 +2,10 @@ import RxSwift
 
 class GlobalMarketInfoManager {
     private let globalMarketInfoProvider: CoinPaprikaProvider
-    private let defiMarketCapProvider: CoinGeckoProvider
+    private let defiMarketCapProvider: HorsysProvider
     private let storage: IGlobalMarketInfoStorage
 
-    init(globalMarketInfoProvider: CoinPaprikaProvider, defiMarketCapProvider: CoinGeckoProvider, storage: IGlobalMarketInfoStorage) {
+    init(globalMarketInfoProvider: CoinPaprikaProvider, defiMarketCapProvider: HorsysProvider, storage: IGlobalMarketInfoStorage) {
         self.globalMarketInfoProvider = globalMarketInfoProvider
         self.defiMarketCapProvider = defiMarketCapProvider
         self.storage = storage
@@ -19,9 +19,21 @@ extension GlobalMarketInfoManager {
         Single.zip(
         globalMarketInfoProvider.globalCoinMarketsInfo(currencyCode: currencyCode),
         defiMarketCapProvider.globalDefiMarketCap(currencyCode: currencyCode)
-        ).map { marketInfo, defiMarketCap in
-            marketInfo.defiMarketCap = defiMarketCap
-            return marketInfo
+        ).map { globalMarketOverview, defiMarketOverview in
+            GlobalCoinMarket(
+                    currencyCode: currencyCode,
+                    volume24h: globalMarketOverview.volume24h,
+                    volume24hDiff24h: globalMarketOverview.volume24hDiff24h,
+                    marketCap: globalMarketOverview.marketCap,
+                    marketCapDiff24h: globalMarketOverview.marketCapDiff24h,
+                    btcDominance: globalMarketOverview.btcDominance,
+                    btcDominanceDiff24h: globalMarketOverview.btcDominanceDiff24h,
+                    defiMarketCap: defiMarketOverview.defiMarketCap,
+                    defiMarketCapDiff24h: defiMarketOverview.defiMarketCapDiff24h,
+                    defiTvl: defiMarketOverview.defiTvl,
+                    defiTvlDiff24h: defiMarketOverview.defiTvlDiff24h
+
+            )
         }.do { [weak self] globalMarketInfo in
                 self?.storage.save(globalMarketInfo: globalMarketInfo)
         }.catchError { [weak self] error in
