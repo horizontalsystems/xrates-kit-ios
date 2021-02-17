@@ -34,8 +34,9 @@ fileprivate class CoinPaprikaGlobalMarketInfoMapper: IApiMapper {
                 defiMarketCap: 0,
                 defiMarketCapDiff24h: 0,
                 defiTvl: 0,
-                defiTvlDiff24h: 0)
-        }
+                defiTvlDiff24h: 0
+        )
+    }
 }
 
 fileprivate class CoinPaprikaMarketCapMapper: IApiMapper {

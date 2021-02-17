@@ -105,11 +105,12 @@ extension XRatesKit {
         let uniswapSubgraphProvider = UniswapSubgraphProvider(fiatXRatesProvider: cryptoCompareProvider, networkManager: networkManager, expirationInterval: marketInfoExpirationInterval)
         let baseMarketInfoProvider = BaseMarketInfoProvider(mainProvider: cryptoCompareProvider, uniswapGraphProvider: uniswapSubgraphProvider)
 
+        let horsysProvider = HorsysProvider(networkManager: networkManager)
         let coinGeckoProvider = CoinGeckoProvider(networkManager: networkManager, expirationInterval: marketInfoExpirationInterval)
         let coinGeckoManager = CoinGeckoManager(provider: coinGeckoProvider, storage: storage)
 
         let marketInfoManager = MarketInfoManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
-        let globalMarketInfoManager = GlobalMarketInfoManager(globalMarketInfoProvider: coinPaprikaProvider, defiMarketCapProvider: coinGeckoProvider, storage: storage)
+        let globalMarketInfoManager = GlobalMarketInfoManager(globalMarketInfoProvider: coinPaprikaProvider, defiMarketCapProvider: horsysProvider, storage: storage)
 
         let marketInfoSchedulerFactory = MarketInfoSchedulerFactory(manager: marketInfoManager, provider: baseMarketInfoProvider, reachabilityManager: reachabilityManager, expirationInterval: marketInfoExpirationInterval, retryInterval: retryInterval, logger: logger)
         let marketInfoSyncManager = MarketInfoSyncManager(currencyCode: currencyCode, schedulerFactory: marketInfoSchedulerFactory)
