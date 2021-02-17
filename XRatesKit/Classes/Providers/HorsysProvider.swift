@@ -4,7 +4,7 @@ import Alamofire
 
 fileprivate class HorsysDefiMarketCapMapper: IApiMapper {
 
-    func map(statusCode: Int, data: Any?) throws -> GlobalCoinMarket {
+    func map(statusCode: Int, data: Any?) throws -> DefiMarketInfo {
         guard let dictionary = data as? [String: Any] else {
             throw NetworkManager.RequestError.invalidResponse(statusCode: statusCode, data: data)
         }
@@ -14,14 +14,7 @@ fileprivate class HorsysDefiMarketCapMapper: IApiMapper {
         let defiTvl = Decimal(convertibleValue: dictionary["totalValueLocked"]) ?? 0
         let defiTvlDiff24h = Decimal(convertibleValue: dictionary["totalValueLockedDiff24h"]) ?? 0
 
-        return GlobalCoinMarket(
-                currencyCode: "",
-                volume24h: 0,
-                volume24hDiff24h: 0,
-                marketCap: 0,
-                marketCapDiff24h: 0,
-                btcDominance: 0,
-                btcDominanceDiff24h: 0,
+        return DefiMarketInfo(
                 defiMarketCap: defiMarketCap,
                 defiMarketCapDiff24h: defiMarketCapDiff24h,
                 defiTvl: defiTvl,
@@ -45,7 +38,7 @@ class HorsysProvider {
 
 extension HorsysProvider {
 
-    func globalDefiMarketCap(currencyCode: String) -> Single<GlobalCoinMarket> {
+    func globalDefiMarketCap(currencyCode: String) -> Single<DefiMarketInfo> {
         let url = "\(provider.baseUrl)/markets/global/defi"
         let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
 
