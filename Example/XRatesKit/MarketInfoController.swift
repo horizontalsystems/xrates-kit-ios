@@ -33,7 +33,6 @@ class MarketInfoController: UITableViewController {
 
         tableView.register(MarketInfoCell.self, forCellReuseIdentifier: String(describing: MarketInfoCell.self))
         tableView.separatorInset = .zero
-        tableView.allowsSelection = false
         tableView.tableFooterView = UIView()
 
         fillInitialData()
@@ -75,6 +74,14 @@ class MarketInfoController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         75
+    }
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
+
+        let coinCode = coinCodes[indexPath.row]
+        let view = CoinMarketInfoController(xRatesKit: xRatesKit, currencyCode: currencyCode, coinCode: coinCode.lowercased())
+        navigationController?.present(view, animated: true)
     }
 
     private func fillInitialData() {

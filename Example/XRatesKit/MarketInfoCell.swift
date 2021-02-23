@@ -14,7 +14,7 @@ class MarketInfoCell: UITableViewCell {
 
         contentView.backgroundColor = .clear
         backgroundColor = .clear
-
+        selectionStyle = .default
         contentView.addSubview(coinCodeLabel)
         coinCodeLabel.snp.makeConstraints { maker in
             maker.leading.equalToSuperview().offset(10)

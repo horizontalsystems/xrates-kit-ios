@@ -1,6 +1,6 @@
 import Foundation
 
-public enum TimePeriod: String {
+public enum TimePeriod: String, CaseIterable {
     case all
     case hour1
     case dayStart

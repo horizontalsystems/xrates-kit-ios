@@ -84,6 +84,10 @@ extension XRatesKit {
         coinMarketsManager.coinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, coinCodes: coinCodes)
     }
 
+    public func coinMarketInfoSingle(coinCode: String, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinMarketInfo> {
+        coinMarketsManager.coinMarketInfoSingle(coinCode: coinCode, currencyCode: currencyCode, rateDiffTimePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes)
+    }
+
     public func globalMarketInfoSingle(currencyCode: String) -> Single<GlobalCoinMarket> {
         globalMarketInfoManager.globalMarketInfo(currencyCode: currencyCode)
     }

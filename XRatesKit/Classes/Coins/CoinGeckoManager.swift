@@ -18,6 +18,10 @@ private struct CoinGeckoDuplicateMap {
 }
 
 class CoinGeckoManager {
+    enum CoinIdError: Error {
+        case noMatchingCoinId
+    }
+
     private let disposeBag = DisposeBag()
 
     private let provider: CoinGeckoProvider
@@ -28,7 +32,7 @@ class CoinGeckoManager {
         self.storage = storage
     }
 
-    private func coinIds(coinCodes: [String]) -> Single<String> {
+    private func coinIds(coinCodes: [String]) -> Single<[String]> {
         let coinInfosSingle: Single<[ProviderCoinInfoRecord]>
         let coinCodes = coinCodes.map { $0.uppercased() }
 
@@ -45,12 +49,7 @@ class CoinGeckoManager {
         }
 
         return coinInfosSingle.map { providerCoinInfos in
-            guard !providerCoinInfos.isEmpty else {
-                return ""
-            }
-
-            let coinIds = providerCoinInfos.map { $0.coinId }
-            return "&ids=\(coinIds.joined(separator: ","))"
+            providerCoinInfos.map { $0.coinId }
         }
     }
 
@@ -86,7 +85,17 @@ extension CoinGeckoManager: ICoinMarketsManager {
             return provider.coinMarketsSingle(
                     currencyCode: currencyCode,
                     fetchDiffPeriod: fetchDiffPeriod,
-                    coinIds: coinIds)
+                    coinIds: "&ids=\(coinIds.joined(separator: ","))")
+        }
+    }
+
+    func coinMarketInfoSingle(coinCode: String, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinMarketInfo> {
+        coinIds(coinCodes: [coinCode]).flatMap { [weak self] coinIds in
+            guard let coinId = coinIds.first, let provider = self?.provider else {
+                return Single.error(CoinIdError.noMatchingCoinId)
+            }
+
+            return provider.coinMarketInfoSingle(coinCode: coinId, currencyCode: currencyCode, rateDiffTimePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes)
         }
     }
 
