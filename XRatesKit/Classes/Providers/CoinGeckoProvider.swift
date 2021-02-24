@@ -65,7 +65,6 @@ fileprivate class CoinGeckoTopMarketMapper: IApiMapper {
             }
 
             let rate = Decimal(convertibleValue: tokenData["current_price"]) ?? 0
-            let rateOpenDay = Decimal(convertibleValue: tokenData["price_change_24h"]) ?? 0
             let supply = Decimal(convertibleValue: tokenData["circulating_supply"]) ?? 0
             let volume = Decimal(convertibleValue: tokenData["total_volume"]) ?? 0
             let marketCap = Decimal(convertibleValue: tokenData["market_cap"]) ?? 0
@@ -86,7 +85,8 @@ fileprivate class CoinGeckoTopMarketMapper: IApiMapper {
                     coinId: coinId,
                     coinCode: coinCode.uppercased(),
                     currencyCode: currencyCode,
-                    rate: rate, openDay: rateOpenDay,
+                    rate: rate,
+                    openDay: 0,
                     diff: rateDiff24h,
                     volume: volume,
                     marketCap: marketCap,

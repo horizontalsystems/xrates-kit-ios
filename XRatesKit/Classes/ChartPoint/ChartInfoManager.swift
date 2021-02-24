@@ -78,8 +78,9 @@ extension ChartInfoManager: IChartInfoManager {
         }
 
         let dayStartTimestamp = utcStartOfToday.timeIntervalSince1970
-        if let updatePointIndex = records.firstIndex(where: { $0.chartPoint.timestamp == dayStartTimestamp }),
-           let marketInfo = marketInfoManager.marketInfo(key: PairKey(coinCode: key.coinCode, currencyCode: key.currencyCode)) {
+        if key.chartType == .today, let updatePointIndex = records.firstIndex(where: { $0.chartPoint.timestamp == dayStartTimestamp }),
+           let marketInfo = marketInfoManager.marketInfo(key: PairKey(coinCode: key.coinCode, currencyCode: key.currencyCode)),
+           marketInfo.rateOpenDay != 0 {
             let updateRecord = records[updatePointIndex]
             records[updatePointIndex] = ChartPointRecord(key: key, chartPoint: ChartPoint(timestamp: updateRecord.chartPoint.timestamp, value: marketInfo.rateOpenDay, volume: updateRecord.chartPoint.volume))
         }
