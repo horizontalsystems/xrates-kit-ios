@@ -8,14 +8,14 @@ class MarketInfoController: UITableViewController {
 
     private let xRatesKit: XRatesKit
     private let currencyCode: String
-    private let coinCodes: [String]
+    private let coinIds: [String]
 
     private var marketInfos = [String: MarketInfo]()
 
-    init(xRatesKit: XRatesKit, currencyCode: String, coinCodes: [String]) {
+    init(xRatesKit: XRatesKit, currencyCode: String, coinIds: [String]) {
         self.xRatesKit = xRatesKit
         self.currencyCode = currencyCode
-        self.coinCodes = coinCodes
+        self.coinIds = coinIds
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -51,7 +51,7 @@ class MarketInfoController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        coinCodes.count
+        coinIds.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -67,7 +67,7 @@ class MarketInfoController: UITableViewController {
             return
         }
 
-        let coinCode = coinCodes[indexPath.row]
+        let coinCode = coinIds[indexPath.row]
 
         cell.bind(coinCode: coinCode, marketInfo: marketInfos[coinCode])
     }
@@ -79,13 +79,13 @@ class MarketInfoController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
 
-        let coinCode = coinCodes[indexPath.row]
-        let view = CoinMarketInfoController(xRatesKit: xRatesKit, currencyCode: currencyCode, coinCode: coinCode.lowercased())
+        let coinId = coinIds[indexPath.row]
+        let view = CoinMarketInfoController(xRatesKit: xRatesKit, currencyCode: currencyCode, coinId: coinId.lowercased())
         navigationController?.present(view, animated: true)
     }
 
     private func fillInitialData() {
-        for coinCode in coinCodes {
+        for coinCode in coinIds {
             marketInfos[coinCode] = xRatesKit.marketInfo(coinCode: coinCode, currencyCode: currencyCode)
         }
     }

@@ -26,7 +26,7 @@ class MainController: UITabBarController {
         let topMarketInfoController = TopMarketController(xRatesKit: xRatesKit, storage: UserDefaultsStorage(), currencyCode: currencyCode)
         topMarketInfoController.tabBarItem = UITabBarItem(title: "Top Markets", image: UIImage(systemName: "dollarsign.circle"), tag: 0)
 
-        let marketInfoController = MarketInfoController(xRatesKit: xRatesKit, currencyCode: currencyCode, coinCodes: marketInfoCoins.map { $0.code })
+        let marketInfoController = MarketInfoController(xRatesKit: xRatesKit, currencyCode: currencyCode, coinIds: marketInfoCoins.map { $0.code })
         marketInfoController.tabBarItem = UITabBarItem(title: "Market Info", image: UIImage(systemName: "dollarsign.circle"), tag: 0)
 
         let historicalController = HistoricalController(xRatesKit: xRatesKit, currencyCode: currencyCode, coinCode: historicalCoinCode)

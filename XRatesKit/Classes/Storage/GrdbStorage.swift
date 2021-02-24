@@ -198,6 +198,23 @@ class GrdbStorage {
             }
         }
 
+        migrator.registerMigration("createCoinExternalIdListVersions") { db in
+            try db.create(table: CoinExternalIdListVersion.databaseTableName) { t in
+                t.column(CoinExternalIdListVersion.Columns.id.name, .text).notNull().primaryKey(onConflict: .replace)
+                t.column(CoinExternalIdListVersion.Columns.version.name, .integer).notNull()
+            }
+        }
+
+        migrator.registerMigration("createCoinExternalIds") { db in
+            try db.create(table: ProviderCoinRecord.databaseTableName) { t in
+                t.column(ProviderCoinRecord.Columns.id.name, .text).notNull().primaryKey(onConflict: .replace)
+                t.column(ProviderCoinRecord.Columns.code.name, .text).notNull()
+                t.column(ProviderCoinRecord.Columns.name.name, .text).notNull()
+                t.column(ProviderCoinRecord.Columns.coingeckoId.name, .text)
+                t.column(ProviderCoinRecord.Columns.cryptocompareId.name, .text)
+            }
+        }
+
         return migrator
     }
 
@@ -364,6 +381,59 @@ extension GrdbStorage: IProviderCoinInfoStorage {
             try ProviderCoinInfoRecord
                 .filter(coinCodes.contains(CoinInfoRecord.Columns.code))
                 .fetchAll(db)
+        }
+    }
+
+}
+
+extension GrdbStorage: IProviderCoinsStorage {
+
+    var externalIdsVersion: Int {
+        try! dbPool.read { db in
+            try CoinExternalIdListVersion.fetchOne(db)?.version ?? 0
+        }
+    }
+
+    func set(externalIdsVersion: Int) {
+        try! dbPool.write { db in
+            try CoinExternalIdListVersion(version: externalIdsVersion).insert(db)
+        }
+    }
+
+    func save(coinExternalIds: [ProviderCoinRecord]) {
+        _ = try! dbPool.write { db in
+            try coinExternalIds.forEach { record in
+                try record.insert(db)
+            }
+        }
+    }
+
+    func providerId(id: String, providerName: String) -> String? {
+        try! dbPool.read { db in
+            let record = try ProviderCoinRecord.filter(ProviderCoinRecord.Columns.id == id).fetchAll(db).first
+
+            switch providerName {
+            case CoinGeckoProvider.providerName: return record?.coingeckoId
+            case CryptoCompareProvider.providerName: return record?.cryptocompareId
+            default: return nil
+            }
+        }
+    }
+
+    func id(providerId: String, providerName: String) -> String? {
+        try! dbPool.read { db in
+            let filter: SQLExpressible
+
+            switch providerName {
+            case CoinGeckoProvider.providerName: filter = ProviderCoinRecord.Columns.coingeckoId == providerId
+            case CryptoCompareProvider.providerName: filter = ProviderCoinRecord.Columns.cryptocompareId == providerId
+            default: return nil
+            }
+
+            return try ProviderCoinRecord
+                    .filter(filter)
+                    .fetchAll(db)
+                    .first?.id
         }
     }
 

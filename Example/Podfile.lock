@@ -27,7 +27,7 @@ PODS:
   - SnapKit (5.0.1)
   - XRatesKit.swift (0.7.0):
     - GRDB.swift (~> 4.0)
-    - HsToolKit.swift (~> 1.1.0)
+    - HsToolKit.swift (~> 1.1)
     - ObjectMapper (~> 3.5.2)
     - RxSwift (~> 5.0)
     - RxSwiftExt (~> 5)
@@ -72,8 +72,8 @@ SPEC CHECKSUMS:
   RxSwift: 81470a2074fa8780320ea5fe4102807cb7118178
   RxSwiftExt: 4ca80336f43c28f11a2825cdd2fc61dd6c044697
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
-  XRatesKit.swift: 83bff92740261f9522484e611010b38c187c25c7
+  XRatesKit.swift: 485863607f327b93356b06d30bdc0013c6fb18c4
 
 PODFILE CHECKSUM: 09ceddc9ba237699ff4ff3920aa616534f1da670
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.1

@@ -80,12 +80,12 @@ extension XRatesKit {
         coinMarketsManager.topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: itemsCount)
     }
 
-    public func favorites(currencyCode: String, fetchDiffPeriod: TimePeriod = .hour24, coinCodes: [String]) -> Single<[CoinMarket]> {
-        coinMarketsManager.coinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, coinCodes: coinCodes)
+    public func favorites(currencyCode: String, fetchDiffPeriod: TimePeriod = .hour24, coinIds: [String]) -> Single<[CoinMarket]> {
+        coinMarketsManager.coinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, coinIds: coinIds)
     }
 
-    public func coinMarketInfoSingle(coinCode: String, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinMarketInfo> {
-        coinMarketsManager.coinMarketInfoSingle(coinCode: coinCode, currencyCode: currencyCode, rateDiffTimePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes)
+    public func coinMarketInfoSingle(coinId: String, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinMarketInfo> {
+        coinMarketsManager.coinMarketInfoSingle(coinId: coinId, currencyCode: currencyCode, rateDiffTimePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes)
     }
 
     public func globalMarketInfoSingle(currencyCode: String) -> Single<GlobalCoinMarket> {
@@ -96,12 +96,15 @@ extension XRatesKit {
 
 extension XRatesKit {
 
-    public static func instance(currencyCode: String, coinMarketCapApiKey: String? = nil, cryptoCompareApiKey: String? = nil, uniswapSubgraphUrl: String, indicatorPointCount: Int = 60, marketInfoExpirationInterval: TimeInterval = 60, topMarketsCount: Int = 10, retryInterval: TimeInterval = 30, minLogLevel: Logger.Level = .error) -> XRatesKit {
+    public static func instance(currencyCode: String, coinMarketCapApiKey: String? = nil, cryptoCompareApiKey: String? = nil, uniswapSubgraphUrl: String,
+                                indicatorPointCount: Int = 60, marketInfoExpirationInterval: TimeInterval = 60, topMarketsCount: Int = 10,
+                                retryInterval: TimeInterval = 30, minLogLevel: Logger.Level = .error) -> XRatesKit {
         let logger = Logger(minLogLevel: minLogLevel)
 
         let reachabilityManager = ReachabilityManager()
 
         let storage = GrdbStorage()
+        let externalIdManager = ProviderCoinsManager(storage: storage, parser: JsonFileParser())
 
         let networkManager = NetworkManager(logger: logger)
         let coinPaprikaProvider = CoinPaprikaProvider(networkManager: networkManager)
@@ -111,7 +114,7 @@ extension XRatesKit {
 
         let horsysProvider = HorsysProvider(networkManager: networkManager)
         let coinGeckoProvider = CoinGeckoProvider(networkManager: networkManager, expirationInterval: marketInfoExpirationInterval)
-        let coinGeckoManager = CoinGeckoManager(provider: coinGeckoProvider, storage: storage)
+        let coinGeckoManager = CoinGeckoManager(provider: coinGeckoProvider, storage: storage, externalIdManager: externalIdManager)
 
         let marketInfoManager = MarketInfoManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
         let globalMarketInfoManager = GlobalMarketInfoManager(globalMarketInfoProvider: coinPaprikaProvider, defiMarketCapProvider: horsysProvider, storage: storage)
@@ -142,6 +145,18 @@ extension XRatesKit {
         )
 
         return kit
+    }
+
+    private static func databaseDirectoryUrl() throws -> URL {
+        let fileManager = FileManager.default
+
+        let url = try fileManager
+                .url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+                .appendingPathComponent("xrates-kit", isDirectory: true)
+
+        try fileManager.createDirectory(at: url, withIntermediateDirectories: true)
+
+        return url
     }
 
 }

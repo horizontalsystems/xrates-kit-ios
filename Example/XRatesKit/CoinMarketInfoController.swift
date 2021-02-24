@@ -11,14 +11,14 @@ class CoinMarketInfoController: UIViewController {
 
     private let xRatesKit: XRatesKit
     private let currencyCode: String
-    private let coinCode: String
+    private let coinId: String
     private let timePeriods = [TimePeriod.day7, TimePeriod.day30]
     private let coinCodes = ["USD", "BTC", "ETH"]
 
-    init(xRatesKit: XRatesKit, currencyCode: String, coinCode: String) {
+    init(xRatesKit: XRatesKit, currencyCode: String, coinId: String) {
         self.xRatesKit = xRatesKit
         self.currencyCode = currencyCode
-        self.coinCode = coinCode
+        self.coinId = "binance"
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -53,7 +53,7 @@ class CoinMarketInfoController: UIViewController {
     }
 
     @objc func onTapRefresh() {
-        xRatesKit.coinMarketInfoSingle(coinCode: coinCode, currencyCode: currencyCode, rateDiffTimePeriods: timePeriods, rateDiffCoinCodes: coinCodes)
+        xRatesKit.coinMarketInfoSingle(coinId: coinId, currencyCode: currencyCode, rateDiffTimePeriods: timePeriods, rateDiffCoinCodes: coinCodes)
                 .observeOn(MainScheduler.instance)
                 .subscribe(onSuccess: { [weak self] marketInfo in
                     self?.bind(marketInfo: marketInfo)

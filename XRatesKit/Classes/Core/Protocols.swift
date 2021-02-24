@@ -54,8 +54,8 @@ protocol ITopMarketsStorage {
 
 protocol ICoinMarketsManager {
     func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int) -> Single<[CoinMarket]>
-    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coinCodes: [String]) -> Single<[CoinMarket]>
-    func coinMarketInfoSingle(coinCode: String, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinMarketInfo>
+    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coinIds: [String]) -> Single<[CoinMarket]>
+    func coinMarketInfoSingle(coinId: String, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinMarketInfo>
 }
 
 protocol ITopMarketsManagerDelegate: AnyObject {
@@ -160,4 +160,14 @@ protocol IFiatXRatesProvider {
 
 protocol ICoinInfoProvider {
     func coinInfoSingle(platform: XRatesKit.CoinType) -> Single<[XRatesKit.Coin]>
+}
+
+// Coins
+
+protocol IProviderCoinsStorage {
+    var externalIdsVersion: Int { get }
+    func set(externalIdsVersion: Int)
+    func save(coinExternalIds: [ProviderCoinRecord])
+    func providerId(id: String, providerName: String) -> String?
+    func id(providerId: String, providerName: String) -> String?
 }

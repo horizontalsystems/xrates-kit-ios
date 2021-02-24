@@ -14,10 +14,11 @@ Pod::Spec.new do |s|
   s.swift_version = '5'
 
   s.source_files = 'XRatesKit/Classes/**/*'
+  s.resource_bundle = { 'XRatesKit' => ['XRatesKit/Resources/*.json'] }
 
   s.requires_arc = true
 
-  s.dependency 'HsToolKit.swift', '~> 1.1.0'
+  s.dependency 'HsToolKit.swift', '~> 1.1'
 
   s.dependency 'RxSwift', '~> 5.0'
   s.dependency 'RxSwiftExt', '~> 5'
