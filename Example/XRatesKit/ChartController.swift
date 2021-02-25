@@ -3,6 +3,7 @@ import RxSwift
 import SnapKit
 import Chart
 import XRatesKit
+import CoinKit
 
 class ChartController: UIViewController {
     private let disposeBag = DisposeBag()
@@ -10,7 +11,7 @@ class ChartController: UIViewController {
 
     private let xRatesKit: XRatesKit
     private let currencyCode: String
-    private let coinCode: String
+    private let coinType: CoinType
 
     private let chartType: ChartType = .day
     private var chartUpdatesOn = false
@@ -22,10 +23,10 @@ class ChartController: UIViewController {
     private let headerView = NewsHeaderView()
     var posts = [CryptoNewsPost]()
 
-    init(xRatesKit: XRatesKit, currencyCode: String, coinCode: String) {
+    init(xRatesKit: XRatesKit, currencyCode: String, coinType: CoinType) {
         self.xRatesKit = xRatesKit
         self.currencyCode = currencyCode
-        self.coinCode = coinCode
+        self.coinType = coinType
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -123,7 +124,7 @@ class ChartController: UIViewController {
     }
 
     private func onChartOn() {
-        xRatesKit.chartInfoObservable(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType)
+        xRatesKit.chartInfoObservable(coinType: coinType, currencyCode: currencyCode, chartType: chartType)
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
                 .observeOn(MainScheduler.instance)
                 .subscribe(onNext: { [weak self] chartInfo in
@@ -139,7 +140,7 @@ class ChartController: UIViewController {
     }
 
     private func fillInitialData() {
-        if let chartInfo = xRatesKit.chartInfo(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType) {
+        if let chartInfo = xRatesKit.chartInfo(coinType: coinType, currencyCode: currencyCode, chartType: chartType) {
             handle(chartInfo: chartInfo)
         }
     }

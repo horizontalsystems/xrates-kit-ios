@@ -1,6 +1,7 @@
 import RxSwift
 import HsToolKit
 import Alamofire
+import CoinKit
 
 class CryptoCompareProvider {
 
@@ -11,13 +12,15 @@ class CryptoCompareProvider {
 
     let provider = InfoProvider.CryptoCompare
 
+    private let providerCoinsManager: ProviderCoinsManager
     private let networkManager: NetworkManager
     private let apiKey: String?
     private let timeoutInterval: TimeInterval
     private let expirationInterval: TimeInterval
     private let indicatorPointCount: Int
 
-    init(networkManager: NetworkManager, apiKey: String?, timeoutInterval: TimeInterval, expirationInterval: TimeInterval, topMarketsCount: Int, indicatorPointCount: Int) {
+    init(providerCoinsManager: ProviderCoinsManager, networkManager: NetworkManager, apiKey: String?, timeoutInterval: TimeInterval, expirationInterval: TimeInterval, topMarketsCount: Int, indicatorPointCount: Int) {
+        self.providerCoinsManager = providerCoinsManager
         self.networkManager = networkManager
         self.apiKey = apiKey
         self.timeoutInterval = timeoutInterval
@@ -38,25 +41,29 @@ class CryptoCompareProvider {
 
 extension CryptoCompareProvider: IMarketInfoProvider {
 
-    func marketInfoRecords(coins: [XRatesKit.Coin], currencyCode: String) -> Single<[MarketInfoRecord]> {
-        guard !coins.isEmpty else {
+    func marketInfoRecords(coinTypes: [CoinType], currencyCode: String) -> Single<[MarketInfoRecord]> {
+        guard !coinTypes.isEmpty else {
             return Single.just([])
         }
 
-        let coinList = coins.map { $0.code }.joined(separator: ",")
-        let (url, parameters) = urlAndParams(path: "/data/pricemultifull", parameters: ["fsyms": coinList, "tsyms": currencyCode])
+        let externalIds = coinTypes.compactMap { providerCoinsManager.providerId(coinType: $0, provider: .CryptoCompare) }.joined(separator: ",")
+        let (url, parameters) = urlAndParams(path: "/data/pricemultifull", parameters: ["fsyms": externalIds, "tsyms": currencyCode])
 
         let request = networkManager.session
                 .request(url, method: .get, parameters: parameters, interceptor: RateLimitRetrier())
                 .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
 
         return networkManager.single(request: request)
-                    .map { (response: CryptoCompareMarketInfoResponse) -> [MarketInfoRecord] in
+                    .map { [weak providerCoinsManager] (response: CryptoCompareMarketInfoResponse) -> [MarketInfoRecord] in
                         var records = [MarketInfoRecord]()
 
                         for (coinCode, values) in response.values {
                             for (currencyCode, marketInfoResponse) in values {
-                                let record = MarketInfoRecord(coinCode: coinCode, currencyCode: currencyCode, response: marketInfoResponse)
+                                guard let coinType = providerCoinsManager?.coinType(providerId: coinCode, provider: .CryptoCompare) else {
+                                    continue
+                                }
+
+                                let record = MarketInfoRecord(coinType: coinType, coinCode: coinCode, currencyCode: currencyCode, response: marketInfoResponse)
                                 records.append(record)
                             }
                         }
@@ -69,12 +76,16 @@ extension CryptoCompareProvider: IMarketInfoProvider {
 
 extension CryptoCompareProvider: IHistoricalRateProvider {
 
-    func getHistoricalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
+    func getHistoricalRate(coinType: CoinType, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
+        guard let externalId = providerCoinsManager.providerId(coinType: coinType, provider: .CryptoCompare) else {
+            return Single.error(ProviderCoinsManager.ExternalIdError.noMatchingCoinId)
+        }
+
         let minuteThreshold: TimeInterval = 60 * 60 * 24 * 7
         let historicalType: HistoricalType = timestamp > Date().timeIntervalSince1970 - minuteThreshold ? .minute : .hour
         let (url, parameters) = urlAndParams(
                 path: "/data/v2/\(historicalType.rawValue)",
-                parameters: ["fsym": coinCode, "tsym": currencyCode, "limit": 1, "toTs": Int(timestamp)]
+                parameters: ["fsym": externalId, "tsym": currencyCode, "limit": 1, "toTs": Int(timestamp)]
         )
 
         let request = networkManager.session
@@ -98,7 +109,11 @@ extension CryptoCompareProvider: IChartPointProvider {
     }
 
     private func chartPoints(key: ChartInfoKey, points: [ChartPoint] = [], pointCount: Int, toTimestamp: Int? = nil) -> Single<[ChartPoint]> {
-        var chartPointParams: Parameters = ["fsym": key.coinCode, "tsym": key.currencyCode, "limit": pointCount, "aggregate": key.chartType.interval]
+        guard let externalId = providerCoinsManager.providerId(coinType: key.coinType, provider: .CryptoCompare) else {
+            return Single.error(ProviderCoinsManager.ExternalIdError.noMatchingCoinId)
+        }
+
+        var chartPointParams: Parameters = ["fsym": externalId, "tsym": key.currencyCode, "limit": pointCount, "aggregate": key.chartType.interval]
         if let ts = toTimestamp {
             chartPointParams["toTs"] = ts
         }

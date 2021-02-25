@@ -1,4 +1,5 @@
 import ObjectMapper
+import CoinKit
 
 fileprivate struct ProviderCoinsList: Decodable {
     let version: Int
@@ -18,6 +19,11 @@ fileprivate struct ExternalIds: Decodable {
 }
 
 class ProviderCoinsManager {
+    enum ExternalIdError: Error {
+        case noMatchingCoinId
+    }
+
+
     private let filename = "provider.coins"
     private let storage: IProviderCoinsStorage
     private let parser: JsonFileParser
@@ -43,7 +49,7 @@ class ProviderCoinsManager {
                 ProviderCoinRecord(id: coin.id, code: coin.code, name: coin.name, coingeckoId: coin.externalId.coingecko, cryptocompareId: coin.externalId.cryptocompare)
             }
 
-            storage.save(coinExternalIds: coinRecords)
+            storage.update(providerCoins: coinRecords)
             storage.set(externalIdsVersion: list.version)
         } catch {
             print(error.localizedDescription)
@@ -54,12 +60,12 @@ class ProviderCoinsManager {
 
 extension ProviderCoinsManager {
 
-    func providerId(id: String, provider: InfoProvider) -> String? {
-        storage.providerId(id: id, provider: provider)
+    func providerId(coinType: CoinType, provider: InfoProvider) -> String? {
+        storage.providerId(id: coinType.id, provider: provider)
     }
 
-    func id(providerId: String, provider: InfoProvider) -> String? {
-        storage.id(providerId: providerId, provider: provider)
+    func coinType(providerId: String, provider: InfoProvider) -> CoinType? {
+        storage.id(providerId: providerId, provider: provider).flatMap { CoinType(id: $0) }
     }
 
 }

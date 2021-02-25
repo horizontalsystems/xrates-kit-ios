@@ -1,5 +1,6 @@
 import GRDB
 import RxSwift
+import CoinKit
 
 class GrdbStorage {
     private let dbPool: DatabasePool
@@ -38,13 +39,13 @@ class GrdbStorage {
 
         migrator.registerMigration("createHistoricalRates") { db in
             try db.create(table: HistoricalRate.databaseTableName) { t in
-                t.column(HistoricalRate.Columns.coinCode.name, .text).notNull()
+                t.column(HistoricalRate.Columns.coinId.name, .text).notNull()
                 t.column(HistoricalRate.Columns.currencyCode.name, .text).notNull()
                 t.column(HistoricalRate.Columns.value.name, .text).notNull()
                 t.column(HistoricalRate.Columns.timestamp.name, .double).notNull()
 
                 t.primaryKey([
-                    HistoricalRate.Columns.coinCode.name,
+                    HistoricalRate.Columns.coinId.name,
                     HistoricalRate.Columns.currencyCode.name,
                     HistoricalRate.Columns.timestamp.name,
                 ], onConflict: .replace)
@@ -53,14 +54,14 @@ class GrdbStorage {
 
         migrator.registerMigration("createChartPoints") { db in
             try db.create(table: ChartPointRecord.databaseTableName) { t in
-                t.column(ChartPointRecord.Columns.coinCode.name, .text).notNull()
+                t.column(ChartPointRecord.Columns.coinId.name, .text).notNull()
                 t.column(ChartPointRecord.Columns.currencyCode.name, .text).notNull()
                 t.column(ChartPointRecord.Columns.chartType.name, .integer).notNull()
                 t.column(ChartPointRecord.Columns.timestamp.name, .double).notNull()
                 t.column(ChartPointRecord.Columns.value.name, .text).notNull()
 
                 t.primaryKey([
-                    ChartPointRecord.Columns.coinCode.name,
+                    ChartPointRecord.Columns.coinId.name,
                     ChartPointRecord.Columns.currencyCode.name,
                     ChartPointRecord.Columns.chartType.name,
                     ChartPointRecord.Columns.timestamp.name,
@@ -224,14 +225,14 @@ extension GrdbStorage: IMarketInfoStorage {
 
     func marketInfoRecord(key: PairKey) -> MarketInfoRecord? {
         try! dbPool.read { db in
-            try MarketInfoRecord.filter(MarketInfoRecord.Columns.coinCode == key.coinCode && MarketInfoRecord.Columns.currencyCode == key.currencyCode).fetchOne(db)
+            try MarketInfoRecord.filter(MarketInfoRecord.Columns.coinId == key.coinType.id && MarketInfoRecord.Columns.currencyCode == key.currencyCode).fetchOne(db)
         }
     }
 
-    func marketInfoRecordsSortedByTimestamp(coinCodes: [String], currencyCode: String) -> [MarketInfoRecord] {
+    func marketInfoRecordsSortedByTimestamp(coinTypes: [CoinType], currencyCode: String) -> [MarketInfoRecord] {
         try! dbPool.read { db in
             try MarketInfoRecord
-                    .filter(coinCodes.contains(MarketInfoRecord.Columns.coinCode) && MarketInfoRecord.Columns.currencyCode == currencyCode)
+                    .filter(coinTypes.map{ $0.id }.contains(MarketInfoRecord.Columns.coinId) && MarketInfoRecord.Columns.currencyCode == currencyCode)
                     .order(MarketInfoRecord.Columns.timestamp)
                     .fetchAll(db)
         }
@@ -297,10 +298,10 @@ extension GrdbStorage: ITopMarketsStorage {
 
 extension GrdbStorage: IHistoricalRateStorage {
 
-    func rate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> HistoricalRate? {
+    func rate(coinType: CoinType, currencyCode: String, timestamp: TimeInterval) -> HistoricalRate? {
         try! dbPool.read { db in
             try HistoricalRate
-                    .filter(HistoricalRate.Columns.coinCode == coinCode && HistoricalRate.Columns.currencyCode == currencyCode && HistoricalRate.Columns.timestamp == timestamp)
+                    .filter(HistoricalRate.Columns.coinId == coinType.id && HistoricalRate.Columns.currencyCode == currencyCode && HistoricalRate.Columns.timestamp == timestamp)
                     .fetchOne(db)
         }
     }
@@ -318,7 +319,7 @@ extension GrdbStorage: IChartPointStorage {
     func chartPointRecords(key: ChartInfoKey) -> [ChartPointRecord] {
         try! dbPool.read { db in
             try ChartPointRecord
-                    .filter(ChartPointRecord.Columns.coinCode == key.coinCode && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.chartType.rawValue)
+                    .filter(ChartPointRecord.Columns.coinId == key.coinType.id && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.chartType.rawValue)
                     .order(ChartPointRecord.Columns.timestamp).fetchAll(db)
         }
     }
@@ -334,7 +335,7 @@ extension GrdbStorage: IChartPointStorage {
     func deleteChartPointRecords(key: ChartInfoKey) {
         _ = try! dbPool.write { db in
             try ChartPointRecord
-                    .filter(ChartPointRecord.Columns.coinCode == key.coinCode && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.chartType.rawValue)
+                    .filter(ChartPointRecord.Columns.coinId == key.coinType.id && ChartPointRecord.Columns.currencyCode == key.currencyCode && ChartPointRecord.Columns.chartType == key.chartType.rawValue)
                     .deleteAll(db)
         }
     }
@@ -396,13 +397,15 @@ extension GrdbStorage: IProviderCoinsStorage {
 
     func set(externalIdsVersion: Int) {
         try! dbPool.write { db in
-            try CoinExternalIdListVersion(version: externalIdsVersion).insert(db)
+            try CoinExternalIdListVersion(version: externalIdsVersion).save(db)
         }
     }
 
-    func save(coinExternalIds: [ProviderCoinRecord]) {
+    func update(providerCoins: [ProviderCoinRecord]) {
         _ = try! dbPool.write { db in
-            try coinExternalIds.forEach { record in
+            try ProviderCoinRecord.deleteAll(db)
+
+            try providerCoins.forEach { record in
                 try record.insert(db)
             }
         }

@@ -1,4 +1,5 @@
 import Foundation
+import CoinKit
 
 public struct CoinMarket {
     public let coin: XRatesKit.Coin

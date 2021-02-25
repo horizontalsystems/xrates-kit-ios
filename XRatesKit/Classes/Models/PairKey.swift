@@ -1,17 +1,19 @@
+import CoinKit
+
 struct PairKey {
-    let coinCode: String
+    let coinType: CoinType
     let currencyCode: String
 }
 
 extension PairKey: Hashable {
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(coinCode)
+        hasher.combine(coinType)
         hasher.combine(currencyCode)
     }
 
     public static func ==(lhs: PairKey, rhs: PairKey) -> Bool {
-        lhs.coinCode == rhs.coinCode && lhs.currencyCode == rhs.currencyCode
+        lhs.coinType == rhs.coinType && lhs.currencyCode == rhs.currencyCode
     }
 
 }
@@ -19,7 +21,7 @@ extension PairKey: Hashable {
 extension PairKey: CustomStringConvertible {
 
     public var description: String {
-        "RateKey: [coinCode: \(coinCode); currencyCode: \(currencyCode)]"
+        "RateKey: [coinType: \(coinType); currencyCode: \(currencyCode)]"
     }
 
 }

@@ -2,7 +2,7 @@ import ObjectMapper
 import HsToolKit
 
 struct UniswapSubgraphRatesResponse: ImmutableMappable {
-    let values: [(coinCode: String, latestPriceInETH: Decimal, dayStartPriceInUSD: Decimal)]
+    let values: [String: (coinCode: String, latestPriceInETH: Decimal, dayStartPriceInUSD: Decimal)]
 
     init(map: Map) throws {
         let raw = map.JSON
@@ -11,9 +11,9 @@ struct UniswapSubgraphRatesResponse: ImmutableMappable {
             throw NetworkManager.ObjectMapperError.mappingError
         }
 
-        var values = [(coinCode: String, latestPriceInETH: Decimal, dayStartPriceInUSD: Decimal)]()
+        var values = [String: (coinCode: String, latestPriceInETH: Decimal, dayStartPriceInUSD: Decimal)]()
 
-        for (_, rateObject) in ratesDictionary {
+        for (index, rateObject) in ratesDictionary {
             guard let rateArray = rateObject as? [Any],
                   let rateDictionary = rateArray.first as? [String: Any],
                   let dayStartPriceString = rateDictionary["priceUSD"] as? String,
@@ -25,7 +25,7 @@ struct UniswapSubgraphRatesResponse: ImmutableMappable {
                 continue
             }
 
-            values.append((coinCode: coinCode, latestPriceInETH: latestPrice, dayStartPriceInUSD: dayStartPrice))
+            values[index] = (coinCode: coinCode, latestPriceInETH: latestPrice, dayStartPriceInUSD: dayStartPrice)
         }
 
         self.values = values

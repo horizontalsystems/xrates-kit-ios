@@ -2,23 +2,24 @@ import UIKit
 import RxSwift
 import SnapKit
 import XRatesKit
+import CoinKit
 
 class HistoricalController: UIViewController {
     private let disposeBag = DisposeBag()
 
     private let xRatesKit: XRatesKit
     private let currencyCode: String
-    private let coinCode: String
+    private let coinType: CoinType
 
     private let timestamp = Date().timeIntervalSince1970
 
     private let datePicker = UIDatePicker()
     private let rateLabel = UILabel()
 
-    init(xRatesKit: XRatesKit, currencyCode: String, coinCode: String) {
+    init(xRatesKit: XRatesKit, currencyCode: String, coinType: CoinType) {
         self.xRatesKit = xRatesKit
         self.currencyCode = currencyCode
-        self.coinCode = coinCode
+        self.coinType = coinType
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -66,7 +67,7 @@ class HistoricalController: UIViewController {
 
         let timestamp = timestampWithoutSeconds(date: datePicker.date)
 
-        xRatesKit.historicalRateSingle(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)
+        xRatesKit.historicalRateSingle(coinType: coinType, currencyCode: currencyCode, timestamp: timestamp)
                 .observeOn(MainScheduler.instance)
                 .subscribe(onSuccess: { [weak self] value in
                     self?.show(rate: value, timestamp: timestamp)
@@ -78,7 +79,7 @@ class HistoricalController: UIViewController {
 
     private func showStoredRate() {
         let timestamp = timestampWithoutSeconds(date: datePicker.date)
-        let storedRate = xRatesKit.historicalRate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)
+        let storedRate = xRatesKit.historicalRate(coinType: coinType, currencyCode: currencyCode, timestamp: timestamp)
 
         show(rate: storedRate, timestamp: timestamp)
     }

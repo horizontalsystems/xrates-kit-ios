@@ -1,5 +1,7 @@
+import CoinKit
+
 struct ChartInfoKey {
-    let coinCode: String
+    let coinType: CoinType
     let currencyCode: String
     let chartType: ChartType
 }
@@ -7,13 +9,13 @@ struct ChartInfoKey {
 extension ChartInfoKey: Hashable {
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(coinCode)
+        hasher.combine(coinType)
         hasher.combine(currencyCode)
         hasher.combine(chartType)
     }
 
     public static func ==(lhs: ChartInfoKey, rhs: ChartInfoKey) -> Bool {
-        lhs.coinCode == rhs.coinCode && lhs.currencyCode == rhs.currencyCode && lhs.chartType == rhs.chartType
+        lhs.coinType == rhs.coinType && lhs.currencyCode == rhs.currencyCode && lhs.chartType == rhs.chartType
     }
 
 }
@@ -21,7 +23,7 @@ extension ChartInfoKey: Hashable {
 extension ChartInfoKey: CustomStringConvertible {
 
     public var description: String {
-        "[\(coinCode); \(currencyCode); \(chartType)]"
+        "[\(coinType); \(currencyCode); \(chartType)]"
     }
 
 }

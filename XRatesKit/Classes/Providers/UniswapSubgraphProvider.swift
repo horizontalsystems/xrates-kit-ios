@@ -2,8 +2,14 @@ import RxSwift
 import HsToolKit
 import Alamofire
 import ObjectMapper
+import CoinKit
 
 class UniswapSubgraphProvider {
+    struct RateRequestObject {
+        let id, address: String
+        let coinType: CoinType
+    }
+
     static private let baseFiatCurrency = "USD"
     static private let ETHCoinCode = "ETH"
     static private let WETHTokenCode = "WETH"
@@ -30,8 +36,8 @@ class UniswapSubgraphProvider {
                 return address.lowercased()
             }
 
-            if case .ethereum = coin.type {
-                return UniswapSubgraphProvider.WETHTokenAddress
+            if case .ethereum = coinType {
+                return RateRequestObject(id: "o\(index)", address: UniswapSubgraphProvider.WETHTokenAddress, coinType: coinType)
             }
 
             return nil
@@ -44,16 +50,16 @@ class UniswapSubgraphProvider {
         return networkManager.single(request: request)
     }
 
-    private func ratesSingle(addresses: [String], timestamp: Int) -> Single<UniswapSubgraphRatesResponse> {
-        let query = addresses.enumerated().map { (index, address) in
+    private func ratesSingle(rateRequestObjects: [RateRequestObject], timestamp: Int) -> Single<UniswapSubgraphRatesResponse> {
+        let query = rateRequestObjects.map { requestObject in
             """
-            o\(index): tokenDayDatas(
+            \(requestObject.id): tokenDayDatas(
                 first: 1,
                 orderBy: date,
                 orderDirection: desc,
                 where: {  
                   date_lte: \(timestamp),
-                  token: "\(address)"
+                  token: "\(requestObject.address)"
                 }
             ) { 
                 token { symbol, derivedETH },
@@ -82,15 +88,15 @@ class UniswapSubgraphProvider {
 
 extension UniswapSubgraphProvider: IMarketInfoProvider {
 
-    func marketInfoRecords(coins: [XRatesKit.Coin], currencyCode: String) -> Single<[MarketInfoRecord]> {
-        guard !coins.isEmpty else {
+    func marketInfoRecords(coinTypes: [CoinType], currencyCode: String) -> Single<[MarketInfoRecord]> {
+        guard !coinTypes.isEmpty else {
             return Single.just([])
         }
 
-        let addresses = tokenAddresses(coins: coins)
+        let requestObjects = rateRequestObjects(coinTypes: coinTypes)
 
         return Single.zip(
-                ratesSingle(addresses: addresses, timestamp: Int(Date().timeIntervalSince1970) - 24 * 60 * 60),
+                ratesSingle(rateRequestObjects: requestObjects, timestamp: Int(Date().timeIntervalSince1970) - 24 * 60 * 60),
                 ethPriceSingle(),
                 currencyCode == UniswapSubgraphProvider.baseFiatCurrency ? Single.just(1.0) :
                         fiatXRatesProvider.latestFiatXRates(sourceCurrency: UniswapSubgraphProvider.baseFiatCurrency, targetCurrency: currencyCode)
@@ -105,7 +111,11 @@ extension UniswapSubgraphProvider: IMarketInfoProvider {
 
             var marketInfos = [MarketInfoRecord]()
 
-            for rate in rates.values {
+            for requestObject in requestObjects {
+                guard let rate = rates.values[requestObject.id] else {
+                    continue
+                }
+
                 let coinCode = rate.coinCode == UniswapSubgraphProvider.WETHTokenCode ? UniswapSubgraphProvider.ETHCoinCode : rate.coinCode
                 let latestPrice = rate.latestPriceInETH * ethPrice
                 let dayOpenUSDPrice = rate.dayStartPriceInUSD
@@ -113,7 +123,7 @@ extension UniswapSubgraphProvider: IMarketInfoProvider {
                 let diff = dayOpenFiatPrice > 0 ? ((latestPrice - dayOpenFiatPrice) * 100) / dayOpenFiatPrice : 0
 
                 marketInfos.append(MarketInfoRecord(
-                        coinId: "",
+                        coinType: requestObject.coinType,
                         coinCode: coinCode,
                         currencyCode: currencyCode,
                         rate: latestPrice,
@@ -158,8 +168,10 @@ extension UniswapSubgraphProvider: IMarketInfoProvider {
             let tokenPeriodRate = tokenPeriod.map { $0.latestRateInETH * tokens24.ethPriceInUSD } ?? 0
             let rateDiffPeriod = tokenPeriodRate == 0 ? 0 : (100 * (latestRate - tokenPeriodRate) / tokenPeriodRate)
 
+            let coinType = CoinType.erc20(address: token.tokenAddress)
+
             let marketInfoRecord = MarketInfoRecord(
-                    coinId: "",
+                    coinType: coinType,
                     coinCode: token.coinCode,
                     currencyCode: currencyCode,
                     rate: latestRate,
@@ -176,7 +188,7 @@ extension UniswapSubgraphProvider: IMarketInfoProvider {
                     title: token.coinTitle,
                     type: .erc20(address: token.tokenAddress))
 
-            return CoinMarket(coin: coin, record: marketInfoRecord, expirationInterval: expirationInterval)
+            return CoinMarket(coinType: coinType, coinCode: token.coinCode, coinTitle: token.coinTitle, record: marketInfoRecord, expirationInterval: expirationInterval)
         }.sorted { $0.marketInfo.liquidity > $1.marketInfo.liquidity }
     }
 

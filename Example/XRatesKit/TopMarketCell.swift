@@ -80,7 +80,7 @@ extension TopMarketCell {
     func bind(topMarket: CoinMarket, favorite: Bool, action: (() -> ())?) {
         let volumeString = string(from: topMarket.marketInfo.volume / 1000, fractionDigits: 0) + "k"
         titleLabel.text = """
-                          \(topMarket.coin.title) : \(topMarket.coin.code.uppercased()). Volume: \(volumeString)
+                          \(topMarket.coinTitle) : \(topMarket.coinCode.uppercased()). Volume: \(volumeString)
                           Rate: \(string(from: topMarket.marketInfo.rate, fractionDigits: 4)). RateDiff: \(string(from: topMarket.marketInfo.rateDiffPeriod, fractionDigits: 2)). 
                           """
 
