@@ -168,6 +168,6 @@ protocol IProviderCoinsStorage {
     var externalIdsVersion: Int { get }
     func set(externalIdsVersion: Int)
     func save(coinExternalIds: [ProviderCoinRecord])
-    func providerId(id: String, providerName: String) -> String?
-    func id(providerId: String, providerName: String) -> String?
+    func providerId(id: String, provider: InfoProvider) -> String?
+    func id(providerId: String, provider: InfoProvider) -> String?
 }

@@ -9,12 +9,12 @@ class CoinGeckoManager {
 
     private let provider: CoinGeckoProvider
     private let storage: IProviderCoinInfoStorage & IMarketInfoStorage
-    private let externalIdManager: ProviderCoinsManager
+    private let providerCoinsManager: ProviderCoinsManager
 
-    init(provider: CoinGeckoProvider, storage: IProviderCoinInfoStorage & IMarketInfoStorage, externalIdManager: ProviderCoinsManager) {
+    init(provider: CoinGeckoProvider, storage: IProviderCoinInfoStorage & IMarketInfoStorage, providerCoinsManager: ProviderCoinsManager) {
         self.provider = provider
         self.storage = storage
-        self.externalIdManager = externalIdManager
+        self.providerCoinsManager = providerCoinsManager
     }
 
 }
@@ -34,7 +34,7 @@ extension CoinGeckoManager: ICoinMarketsManager {
     }
 
     func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coinIds: [String]) -> Single<[CoinMarket]> {
-        let externalIds = coinIds.compactMap { externalIdManager.providerId(id: $0, providerName: CoinGeckoProvider.providerName) }
+        let externalIds = coinIds.compactMap { providerCoinsManager.providerId(id: $0, provider: InfoProvider.CoinGecko) }
 
         return provider.coinMarketsSingle(
                     currencyCode: currencyCode,
@@ -44,7 +44,7 @@ extension CoinGeckoManager: ICoinMarketsManager {
     }
 
     func coinMarketInfoSingle(coinId: String, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinMarketInfo> {
-        guard let externalId = externalIdManager.providerId(id: coinId, providerName: CoinGeckoProvider.providerName) else {
+        guard let externalId = providerCoinsManager.providerId(id: coinId, provider: InfoProvider.CoinGecko) else {
             return Single.error(CoinIdError.noMatchingCoinId)
         }
 

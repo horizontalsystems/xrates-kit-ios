@@ -54,12 +54,12 @@ class ProviderCoinsManager {
 
 extension ProviderCoinsManager {
 
-    func providerId(id: String, providerName: String) -> String? {
-        storage.providerId(id: id, providerName: providerName)
+    func providerId(id: String, provider: InfoProvider) -> String? {
+        storage.providerId(id: id, provider: provider)
     }
 
-    func id(providerId: String, providerName: String) -> String? {
-        storage.id(providerId: providerId, providerName: providerName)
+    func id(providerId: String, provider: InfoProvider) -> String? {
+        storage.id(providerId: providerId, provider: provider)
     }
 
 }

@@ -202,7 +202,6 @@ fileprivate class CoinGeckoCoinInfoMapper: IApiMapper {
 }
 
 class CoinGeckoProvider {
-    static let providerName = "coingecko"
 
     private let disposeBag = DisposeBag()
     private let provider = InfoProvider.CoinGecko

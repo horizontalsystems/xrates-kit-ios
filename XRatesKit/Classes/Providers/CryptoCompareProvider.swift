@@ -4,8 +4,6 @@ import Alamofire
 
 class CryptoCompareProvider {
 
-    static let providerName = "cryptocompare"
-
     enum HistoricalType: String {
         case minute = "histominute"
         case hour = "histohour"

@@ -4,7 +4,7 @@ protocol IInfoProvider {
     func initProvider()
 }
 
-enum InfoProvider: Int {
+enum InfoProvider: String {
     case CryptoCompare
     case CoinPaprika
     case CoinGecko

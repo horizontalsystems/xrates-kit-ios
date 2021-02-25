@@ -104,7 +104,7 @@ extension XRatesKit {
         let reachabilityManager = ReachabilityManager()
 
         let storage = GrdbStorage()
-        let externalIdManager = ProviderCoinsManager(storage: storage, parser: JsonFileParser())
+        let providerCoinsManager = ProviderCoinsManager(storage: storage, parser: JsonFileParser())
 
         let networkManager = NetworkManager(logger: logger)
         let coinPaprikaProvider = CoinPaprikaProvider(networkManager: networkManager)
@@ -114,7 +114,7 @@ extension XRatesKit {
 
         let horsysProvider = HorsysProvider(networkManager: networkManager)
         let coinGeckoProvider = CoinGeckoProvider(networkManager: networkManager, expirationInterval: marketInfoExpirationInterval)
-        let coinGeckoManager = CoinGeckoManager(provider: coinGeckoProvider, storage: storage, externalIdManager: externalIdManager)
+        let coinGeckoManager = CoinGeckoManager(provider: coinGeckoProvider, storage: storage, providerCoinsManager: providerCoinsManager)
 
         let marketInfoManager = MarketInfoManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
         let globalMarketInfoManager = GlobalMarketInfoManager(globalMarketInfoProvider: coinPaprikaProvider, defiMarketCapProvider: horsysProvider, storage: storage)
