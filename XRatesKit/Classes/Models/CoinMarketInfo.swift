@@ -16,12 +16,25 @@ public struct CoinMarketInfo {
 }
 
 public struct CoinInfo {
+    public let code: String
+    public let name: String
+
     public let description: String
-    public let categories: [String]
     public let links: [LinkType: String]
+    public let rating: String?
+    public let categories: [String]
+    public let platforms: [CoinPlatformType: String]
 }
 
-public enum LinkType: String {
+public enum CoinPlatformType: String {
+    case ethereum
+    case binance
+    case binanceSmartChain
+    case tron
+    case eos
+}
+
+public enum LinkType: String, CodingKey, CaseIterable {
     case guide
     case website
     case whitepaper

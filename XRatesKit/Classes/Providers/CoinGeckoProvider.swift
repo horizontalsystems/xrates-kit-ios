@@ -83,8 +83,21 @@ fileprivate class CoinGeckoTopMarketMapper: IApiMapper {
 
 }
 
-fileprivate class CoinGeckoCoinInfoMapper: IApiMapper {
-    typealias T = CoinMarketInfo
+class CoinGeckoCoinInfoMapper: IApiMapper {
+    struct CoinGeckoCoinInfoResponse {
+        let rate: Decimal
+        let rateHigh24h: Decimal
+        let rateLow24h: Decimal
+        let totalSupply: Decimal
+        let circulatingSupply: Decimal
+        let volume24h: Decimal
+        let marketCap: Decimal
+        let marketCapDiff24h: Decimal
+        let description: String
+        let rateDiffs: [TimePeriod: [String: Decimal]]
+        let links: [LinkType: String]
+        let platforms: [CoinPlatformType: String]
+    }
 
     private let coinType: CoinType
     private let currencyCode: String
@@ -108,7 +121,7 @@ fileprivate class CoinGeckoCoinInfoMapper: IApiMapper {
         return fiatValueDecimal
     }
 
-    func map(statusCode: Int, data: Any?) throws -> T {
+    func map(statusCode: Int, data: Any?) throws -> CoinGeckoCoinInfoResponse {
         guard let coinMap = data as? [String: Any] else {
             throw NetworkManager.RequestError.invalidResponse(statusCode: statusCode, data: data)
         }
@@ -135,23 +148,23 @@ fileprivate class CoinGeckoCoinInfoMapper: IApiMapper {
 
         var links = [LinkType: String]()
         if let linksMap = coinMap["links"] as? [String: Any] {
-            if let homepages = linksMap["homepage"] as? [String], let firstUrl = homepages.first {
+            if let homepages = linksMap["homepage"] as? [String], let firstUrl = homepages.first, !firstUrl.isEmpty {
                 links[.website] = firstUrl
             }
 
-            if let reddit = linksMap["subreddit_url"] as? String {
+            if let reddit = linksMap["subreddit_url"] as? String, !reddit.isEmpty {
                 links[.reddit] = reddit
             }
 
-            if let twitterScreenName = linksMap["twitter_screen_name"] as? String {
+            if let twitterScreenName = linksMap["twitter_screen_name"] as? String, !twitterScreenName.isEmpty {
                 links[.twitter] = "https://twitter.com/\(twitterScreenName)"
             }
 
-            if let telegramChannelIdentifier = linksMap["telegram_channel_identifier"] as? String {
+            if let telegramChannelIdentifier = linksMap["telegram_channel_identifier"] as? String, !telegramChannelIdentifier.isEmpty {
                 links[.telegram] = "https://t.me/\(telegramChannelIdentifier)"
             }
 
-            if let repos = linksMap["repos_url"] as? [String: Any], let githubUrls = repos["github"] as? [String], let firstUrl = githubUrls.first {
+            if let repos = linksMap["repos_url"] as? [String: Any], let githubUrls = repos["github"] as? [String], let firstUrl = githubUrls.first, !firstUrl.isEmpty {
                 links[.github] = firstUrl
             }
         }
@@ -166,9 +179,26 @@ fileprivate class CoinGeckoCoinInfoMapper: IApiMapper {
             rateDiffs[timePeriod] = diffs
         }
 
-        return CoinMarketInfo(
-                coinType: coinType,
-                currencyCode: currencyCode,
+        var platforms = [CoinPlatformType: String]()
+
+        if let platform = coinMap["asset_platform_id"] as? String {
+            let platformType: CoinPlatformType?
+
+            switch platform {
+            case "tron": platformType = CoinPlatformType.tron
+            case "ethereum": platformType = CoinPlatformType.ethereum
+            case "eos": platformType = CoinPlatformType.eos
+            case "binance-smart-chain": platformType = CoinPlatformType.binanceSmartChain
+            case "binancecoin": platformType = CoinPlatformType.binance
+            default: platformType = nil
+            }
+
+            if let platformType = platformType, let address = coinMap["contract_address"] as? String {
+                platforms[platformType] = address
+            }
+        }
+
+        return CoinGeckoCoinInfoResponse(
                 rate: rate,
                 rateHigh24h: rateHigh24h,
                 rateLow24h: rateLow24h,
@@ -177,15 +207,16 @@ fileprivate class CoinGeckoCoinInfoMapper: IApiMapper {
                 volume24h: volume24h,
                 marketCap: marketCap,
                 marketCapDiff24h: marketCapDiff24h,
-                info: CoinInfo(description: description, categories: categories, links: links),
-                rateDiffs: rateDiffs
+                description: description,
+                rateDiffs: rateDiffs,
+                links: links,
+                platforms: platforms
         )
     }
 
 }
 
 class CoinGeckoProvider {
-
     private let disposeBag = DisposeBag()
     private let provider = InfoProvider.CoinGecko
 
@@ -227,7 +258,7 @@ extension CoinGeckoProvider {
         return networkManager.single(request: request, mapper: mapper)
     }
 
-    func coinMarketInfoSingle(coinType: CoinType, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinMarketInfo> {
+    func coinMarketInfoSingle(coinType: CoinType, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinGeckoCoinInfoMapper.CoinGeckoCoinInfoResponse> {
         guard let externalId = providerCoinsManager.providerId(coinType: coinType, provider: .CoinGecko) else {
             return Single.error(ProviderCoinsManager.ExternalIdError.noMatchingCoinId)
         }

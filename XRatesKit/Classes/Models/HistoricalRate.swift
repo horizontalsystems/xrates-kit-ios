@@ -23,8 +23,7 @@ class HistoricalRate: Record {
     }
 
     required init(row: Row) {
-        let coinId: String = row[Columns.coinId]
-        key = PairKey(coinType: CoinType(id: coinId) ?? .unsupported(id: coinId), currencyCode: row[Columns.currencyCode])
+        key = PairKey(coinType: CoinType(id: row[Columns.coinId]), currencyCode: row[Columns.currencyCode])
         value = row[Columns.value]
         timestamp = row[Columns.timestamp]
 

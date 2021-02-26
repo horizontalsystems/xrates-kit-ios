@@ -5,11 +5,13 @@ class CoinGeckoManager {
     private let disposeBag = DisposeBag()
 
     private let provider: CoinGeckoProvider
-    private let storage: IProviderCoinInfoStorage & IMarketInfoStorage
+    private let storage: IMarketInfoStorage
+    private let coinInfoManager: CoinInfoManager
 
-    init(provider: CoinGeckoProvider, storage: IProviderCoinInfoStorage & IMarketInfoStorage) {
+    init(coinInfoManager: CoinInfoManager, provider: CoinGeckoProvider, storage: IMarketInfoStorage) {
         self.provider = provider
         self.storage = storage
+        self.coinInfoManager = coinInfoManager
     }
 
 }
@@ -37,7 +39,41 @@ extension CoinGeckoManager: ICoinMarketsManager {
     }
 
     func coinMarketInfoSingle(coinType: CoinType, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinMarketInfo> {
-        provider.coinMarketInfoSingle(coinType: coinType, currencyCode: currencyCode, rateDiffTimePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes)
+        let coinInfoRecord = coinInfoManager.coinInfo(coinType: coinType)
+
+        return provider.coinMarketInfoSingle(coinType: coinType, currencyCode: currencyCode, rateDiffTimePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes)
+                .map { coinInfoResponse in
+                    var links = [LinkType: String]()
+
+                    for linkType in LinkType.allCases {
+                        links[linkType] = coinInfoRecord?.links[linkType] ?? coinInfoResponse.links[linkType] ?? ""
+                    }
+
+                    let coinInfo = CoinInfo(
+                            code: coinInfoRecord?.code ?? "",
+                            name: coinInfoRecord?.name ?? "",
+                            description: coinInfoRecord?.description ?? coinInfoResponse.description,
+                            links: links,
+                            rating: coinInfoRecord?.rating,
+                            categories: coinInfoRecord?.categories ?? [],
+                            platforms: coinInfoResponse.platforms
+                    )
+
+                    return CoinMarketInfo(
+                            coinType: coinType,
+                            currencyCode: currencyCode,
+                            rate: coinInfoResponse.rate,
+                            rateHigh24h: coinInfoResponse.rateHigh24h,
+                            rateLow24h: coinInfoResponse.rateLow24h,
+                            totalSupply: coinInfoResponse.totalSupply,
+                            circulatingSupply: coinInfoResponse.circulatingSupply,
+                            volume24h: coinInfoResponse.volume24h,
+                            marketCap: coinInfoResponse.marketCap,
+                            marketCapDiff24h: coinInfoResponse.marketCapDiff24h,
+                            info: coinInfo,
+                            rateDiffs: coinInfoResponse.rateDiffs
+                    )
+                }
     }
 
 }

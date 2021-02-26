@@ -90,12 +90,6 @@ protocol IGlobalMarketInfoStorage {
     func globalMarketInfo(currencyCode: String) -> GlobalCoinMarket?
 }
 
-protocol IProviderCoinInfoStorage {
-    var providerCoinInfoCount: Int { get }
-    func save(providerCoinInfos: [ProviderCoinInfoRecord])
-    func providerCoinInfos(coinCodes: [String]) -> [ProviderCoinInfoRecord]
-}
-
 // Chart Points
 
 protocol IChartInfoManager {
@@ -161,9 +155,17 @@ protocol IFiatXRatesProvider {
 
 // Coins
 
+protocol ICoinInfoStorage {
+    var coinInfosVersion: Int { get }
+    func set(coinInfosVersion: Int)
+    func update(coinCategories: [CoinCategory])
+    func update(coinInfos: [CoinInfoRecord], categoryMaps: [CoinCategoryCoinInfo], links: [CoinLink])
+    func providerCoinInfo(coinType: CoinType) -> CoinInfo?
+}
+
 protocol IProviderCoinsStorage {
-    var externalIdsVersion: Int { get }
-    func set(externalIdsVersion: Int)
+    var providerCoinsVersion: Int { get }
+    func set(providerCoinsVersion: Int)
     func update(providerCoins: [ProviderCoinRecord])
     func providerId(id: String, provider: InfoProvider) -> String?
     func id(providerId: String, provider: InfoProvider) -> String?

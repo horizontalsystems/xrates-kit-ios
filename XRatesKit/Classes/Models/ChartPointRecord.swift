@@ -22,9 +22,7 @@ class ChartPointRecord: Record {
     }
 
     required init(row: Row) {
-        let coinId: String = row[Columns.coinId]
-
-        key = ChartInfoKey(coinType: CoinType(id: coinId) ?? .unsupported(id: coinId), currencyCode: row[Columns.currencyCode], chartType: ChartType(rawValue: row[Columns.chartType]) ?? .day)
+        key = ChartInfoKey(coinType: CoinType(id: row[Columns.coinId]), currencyCode: row[Columns.currencyCode], chartType: ChartType(rawValue: row[Columns.chartType]) ?? .day)
         chartPoint = ChartPoint(timestamp: row[Columns.timestamp], value: row[Columns.value], volume: row[Columns.volume])
 
         super.init(row: row)
