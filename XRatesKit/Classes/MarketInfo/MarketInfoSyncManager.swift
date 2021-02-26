@@ -4,7 +4,7 @@ import CoinKit
 class MarketInfoSyncManager {
     private let schedulerFactory: MarketInfoSchedulerFactory
 
-    private var coins = [XRatesKit.Coin]()
+    private var coinTypes = [CoinType]()
     private var currencyCode: String
 
     private var subjects = [PairKey: PublishSubject<MarketInfo>]()
@@ -53,8 +53,8 @@ class MarketInfoSyncManager {
 
 extension MarketInfoSyncManager: IMarketInfoSyncManager {
 
-    func set(coins: [XRatesKit.Coin]) {
-        self.coins = coins
+    func set(coinTypes: [CoinType]) {
+        self.coinTypes = coinTypes
         updateScheduler()
     }
 

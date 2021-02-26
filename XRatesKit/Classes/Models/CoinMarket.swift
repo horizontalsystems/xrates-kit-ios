@@ -2,16 +2,22 @@ import Foundation
 import CoinKit
 
 public struct CoinMarket {
-    public let coin: XRatesKit.Coin
+    public let coinType: CoinType
+    public let coinCode: String
+    public let coinTitle: String
     public var marketInfo: MarketInfo
 
-    init(coin: XRatesKit.Coin, marketInfo: MarketInfo) {
-        self.coin = coin
+    init(coinType: CoinType, coinCode: String, coinTitle: String, marketInfo: MarketInfo) {
+        self.coinType = coinType
+        self.coinCode = coinCode
+        self.coinTitle = coinTitle
         self.marketInfo = marketInfo
     }
 
-    init(coin: XRatesKit.Coin, record: MarketInfoRecord, expirationInterval: TimeInterval) {
-        self.coin = coin
+    init(coinType: CoinType, coinCode: String, coinTitle: String, record: MarketInfoRecord, expirationInterval: TimeInterval) {
+        self.coinType = coinType
+        self.coinCode = coinCode
+        self.coinTitle = coinTitle
         marketInfo = MarketInfo(record: record, expirationInterval: expirationInterval)
     }
 

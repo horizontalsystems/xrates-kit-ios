@@ -103,15 +103,3 @@ extension CoinPaprikaProvider {
     }
 
 }
-
-extension CoinPaprikaProvider: ICoinInfoProvider {
-
-    func coinInfoSingle(platform: XRatesKit.CoinType) -> Single<[XRatesKit.Coin]> {
-        let platformId = coinId(coinType: platform)
-
-        let request = networkManager.session.request("\(baseUrl)/contracts/\(platformId)", method: .get, encoding: JSONEncoding())
-
-        return networkManager.single(request: request, mapper: CoinPaprikaCoinInfoMapper(platformId: platformId))
-    }
-
-}

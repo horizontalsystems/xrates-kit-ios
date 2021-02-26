@@ -16,7 +16,7 @@ protocol IMarketInfoManagerDelegate: AnyObject {
 }
 
 protocol IMarketInfoProvider: class {
-    func marketInfoRecords(coins: [XRatesKit.Coin], currencyCode: String) -> Single<[MarketInfoRecord]>
+    func marketInfoRecords(coinTypes: [CoinType], currencyCode: String) -> Single<[MarketInfoRecord]>
 }
 
 protocol IMarketInfoStorage {
@@ -26,7 +26,7 @@ protocol IMarketInfoStorage {
 }
 
 protocol IMarketInfoSyncManager {
-    func set(coins: [XRatesKit.Coin])
+    func set(coinTypes: [CoinType])
     func set(currencyCode: String)
     func refresh()
     func marketInfoObservable(key: PairKey) -> Observable<MarketInfo>
@@ -157,10 +157,6 @@ protocol INewsState {
 
 protocol IFiatXRatesProvider {
     func latestFiatXRates(sourceCurrency: String, targetCurrency: String) -> Single<Decimal>
-}
-
-protocol ICoinInfoProvider {
-    func coinInfoSingle(platform: XRatesKit.CoinType) -> Single<[XRatesKit.Coin]>
 }
 
 // Coins

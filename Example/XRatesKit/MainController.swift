@@ -6,14 +6,13 @@ class MainController: UITabBarController {
     private let currencyCode = "USD"
 
     private let marketInfoCoins = [
-        XRatesKit.Coin(code: "BTC", title: "Bitcoin", type: .bitcoin),
-        XRatesKit.Coin(code: "ETH", title: "Ethereum", type: .ethereum),
-        XRatesKit.Coin(code: "BCH", title: "Bitcoin Cash", type: .bitcoinCash),
-        XRatesKit.Coin(code: "DASH", title: "Dash", type: .dash),
-        XRatesKit.Coin(code: "BNB", title: "Binance", type: .binance),
-        XRatesKit.Coin(code: "EOS", title: "EOS", type: .eos),
-        XRatesKit.Coin(code: "Uni", title: "UNI Token", type: .erc20(address: "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984")),
-        XRatesKit.Coin(code: "ADAI", title: "aDAI Token", type: .erc20(address: "0xfc1e690f61efd961294b3e1ce3313fbd8aa4f85d"))
+        Coin(title: "Bitcoin", code: "BTC", decimal: 0, type: .bitcoin),
+        Coin(title: "Ethereum", code: "ETH", decimal: 0, type: .ethereum),
+        Coin(title: "Bitcoin Cash", code: "BCH", decimal: 0, type: .bitcoinCash),
+        Coin(title: "Dash", code: "DASH", decimal: 0, type: .dash),
+        Coin(title: "Binance", code: "BNB", decimal: 0, type: .binanceSmartChain),
+        Coin(title: "UNI Token", code: "Uni", decimal: 0, type: .erc20(address: "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984")),
+        Coin(title: "aDAI Token", code: "ADAI", decimal: 0, type: .erc20(address: "0xfc1e690f61efd961294b3e1ce3313fbd8aa4f85d"))
     ]
     private let historicalCoinType = CoinType.bitcoin
     private let chartCoinType = CoinType.bitcoin

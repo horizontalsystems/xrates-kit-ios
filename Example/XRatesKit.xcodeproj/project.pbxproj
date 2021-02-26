@@ -304,10 +304,12 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-XRatesKitExample/Pods-XRatesKitExample-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/CoinKit.swift/CoinKit.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/XRatesKit.swift/XRatesKit.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/CoinKit.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/XRatesKit.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -366,10 +368,12 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-XRatesKitTests/Pods-XRatesKitTests-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/CoinKit.swift/CoinKit.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/XRatesKit.swift/XRatesKit.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/CoinKit.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/XRatesKit.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
