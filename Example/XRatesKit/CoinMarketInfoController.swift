@@ -79,11 +79,7 @@ class CoinMarketInfoController: UIViewController {
                   categories: \(marketInfo.info.categories.joined(separator: ", "))
 
                   = Links = 
-                  Website: \(marketInfo.info.links["website"] ?? "")
-                  Reddit: \(marketInfo.info.links["reddit"] ?? "")
-                  Twitter: \(marketInfo.info.links["twitter"] ?? "")
-                  Telegram: \(marketInfo.info.links["telegram"] ?? "")
-                  Github: \(marketInfo.info.links["github"] ?? "")
+                  \(marketInfo.info.links.map { (key, value) in "\(key.rawValue.uppercased()): \(value)" }.joined(separator: "\n"))
 
                   == Rate Diffs ==
                   """

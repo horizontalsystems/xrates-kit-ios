@@ -133,26 +133,26 @@ fileprivate class CoinGeckoCoinInfoMapper: IApiMapper {
 
         var categories: [String] = coinMap["categories"] as? [String] ?? []
 
-        var links = [String: String]()
+        var links = [LinkType: String]()
         if let linksMap = coinMap["links"] as? [String: Any] {
             if let homepages = linksMap["homepage"] as? [String], let firstUrl = homepages.first {
-                links["website"] = firstUrl
+                links[.website] = firstUrl
             }
 
             if let reddit = linksMap["subreddit_url"] as? String {
-                links["reddit"] = reddit
+                links[.reddit] = reddit
             }
 
             if let twitterScreenName = linksMap["twitter_screen_name"] as? String {
-                links["twitter"] = "https://twitter.com/\(twitterScreenName)"
+                links[.twitter] = "https://twitter.com/\(twitterScreenName)"
             }
 
             if let telegramChannelIdentifier = linksMap["telegram_channel_identifier"] as? String {
-                links["telegram"] = "https://t.me/\(telegramChannelIdentifier)"
+                links[.telegram] = "https://t.me/\(telegramChannelIdentifier)"
             }
 
             if let repos = linksMap["repos_url"] as? [String: Any], let githubUrls = repos["github"] as? [String], let firstUrl = githubUrls.first {
-                links["github"] = firstUrl
+                links[.github] = firstUrl
             }
         }
 

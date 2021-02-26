@@ -18,5 +18,15 @@ public struct CoinMarketInfo {
 public struct CoinInfo {
     public let description: String
     public let categories: [String]
-    public let links: [String: String]
+    public let links: [LinkType: String]
+}
+
+public enum LinkType: String {
+    case guide
+    case website
+    case whitepaper
+    case twitter
+    case telegram
+    case reddit
+    case github
 }
