@@ -33,8 +33,8 @@ extension XRatesKit {
         marketInfoSyncManager.refresh()
     }
 
-    public func set(coins: [Coin]) {
-        marketInfoSyncManager.set(coins: coins)
+    public func set(coinTypes: [CoinType]) {
+        marketInfoSyncManager.set(coinTypes: coinTypes)
     }
 
     public func set(currencyCode: String) {
@@ -158,35 +158,6 @@ extension XRatesKit {
         try fileManager.createDirectory(at: url, withIntermediateDirectories: true)
 
         return url
-    }
-
-}
-
-extension XRatesKit {
-
-    public struct Coin {
-        public let code: String
-        public let title: String
-        public let type: CoinType?
-
-        public init(code: String, title: String, type: CoinType? = nil) {
-            self.code = code
-            self.title = title
-            self.type = type
-        }
-
-    }
-
-    public enum CoinType {
-        case bitcoin
-        case litecoin
-        case bitcoinCash
-        case dash
-        case ethereum
-        case erc20(address: String)
-        case binance
-        case zcash
-        case eos
     }
 
 }

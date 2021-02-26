@@ -30,10 +30,10 @@ class UniswapSubgraphProvider {
         self.expirationInterval = expirationInterval
     }
 
-    private func tokenAddresses(coins: [XRatesKit.Coin]) -> [String] {
-        coins.compactMap { coin in
-            if case .erc20(let address) = coin.type {
-                return address.lowercased()
+    private func rateRequestObjects(coinTypes: [CoinType]) -> [RateRequestObject] {
+        coinTypes.enumerated().compactMap { (index, coinType) in
+            if case .erc20(let address) = coinType {
+                return RateRequestObject(id: "o\(index)", address: address.lowercased(), coinType: coinType)
             }
 
             if case .ethereum = coinType {
@@ -182,11 +182,6 @@ extension UniswapSubgraphProvider: IMarketInfoProvider {
                     supply: 0,
                     liquidity: latestRate * token.totalLiquidity,
                     rateDiffPeriod: rateDiffPeriod)
-
-            let coin = XRatesKit.Coin(
-                    code: token.coinCode,
-                    title: token.coinTitle,
-                    type: .erc20(address: token.tokenAddress))
 
             return CoinMarket(coinType: coinType, coinCode: token.coinCode, coinTitle: token.coinTitle, record: marketInfoRecord, expirationInterval: expirationInterval)
         }.sorted { $0.marketInfo.liquidity > $1.marketInfo.liquidity }

@@ -2,6 +2,11 @@ PODS:
   - Alamofire (5.2.2)
   - Chart.swift (1.2):
     - SnapKit (~> 5.0)
+  - CoinKit.swift (0.1.0):
+    - GRDB.swift (~> 4.0)
+    - ObjectMapper (~> 3.5.2)
+    - RxSwift (~> 5.0)
+    - RxSwiftExt (~> 5)
   - GRDB.swift (4.14.0):
     - GRDB.swift/standard (= 4.14.0)
   - GRDB.swift/standard (4.14.0)
@@ -26,6 +31,7 @@ PODS:
     - RxSwiftExt/Core
   - SnapKit (5.0.1)
   - XRatesKit.swift (0.7.0):
+    - CoinKit.swift (~> 0.1)
     - GRDB.swift (~> 4.0)
     - HsToolKit.swift (~> 1.1)
     - ObjectMapper (~> 3.5.2)
@@ -34,6 +40,7 @@ PODS:
 
 DEPENDENCIES:
   - Chart.swift
+  - CoinKit.swift (from `https://github.com/horizontalsystems/coin-kit-ios`)
   - HsToolKit.swift (from `https://github.com/horizontalsystems/hs-tool-kit-ios`)
   - SnapKit
   - XRatesKit.swift (from `../`)
@@ -51,12 +58,17 @@ SPEC REPOS:
     - SnapKit
 
 EXTERNAL SOURCES:
+  CoinKit.swift:
+    :git: https://github.com/horizontalsystems/coin-kit-ios
   HsToolKit.swift:
     :git: https://github.com/horizontalsystems/hs-tool-kit-ios
   XRatesKit.swift:
     :path: "../"
 
 CHECKOUT OPTIONS:
+  CoinKit.swift:
+    :commit: 6f2a5cf295024fb6bcc376bb0604964550ece842
+    :git: https://github.com/horizontalsystems/coin-kit-ios
   HsToolKit.swift:
     :commit: 52d655b99381d1940e215f22382f0814cc0c8bc3
     :git: https://github.com/horizontalsystems/hs-tool-kit-ios
@@ -64,6 +76,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Alamofire: 814429acc853c6c54ff123fc3d2ef66803823ce0
   Chart.swift: 2634973317e2637347d160b99992b7b21cbf7644
+  CoinKit.swift: 346a1c1d64e8664d54e8434241682a6f3bc7a0be
   GRDB.swift: 8cc3ab7c8b8b4ac1761deb8dca4b51c1c9d429f8
   HsToolKit.swift: d47ef3e8c507a6e980f2f6d819c5b0cf05845910
   ObjectMapper: 97111c97e054a6ee25917662106689f0b4127b37
@@ -72,8 +85,8 @@ SPEC CHECKSUMS:
   RxSwift: 81470a2074fa8780320ea5fe4102807cb7118178
   RxSwiftExt: 4ca80336f43c28f11a2825cdd2fc61dd6c044697
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
-  XRatesKit.swift: 485863607f327b93356b06d30bdc0013c6fb18c4
+  XRatesKit.swift: 0f57ebeaf82e0e0f7514291a0457ae77ea0f2e66
 
-PODFILE CHECKSUM: 09ceddc9ba237699ff4ff3920aa616534f1da670
+PODFILE CHECKSUM: cf4a2d8030e00785a7402d4018d26502d02a3246
 
 COCOAPODS: 1.10.1

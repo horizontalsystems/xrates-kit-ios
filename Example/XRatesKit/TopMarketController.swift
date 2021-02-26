@@ -30,7 +30,7 @@ class TopMarketController: UIViewController {
     private var topMarkets = [CoinMarket]()
     private var globalMarketInfo: GlobalCoinMarket?
 
-    private var favoriteCoins = [XRatesKit.Coin]()
+    private var favoriteCoinTypes = [CoinType]()
 
     init(xRatesKit: XRatesKit, storage: UserDefaultsStorage, currencyCode: String) {
         self.xRatesKit = xRatesKit
@@ -220,9 +220,9 @@ class TopMarketController: UIViewController {
         headerView.bind(title: error != nil ? (error?.localizedDescription ?? "Failed") : "Success")
     }
 
-    private func toggle(coin: XRatesKit.Coin) {
-        if let index = favoriteCoins.firstIndex(where: { $0.code == coin.code }) {
-            favoriteCoins.remove(at: index)
+    private func toggle(coinType: CoinType) {
+        if let index = favoriteCoinTypes.firstIndex(where: { $0 == coinType }) {
+            favoriteCoinTypes.remove(at: index)
         } else {
             favoriteCoinTypes.append(coinType)
         }

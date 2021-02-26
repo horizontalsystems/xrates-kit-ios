@@ -23,7 +23,6 @@ class ProviderCoinsManager {
         case noMatchingCoinId
     }
 
-
     private let filename = "provider.coins"
     private let storage: IProviderCoinsStorage
     private let parser: JsonFileParser
