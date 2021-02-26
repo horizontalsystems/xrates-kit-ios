@@ -1,5 +1,7 @@
+import CoinKit
+
 public struct CoinMarketInfo {
-    public let coinId: String
+    public let coinType: CoinType
     public let currencyCode: String
     public let rate: Decimal
     public let rateHigh24h: Decimal

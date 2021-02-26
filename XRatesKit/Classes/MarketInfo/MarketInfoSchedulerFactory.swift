@@ -1,5 +1,6 @@
 import Foundation
 import HsToolKit
+import CoinKit
 
 class MarketInfoSchedulerFactory {
     private let manager: IMarketInfoManager

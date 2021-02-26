@@ -1,4 +1,5 @@
 import RxSwift
+import CoinKit
 
 class MarketInfoSyncManager {
     private let schedulerFactory: MarketInfoSchedulerFactory
@@ -7,7 +8,7 @@ class MarketInfoSyncManager {
     private var currencyCode: String
 
     private var subjects = [PairKey: PublishSubject<MarketInfo>]()
-    private var currencySubjects = [String: PublishSubject<[String: MarketInfo]>]()
+    private var currencySubjects = [String: PublishSubject<[CoinType: MarketInfo]>]()
     private var scheduler: IMarketInfoScheduler?
 
     private let queue = DispatchQueue(label: "io.horizontalsystems.x_rates_kit.market_info_sync_manager", qos: .userInitiated)
@@ -27,12 +28,12 @@ class MarketInfoSyncManager {
         return subject
     }
 
-    private func currencySubject(currencyCode: String) -> PublishSubject<[String: MarketInfo]> {
+    private func currencySubject(currencyCode: String) -> PublishSubject<[CoinType: MarketInfo]> {
         if let subject = currencySubjects[currencyCode] {
             return subject
         }
 
-        let subject = PublishSubject<[String: MarketInfo]>()
+        let subject = PublishSubject<[CoinType: MarketInfo]>()
         currencySubjects[currencyCode] = subject
         return subject
     }
@@ -40,11 +41,11 @@ class MarketInfoSyncManager {
     private func updateScheduler() {
         scheduler = nil
 
-        guard !coins.isEmpty else {
+        guard !coinTypes.isEmpty else {
             return
         }
 
-        scheduler = schedulerFactory.scheduler(coins: coins, currencyCode: currencyCode)
+        scheduler = schedulerFactory.scheduler(coinTypes: coinTypes, currencyCode: currencyCode)
         scheduler?.schedule()
     }
 
@@ -72,7 +73,7 @@ extension MarketInfoSyncManager: IMarketInfoSyncManager {
         }
     }
 
-    func marketInfosObservable(currencyCode: String) -> Observable<[String: MarketInfo]> {
+    func marketInfosObservable(currencyCode: String) -> Observable<[CoinType: MarketInfo]> {
         queue.sync {
             currencySubject(currencyCode: currencyCode).asObservable()
         }
@@ -88,7 +89,7 @@ extension MarketInfoSyncManager: IMarketInfoManagerDelegate {
         }
     }
 
-    func didUpdate(marketInfos: [String: MarketInfo], currencyCode: String) {
+    func didUpdate(marketInfos: [CoinType: MarketInfo], currencyCode: String) {
         queue.async {
             self.currencySubjects[currencyCode]?.onNext(marketInfos)
         }

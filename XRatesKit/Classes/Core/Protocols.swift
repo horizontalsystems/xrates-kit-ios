@@ -1,17 +1,18 @@
 import RxSwift
+import CoinKit
 
 // Market Info
 
 protocol IMarketInfoManager {
-    func lastSyncTimestamp(coinCodes: [String], currencyCode: String) -> TimeInterval?
+    func lastSyncTimestamp(coinTypes: [CoinType], currencyCode: String) -> TimeInterval?
     func marketInfo(key: PairKey) -> MarketInfo?
     func handleUpdated(records: [MarketInfoRecord], currencyCode: String)
-    func notifyExpired(coinCodes: [String], currencyCode: String)
+    func notifyExpired(coinTypes: [CoinType], currencyCode: String)
 }
 
 protocol IMarketInfoManagerDelegate: AnyObject {
     func didUpdate(marketInfo: MarketInfo, key: PairKey)
-    func didUpdate(marketInfos: [String: MarketInfo], currencyCode: String)
+    func didUpdate(marketInfos: [CoinType: MarketInfo], currencyCode: String)
 }
 
 protocol IMarketInfoProvider: class {
@@ -20,7 +21,7 @@ protocol IMarketInfoProvider: class {
 
 protocol IMarketInfoStorage {
     func marketInfoRecord(key: PairKey) -> MarketInfoRecord?
-    func marketInfoRecordsSortedByTimestamp(coinCodes: [String], currencyCode: String) -> [MarketInfoRecord]
+    func marketInfoRecordsSortedByTimestamp(coinTypes: [CoinType], currencyCode: String) -> [MarketInfoRecord]
     func save(marketInfoRecords: [MarketInfoRecord])
 }
 
@@ -29,7 +30,7 @@ protocol IMarketInfoSyncManager {
     func set(currencyCode: String)
     func refresh()
     func marketInfoObservable(key: PairKey) -> Observable<MarketInfo>
-    func marketInfosObservable(currencyCode: String) -> Observable<[String: MarketInfo]>
+    func marketInfosObservable(currencyCode: String) -> Observable<[CoinType: MarketInfo]>
 }
 
 protocol IMarketInfoScheduler {
@@ -54,8 +55,8 @@ protocol ITopMarketsStorage {
 
 protocol ICoinMarketsManager {
     func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int) -> Single<[CoinMarket]>
-    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coinCodes: [String]) -> Single<[CoinMarket]>
-    func coinMarketInfoSingle(coinCode: String, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinMarketInfo>
+    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coinTypes: [CoinType]) -> Single<[CoinMarket]>
+    func coinMarketInfoSingle(coinType: CoinType, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinMarketInfo>
 }
 
 protocol ITopMarketsManagerDelegate: AnyObject {
@@ -71,16 +72,16 @@ protocol IGlobalMarketInfoProvider {
 // Historical Rates
 
 protocol IHistoricalRateManager {
-    func historicalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Decimal?
-    func historicalRateSingle(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal>
+    func historicalRate(coinType: CoinType, currencyCode: String, timestamp: TimeInterval) -> Decimal?
+    func historicalRateSingle(coinType: CoinType, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal>
 }
 
 protocol IHistoricalRateProvider {
-    func getHistoricalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal>
+    func getHistoricalRate(coinType: CoinType, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal>
 }
 
 protocol IHistoricalRateStorage {
-    func rate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> HistoricalRate?
+    func rate(coinType: CoinType, currencyCode: String, timestamp: TimeInterval) -> HistoricalRate?
     func save(historicalRate: HistoricalRate)
 }
 
@@ -160,4 +161,14 @@ protocol IFiatXRatesProvider {
 
 protocol ICoinInfoProvider {
     func coinInfoSingle(platform: XRatesKit.CoinType) -> Single<[XRatesKit.Coin]>
+}
+
+// Coins
+
+protocol IProviderCoinsStorage {
+    var externalIdsVersion: Int { get }
+    func set(externalIdsVersion: Int)
+    func update(providerCoins: [ProviderCoinRecord])
+    func providerId(id: String, provider: InfoProvider) -> String?
+    func id(providerId: String, provider: InfoProvider) -> String?
 }

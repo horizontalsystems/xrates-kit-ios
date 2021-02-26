@@ -1,5 +1,6 @@
 import Foundation
 import GRDB
+import CoinKit
 
 class ChartPointRecord: Record {
     private let key: ChartInfoKey
@@ -17,18 +18,20 @@ class ChartPointRecord: Record {
     }
 
     enum Columns: String, ColumnExpression {
-        case coinCode, currencyCode, chartType, timestamp, value, volume
+        case coinId, currencyCode, chartType, timestamp, value, volume
     }
 
     required init(row: Row) {
-        key = ChartInfoKey(coinCode: row[Columns.coinCode], currencyCode: row[Columns.currencyCode], chartType: ChartType(rawValue: row[Columns.chartType]) ?? .day)
+        let coinId: String = row[Columns.coinId]
+
+        key = ChartInfoKey(coinType: CoinType(id: coinId) ?? .unsupported(id: coinId), currencyCode: row[Columns.currencyCode], chartType: ChartType(rawValue: row[Columns.chartType]) ?? .day)
         chartPoint = ChartPoint(timestamp: row[Columns.timestamp], value: row[Columns.value], volume: row[Columns.volume])
 
         super.init(row: row)
     }
 
     override open func encode(to container: inout PersistenceContainer) {
-        container[Columns.coinCode] = key.coinCode
+        container[Columns.coinId] = key.coinType.id
         container[Columns.currencyCode] = key.currencyCode
         container[Columns.chartType] = key.chartType.rawValue
         container[Columns.timestamp] = chartPoint.timestamp

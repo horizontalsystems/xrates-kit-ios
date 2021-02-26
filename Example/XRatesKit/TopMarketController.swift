@@ -3,6 +3,7 @@ import RxSwift
 import SnapKit
 import Chart
 import XRatesKit
+import CoinKit
 
 class TopMarketController: UIViewController {
     private let disposeBag = DisposeBag()
@@ -169,7 +170,7 @@ class TopMarketController: UIViewController {
 
         switch segmentedView.selectedSegmentIndex {
         case 0: single = xRatesKit.topMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: period, itemsCount: 200)
-        default: single = xRatesKit.favorites(currencyCode: currencyCode, fetchDiffPeriod: period, coinCodes: favoriteCoins.map { $0.code })
+        default: single = xRatesKit.favorites(currencyCode: currencyCode, fetchDiffPeriod: period, coinTypes: favoriteCoinTypes)
         }
 
         topMarketsDisposable = single
@@ -223,7 +224,7 @@ class TopMarketController: UIViewController {
         if let index = favoriteCoins.firstIndex(where: { $0.code == coin.code }) {
             favoriteCoins.remove(at: index)
         } else {
-            favoriteCoins.append(coin)
+            favoriteCoinTypes.append(coinType)
         }
         tableView.reloadData()
     }
@@ -267,9 +268,9 @@ extension TopMarketController: UITableViewDataSource, UITableViewDelegate {
         }
 
         let topMarket = topMarkets[indexPath.row]
-        let favorite = favoriteCoins.contains { coin in topMarket.coin.code == coin.code }
+        let favorite = favoriteCoinTypes.contains { coinType in topMarket.coinType == coinType }
         cell.bind(topMarket: topMarket, favorite: favorite) { [weak self] in
-            self?.toggle(coin: topMarket.coin)
+            self?.toggle(coinType: topMarket.coinType)
         }
     }
 

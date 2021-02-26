@@ -1,4 +1,5 @@
 import RxSwift
+import CoinKit
 
 class BaseMarketInfoProvider {
     private let mainProvider: IMarketInfoProvider
@@ -12,20 +13,20 @@ class BaseMarketInfoProvider {
 
 extension BaseMarketInfoProvider: IMarketInfoProvider {
 
-    func marketInfoRecords(coins: [XRatesKit.Coin], currencyCode: String) -> Single<[MarketInfoRecord]> {
-        var ethereumCoins = [XRatesKit.Coin]()
-        var otherCoins = [XRatesKit.Coin]()
+    func marketInfoRecords(coinTypes: [CoinType], currencyCode: String) -> Single<[MarketInfoRecord]> {
+        var ethereumCoins = [CoinType]()
+        var otherCoins = [CoinType]()
 
-        for coin in coins {
-            switch coin.type {
-            case .erc20, .ethereum: ethereumCoins.append(coin)
-            default: otherCoins.append(coin)
+        for coinType in coinTypes {
+            switch coinType {
+            case .erc20, .ethereum: ethereumCoins.append(coinType)
+            default: otherCoins.append(coinType)
             }
         }
 
         return Single.zip(
-                mainProvider.marketInfoRecords(coins: otherCoins, currencyCode: currencyCode),
-                uniswapGraphProvider.marketInfoRecords(coins: ethereumCoins, currencyCode: currencyCode)
+                mainProvider.marketInfoRecords(coinTypes: otherCoins, currencyCode: currencyCode),
+                uniswapGraphProvider.marketInfoRecords(coinTypes: ethereumCoins, currencyCode: currencyCode)
         ).map { $0 + $1 }
     }
 

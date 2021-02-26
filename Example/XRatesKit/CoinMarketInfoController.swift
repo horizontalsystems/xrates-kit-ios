@@ -2,6 +2,7 @@ import UIKit
 import RxSwift
 import SnapKit
 import XRatesKit
+import CoinKit
 
 class CoinMarketInfoController: UIViewController {
     private let disposeBag = DisposeBag()
@@ -11,14 +12,14 @@ class CoinMarketInfoController: UIViewController {
 
     private let xRatesKit: XRatesKit
     private let currencyCode: String
-    private let coinCode: String
+    private let coinType: CoinType
     private let timePeriods = [TimePeriod.day7, TimePeriod.day30]
     private let coinCodes = ["USD", "BTC", "ETH"]
 
-    init(xRatesKit: XRatesKit, currencyCode: String, coinCode: String) {
+    init(xRatesKit: XRatesKit, currencyCode: String, coinType: CoinType) {
         self.xRatesKit = xRatesKit
         self.currencyCode = currencyCode
-        self.coinCode = coinCode
+        self.coinType = coinType
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -53,7 +54,7 @@ class CoinMarketInfoController: UIViewController {
     }
 
     @objc func onTapRefresh() {
-        xRatesKit.coinMarketInfoSingle(coinCode: coinCode, currencyCode: currencyCode, rateDiffTimePeriods: timePeriods, rateDiffCoinCodes: coinCodes)
+        xRatesKit.coinMarketInfoSingle(coinType: coinType, currencyCode: currencyCode, rateDiffTimePeriods: timePeriods, rateDiffCoinCodes: coinCodes)
                 .observeOn(MainScheduler.instance)
                 .subscribe(onSuccess: { [weak self] marketInfo in
                     self?.bind(marketInfo: marketInfo)
@@ -63,7 +64,7 @@ class CoinMarketInfoController: UIViewController {
 
     private func bind(marketInfo: CoinMarketInfo) {
         var str = """
-                  coinId: \(marketInfo.coinId)
+                  coinId: \(marketInfo.coinType.id)
                   currencyCode: \(marketInfo.currencyCode)
                   rate: \(marketInfo.rate)
                   rateHigh24h: \(marketInfo.rateHigh24h)

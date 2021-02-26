@@ -1,5 +1,6 @@
 import RxSwift
 import HsToolKit
+import CoinKit
 
 public class XRatesKit {
     private let marketInfoManager: IMarketInfoManager
@@ -40,32 +41,32 @@ extension XRatesKit {
         marketInfoSyncManager.set(currencyCode: currencyCode)
     }
 
-    public func marketInfo(coinCode: String, currencyCode: String) -> MarketInfo? {
-        marketInfoManager.marketInfo(key: PairKey(coinCode: coinCode, currencyCode: currencyCode))
+    public func marketInfo(coinType: CoinType, currencyCode: String) -> MarketInfo? {
+        marketInfoManager.marketInfo(key: PairKey(coinType: coinType, currencyCode: currencyCode))
     }
 
-    public func marketInfoObservable(coinCode: String, currencyCode: String) -> Observable<MarketInfo> {
-        marketInfoSyncManager.marketInfoObservable(key: PairKey(coinCode: coinCode, currencyCode: currencyCode))
+    public func marketInfoObservable(coinType: CoinType, currencyCode: String) -> Observable<MarketInfo> {
+        marketInfoSyncManager.marketInfoObservable(key: PairKey(coinType: coinType, currencyCode: currencyCode))
     }
 
-    public func marketInfosObservable(currencyCode: String) -> Observable<[String: MarketInfo]> {
+    public func marketInfosObservable(currencyCode: String) -> Observable<[CoinType: MarketInfo]> {
         marketInfoSyncManager.marketInfosObservable(currencyCode: currencyCode)
     }
 
-    public func historicalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Decimal? {
-        historicalRateManager.historicalRate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)
+    public func historicalRate(coinType: CoinType, currencyCode: String, timestamp: TimeInterval) -> Decimal? {
+        historicalRateManager.historicalRate(coinType: coinType, currencyCode: currencyCode, timestamp: timestamp)
     }
 
-    public func historicalRateSingle(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
-        historicalRateManager.historicalRateSingle(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)
+    public func historicalRateSingle(coinType: CoinType, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
+        historicalRateManager.historicalRateSingle(coinType: coinType, currencyCode: currencyCode, timestamp: timestamp)
     }
 
-    public func chartInfo(coinCode: String, currencyCode: String, chartType: ChartType) -> ChartInfo? {
-        chartInfoManager.chartInfo(key: ChartInfoKey(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType))
+    public func chartInfo(coinType: CoinType, currencyCode: String, chartType: ChartType) -> ChartInfo? {
+        chartInfoManager.chartInfo(key: ChartInfoKey(coinType: coinType, currencyCode: currencyCode, chartType: chartType))
     }
 
-    public func chartInfoObservable(coinCode: String, currencyCode: String, chartType:ChartType) -> Observable<ChartInfo> {
-        chartInfoSyncManager.chartInfoObservable(key: ChartInfoKey(coinCode: coinCode, currencyCode: currencyCode, chartType: chartType))
+    public func chartInfoObservable(coinType: CoinType, currencyCode: String, chartType:ChartType) -> Observable<ChartInfo> {
+        chartInfoSyncManager.chartInfoObservable(key: ChartInfoKey(coinType: coinType, currencyCode: currencyCode, chartType: chartType))
     }
 
     public func cryptoPosts(timestamp: TimeInterval) -> [CryptoNewsPost]? {
@@ -80,12 +81,12 @@ extension XRatesKit {
         coinMarketsManager.topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: itemsCount)
     }
 
-    public func favorites(currencyCode: String, fetchDiffPeriod: TimePeriod = .hour24, coinCodes: [String]) -> Single<[CoinMarket]> {
-        coinMarketsManager.coinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, coinCodes: coinCodes)
+    public func favorites(currencyCode: String, fetchDiffPeriod: TimePeriod = .hour24, coinTypes: [CoinType]) -> Single<[CoinMarket]> {
+        coinMarketsManager.coinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, coinTypes: coinTypes)
     }
 
-    public func coinMarketInfoSingle(coinCode: String, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinMarketInfo> {
-        coinMarketsManager.coinMarketInfoSingle(coinCode: coinCode, currencyCode: currencyCode, rateDiffTimePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes)
+    public func coinMarketInfoSingle(coinType: CoinType, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinMarketInfo> {
+        coinMarketsManager.coinMarketInfoSingle(coinType: coinType, currencyCode: currencyCode, rateDiffTimePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes)
     }
 
     public func globalMarketInfoSingle(currencyCode: String) -> Single<GlobalCoinMarket> {
@@ -96,21 +97,24 @@ extension XRatesKit {
 
 extension XRatesKit {
 
-    public static func instance(currencyCode: String, coinMarketCapApiKey: String? = nil, cryptoCompareApiKey: String? = nil, uniswapSubgraphUrl: String, indicatorPointCount: Int = 60, marketInfoExpirationInterval: TimeInterval = 60, topMarketsCount: Int = 10, retryInterval: TimeInterval = 30, minLogLevel: Logger.Level = .error) -> XRatesKit {
+    public static func instance(currencyCode: String, coinMarketCapApiKey: String? = nil, cryptoCompareApiKey: String? = nil, uniswapSubgraphUrl: String,
+                                indicatorPointCount: Int = 60, marketInfoExpirationInterval: TimeInterval = 60, topMarketsCount: Int = 10,
+                                retryInterval: TimeInterval = 30, minLogLevel: Logger.Level = .error) -> XRatesKit {
         let logger = Logger(minLogLevel: minLogLevel)
 
         let reachabilityManager = ReachabilityManager()
 
         let storage = GrdbStorage()
+        let providerCoinsManager = ProviderCoinsManager(storage: storage, parser: JsonFileParser())
 
         let networkManager = NetworkManager(logger: logger)
         let coinPaprikaProvider = CoinPaprikaProvider(networkManager: networkManager)
-        let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, apiKey: cryptoCompareApiKey, timeoutInterval: 10, expirationInterval: marketInfoExpirationInterval, topMarketsCount: topMarketsCount, indicatorPointCount: indicatorPointCount)
+        let cryptoCompareProvider = CryptoCompareProvider(providerCoinsManager: providerCoinsManager, networkManager: networkManager, apiKey: cryptoCompareApiKey, timeoutInterval: 10, expirationInterval: marketInfoExpirationInterval, topMarketsCount: topMarketsCount, indicatorPointCount: indicatorPointCount)
         let uniswapSubgraphProvider = UniswapSubgraphProvider(fiatXRatesProvider: cryptoCompareProvider, networkManager: networkManager, expirationInterval: marketInfoExpirationInterval)
         let baseMarketInfoProvider = BaseMarketInfoProvider(mainProvider: cryptoCompareProvider, uniswapGraphProvider: uniswapSubgraphProvider)
 
         let horsysProvider = HorsysProvider(networkManager: networkManager)
-        let coinGeckoProvider = CoinGeckoProvider(networkManager: networkManager, expirationInterval: marketInfoExpirationInterval)
+        let coinGeckoProvider = CoinGeckoProvider(providerCoinsManager: providerCoinsManager, networkManager: networkManager, expirationInterval: marketInfoExpirationInterval)
         let coinGeckoManager = CoinGeckoManager(provider: coinGeckoProvider, storage: storage)
 
         let marketInfoManager = MarketInfoManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
@@ -142,6 +146,18 @@ extension XRatesKit {
         )
 
         return kit
+    }
+
+    private static func databaseDirectoryUrl() throws -> URL {
+        let fileManager = FileManager.default
+
+        let url = try fileManager
+                .url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+                .appendingPathComponent("xrates-kit", isDirectory: true)
+
+        try fileManager.createDirectory(at: url, withIntermediateDirectories: true)
+
+        return url
     }
 
 }

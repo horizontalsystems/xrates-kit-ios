@@ -1,12 +1,13 @@
 import GRDB
+import CoinKit
 
 class HistoricalRate: Record {
     let key: PairKey
     let value: Decimal
     let timestamp: TimeInterval
 
-    init(coinCode: String, currencyCode: String, value: Decimal, timestamp: TimeInterval) {
-        self.key = PairKey(coinCode: coinCode, currencyCode: currencyCode)
+    init(coinType: CoinType, currencyCode: String, value: Decimal, timestamp: TimeInterval) {
+        key = PairKey(coinType: coinType, currencyCode: currencyCode)
         self.value = value
         self.timestamp = timestamp
 
@@ -18,11 +19,12 @@ class HistoricalRate: Record {
     }
 
     enum Columns: String, ColumnExpression {
-        case coinCode, currencyCode, value, timestamp
+        case coinId, currencyCode, value, timestamp
     }
 
     required init(row: Row) {
-        key = PairKey(coinCode: row[Columns.coinCode], currencyCode: row[Columns.currencyCode])
+        let coinId: String = row[Columns.coinId]
+        key = PairKey(coinType: CoinType(id: coinId) ?? .unsupported(id: coinId), currencyCode: row[Columns.currencyCode])
         value = row[Columns.value]
         timestamp = row[Columns.timestamp]
 
@@ -30,7 +32,7 @@ class HistoricalRate: Record {
     }
 
     override open func encode(to container: inout PersistenceContainer) {
-        container[Columns.coinCode] = key.coinCode
+        container[Columns.coinId] = key.coinType.id
         container[Columns.currencyCode] = key.currencyCode
         container[Columns.value] = value
         container[Columns.timestamp] = timestamp
@@ -41,7 +43,7 @@ class HistoricalRate: Record {
 extension HistoricalRate: CustomStringConvertible {
 
     var description: String {
-        "HistoricalRate [coinCode: \(key.coinCode); currencyCode: \(key.currencyCode); value: \(value); timestamp: \(timestamp)]"
+        "HistoricalRate [coinCode: \(key.coinType.id); currencyCode: \(key.currencyCode); value: \(value); timestamp: \(timestamp)]"
     }
 
 }

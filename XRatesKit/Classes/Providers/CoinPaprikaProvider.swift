@@ -3,6 +3,7 @@ import HsToolKit
 import RxSwift
 import Alamofire
 import ObjectMapper
+import CoinKit
 
 fileprivate class CoinPaprikaGlobalMarketInfoMapper: IApiMapper {
     struct MarketPartialInfo {
@@ -49,41 +50,6 @@ fileprivate class CoinPaprikaMarketCapMapper: IApiMapper {
 
 }
 
-fileprivate class CoinPaprikaCoinInfoMapper: IApiMapper {
-    typealias T = [XRatesKit.Coin]
-
-    private let platformId: String
-
-    init(platformId: String) {
-        self.platformId = platformId
-    }
-
-    func map(statusCode: Int, data: Any?) throws -> T {
-        guard let array = (data as? [[String: Any]]) else {
-            throw NetworkManager.RequestError.invalidResponse(statusCode: statusCode, data: data)
-        }
-
-        return array.compactMap { dictionary in
-            guard let active = dictionary["active"] as? Int, active == 1,
-                  let coinId = dictionary["id"] as? String else {
-                return nil
-            }
-            let chunks = coinId.split(separator: "-")
-            let code = chunks.first ?? ""
-            let title = chunks.dropFirst().joined(separator: " ")
-
-            var coinType: XRatesKit.CoinType?
-            if platformId.contains("eth-ethereum"),
-               let address = dictionary["address"] as? String {
-                coinType = .erc20(address: address)
-            }
-
-            return XRatesKit.Coin(code: code.uppercased(), title: title, type: coinType)
-        }
-    }
-
-}
-
 class CoinPaprikaProvider {
     private static let btcId = "btc-bitcoin"
     private static let hours24InSeconds: TimeInterval = 86400
@@ -111,20 +77,6 @@ class CoinPaprikaProvider {
         let request = networkManager.session.request("\(baseUrl)/coins/\(coinId)/ohlcv/historical?start=\(Int(timestamp))", method: .get, encoding: JSONEncoding())
 
         return networkManager.single(request: request, mapper: CoinPaprikaMarketCapMapper())
-    }
-
-    private func coinId(coinType: XRatesKit.CoinType) -> String {
-        switch coinType {
-        case .bitcoin: return "btc-bitcoin"
-        case .bitcoinCash: return "bch-bitcoin-cash"
-        case .litecoin: return "ltc-litecoin"
-        case .ethereum: return "eth-ethereum"
-        case .binance: return "bnb-binance-coin"
-        case .eos: return "eos-eos"
-        case .dash: return "dash-dash"
-        case .zcash: return "zec-zcash"
-        case .erc20: return "eth-ethereum"
-        }
     }
 
 }

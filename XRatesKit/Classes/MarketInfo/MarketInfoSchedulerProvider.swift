@@ -1,7 +1,8 @@
 import RxSwift
+import CoinKit
 
 class MarketInfoSchedulerProvider {
-    private var coins: [XRatesKit.Coin]
+    private var coinTypes: [CoinType]
 
     private let currencyCode: String
     private let manager: IMarketInfoManager
@@ -10,8 +11,8 @@ class MarketInfoSchedulerProvider {
     let expirationInterval: TimeInterval
     let retryInterval: TimeInterval
 
-    init(coins: [XRatesKit.Coin], currencyCode: String, manager: IMarketInfoManager, provider: IMarketInfoProvider, expirationInterval: TimeInterval, retryInterval: TimeInterval) {
-        self.coins = coins
+    init(coinTypes: [CoinType], currencyCode: String, manager: IMarketInfoManager, provider: IMarketInfoProvider, expirationInterval: TimeInterval, retryInterval: TimeInterval) {
+        self.coinTypes = coinTypes
         self.currencyCode = currencyCode
         self.manager = manager
         self.provider = provider
@@ -20,22 +21,13 @@ class MarketInfoSchedulerProvider {
     }
 
     private func handle(updatedRecords: [MarketInfoRecord]) {
-        var records = updatedRecords.compactMap { record -> MarketInfoRecord? in
-            if let matchedCoin = coins.first { $0.code.uppercased() == record.coinCode.uppercased() } {
-                record.coinCode = matchedCoin.code
-                return record
-            }
-
-            return nil
-        }
-
-        coins.removeAll { coin in
-            !records.contains { record in
-                record.key.coinCode == coin.code
+        coinTypes.removeAll { coinType in
+            !updatedRecords.contains { record in
+                record.key.coinType == coinType
             }
         }
 
-        manager.handleUpdated(records: records, currencyCode: currencyCode)
+        manager.handleUpdated(records: updatedRecords, currencyCode: currencyCode)
     }
 
 }
@@ -43,11 +35,11 @@ class MarketInfoSchedulerProvider {
 extension MarketInfoSchedulerProvider: IMarketInfoSchedulerProvider {
 
     var lastSyncTimestamp: TimeInterval? {
-        manager.lastSyncTimestamp(coinCodes: coins.map { $0.code }, currencyCode: currencyCode)
+        manager.lastSyncTimestamp(coinTypes: coinTypes, currencyCode: currencyCode)
     }
 
     var syncSingle: Single<Void> {
-        provider.marketInfoRecords(coins: coins, currencyCode: currencyCode)
+        provider.marketInfoRecords(coinTypes: coinTypes, currencyCode: currencyCode)
                 .do(onSuccess: { [weak self] records in
                     self?.handle(updatedRecords: records)
                 })
@@ -55,7 +47,7 @@ extension MarketInfoSchedulerProvider: IMarketInfoSchedulerProvider {
     }
 
     func notifyExpired() {
-        manager.notifyExpired(coinCodes: coins.map { $0.code }, currencyCode: currencyCode)
+        manager.notifyExpired(coinTypes: coinTypes, currencyCode: currencyCode)
     }
 
 }

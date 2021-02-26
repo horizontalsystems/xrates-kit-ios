@@ -1,4 +1,5 @@
 import RxSwift
+import CoinKit
 
 class HistoricalRateManager {
     private let storage: IHistoricalRateStorage
@@ -13,18 +14,18 @@ class HistoricalRateManager {
 
 extension HistoricalRateManager: IHistoricalRateManager {
 
-    func historicalRate(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Decimal? {
-        storage.rate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)?.value
+    func historicalRate(coinType: CoinType, currencyCode: String, timestamp: TimeInterval) -> Decimal? {
+        storage.rate(coinType: coinType, currencyCode: currencyCode, timestamp: timestamp)?.value
     }
 
-    func historicalRateSingle(coinCode: String, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
-        if let dbRate = storage.rate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp) {
+    func historicalRateSingle(coinType: CoinType, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
+        if let dbRate = storage.rate(coinType: coinType, currencyCode: currencyCode, timestamp: timestamp) {
             return Single.just(dbRate.value)
         }
 
-        return provider.getHistoricalRate(coinCode: coinCode, currencyCode: currencyCode, timestamp: timestamp)
+        return provider.getHistoricalRate(coinType: coinType, currencyCode: currencyCode, timestamp: timestamp)
                 .do(onSuccess: { [weak self] rateValue in
-                    let rate = HistoricalRate(coinCode: coinCode, currencyCode: currencyCode, value: rateValue, timestamp: timestamp)
+                    let rate = HistoricalRate(coinType: coinType, currencyCode: currencyCode, value: rateValue, timestamp: timestamp)
                     self?.storage.save(historicalRate: rate)
                 })
     }

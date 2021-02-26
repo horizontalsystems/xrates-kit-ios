@@ -2,20 +2,21 @@ import UIKit
 import RxSwift
 import SnapKit
 import XRatesKit
+import CoinKit
 
 class MarketInfoController: UITableViewController {
     private let disposeBag = DisposeBag()
 
     private let xRatesKit: XRatesKit
     private let currencyCode: String
-    private let coinCodes: [String]
+    private let coins: [Coin]
 
-    private var marketInfos = [String: MarketInfo]()
+    private var marketInfos = [CoinType: MarketInfo]()
 
-    init(xRatesKit: XRatesKit, currencyCode: String, coinCodes: [String]) {
+    init(xRatesKit: XRatesKit, currencyCode: String, coins: [Coin]) {
         self.xRatesKit = xRatesKit
         self.currencyCode = currencyCode
-        self.coinCodes = coinCodes
+        self.coins = coins
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -51,7 +52,7 @@ class MarketInfoController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        coinCodes.count
+        coins.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -67,9 +68,9 @@ class MarketInfoController: UITableViewController {
             return
         }
 
-        let coinCode = coinCodes[indexPath.row]
+        let coin = coins[indexPath.row]
 
-        cell.bind(coinCode: coinCode, marketInfo: marketInfos[coinCode])
+        cell.bind(coinCode: coin.code, marketInfo: marketInfos[coin.type])
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -79,14 +80,14 @@ class MarketInfoController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
 
-        let coinCode = coinCodes[indexPath.row]
-        let view = CoinMarketInfoController(xRatesKit: xRatesKit, currencyCode: currencyCode, coinCode: coinCode.lowercased())
+        let coin = coins[indexPath.row]
+        let view = CoinMarketInfoController(xRatesKit: xRatesKit, currencyCode: currencyCode, coinType: coin.type)
         navigationController?.present(view, animated: true)
     }
 
     private func fillInitialData() {
-        for coinCode in coinCodes {
-            marketInfos[coinCode] = xRatesKit.marketInfo(coinCode: coinCode, currencyCode: currencyCode)
+        for coin in coins {
+            marketInfos[coin.type] = xRatesKit.marketInfo(coinType: coin.type, currencyCode: currencyCode)
         }
     }
 
