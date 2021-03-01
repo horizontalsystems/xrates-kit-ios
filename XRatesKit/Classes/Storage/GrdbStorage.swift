@@ -508,4 +508,15 @@ extension GrdbStorage: IProviderCoinsStorage {
         }
     }
 
+    func find(text: String) -> [CoinData] {
+        try! dbPool.read { db in
+            try ProviderCoinRecord
+                    .filter(ProviderCoinRecord.Columns.code.like("%\(text)%") || ProviderCoinRecord.Columns.name.like("%\(text)%"))
+                    .fetchAll(db)
+                    .map { record in
+                        CoinData(coinType: CoinType(id: record.id), code: record.code, name: record.name)
+                    }
+        }
+    }
+
 }

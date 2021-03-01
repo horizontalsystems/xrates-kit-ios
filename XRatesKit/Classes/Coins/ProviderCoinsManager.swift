@@ -67,4 +67,12 @@ extension ProviderCoinsManager {
         storage.id(providerId: providerId, provider: provider).flatMap { CoinType(id: $0) }
     }
 
+    func search(text: String) -> [CoinData] {
+        guard !text.isEmpty else {
+            return []
+        }
+
+        return storage.find(text: text)
+    }
+
 }

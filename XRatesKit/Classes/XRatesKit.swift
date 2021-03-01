@@ -11,10 +11,11 @@ public class XRatesKit {
     private let chartInfoManager: IChartInfoManager
     private let chartInfoSyncManager: IChartInfoSyncManager
     private let newsPostsManager: INewsManager
+    private let providerCoinsManager: ProviderCoinsManager
 
     init(marketInfoManager: IMarketInfoManager, globalMarketInfoManager: GlobalMarketInfoManager, marketInfoSyncManager: IMarketInfoSyncManager,
          coinInfoManager: ICoinMarketsManager, historicalRateManager: IHistoricalRateManager,
-         chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager, newsPostsManager: INewsManager) {
+         chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager, newsPostsManager: INewsManager, providerCoinsManager: ProviderCoinsManager) {
         self.globalMarketInfoManager = globalMarketInfoManager
         self.marketInfoManager = marketInfoManager
         self.marketInfoSyncManager = marketInfoSyncManager
@@ -23,6 +24,7 @@ public class XRatesKit {
         self.chartInfoManager = chartInfoManager
         self.chartInfoSyncManager = chartInfoSyncManager
         self.newsPostsManager = newsPostsManager
+        self.providerCoinsManager = providerCoinsManager
     }
 
 }
@@ -93,6 +95,10 @@ extension XRatesKit {
         globalMarketInfoManager.globalMarketInfo(currencyCode: currencyCode)
     }
 
+    public func search(text: String) -> [CoinData] {
+        providerCoinsManager.search(text: text)
+    }
+
 }
 
 extension XRatesKit {
@@ -144,7 +150,8 @@ extension XRatesKit {
                 historicalRateManager: historicalRateManager,
                 chartInfoManager: chartInfoManager,
                 chartInfoSyncManager: chartInfoSyncManager,
-                newsPostsManager: newsPostManager
+                newsPostsManager: newsPostManager,
+                providerCoinsManager: providerCoinsManager
         )
 
         return kit

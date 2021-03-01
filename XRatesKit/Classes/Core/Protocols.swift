@@ -169,4 +169,5 @@ protocol IProviderCoinsStorage {
     func update(providerCoins: [ProviderCoinRecord])
     func providerId(id: String, provider: InfoProvider) -> String?
     func id(providerId: String, provider: InfoProvider) -> String?
+    func find(text: String) -> [CoinData]
 }
