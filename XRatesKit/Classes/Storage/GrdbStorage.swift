@@ -423,7 +423,7 @@ extension GrdbStorage: ICoinInfoStorage {
         }
     }
 
-    func providerCoinInfo(coinType: CoinType) -> CoinInfo? {
+    func providerCoinInfo(coinType: CoinType) -> (data: CoinData, meta: CoinMeta)? {
         try! dbPool.read { db in
             guard let record = try CoinInfoRecord.filter(CoinInfoRecord.Columns.coinId == coinType.id).fetchOne(db) else {
                 return nil
@@ -440,15 +440,16 @@ extension GrdbStorage: ICoinInfoStorage {
                 }
             }
 
-            return CoinInfo(
-                    code: record.code,
-                    name: record.name,
+            let data = CoinData(coinType: coinType, code: record.code, name: record.name)
+            let meta = CoinMeta(
                     description: record.description ?? "",
                     links: linksMap,
                     rating: record.rating,
                     categories: categoryNames,
                     platforms: [:]
             )
+
+            return (data: data, meta: meta)
         }
     }
 

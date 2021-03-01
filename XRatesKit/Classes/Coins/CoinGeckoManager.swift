@@ -39,28 +39,28 @@ extension CoinGeckoManager: ICoinMarketsManager {
     }
 
     func coinMarketInfoSingle(coinType: CoinType, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinMarketInfo> {
-        let coinInfoRecord = coinInfoManager.coinInfo(coinType: coinType)
+        let coin = coinInfoManager.coinInfo(coinType: coinType)
 
         return provider.coinMarketInfoSingle(coinType: coinType, currencyCode: currencyCode, rateDiffTimePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes)
                 .map { coinInfoResponse in
                     var links = [LinkType: String]()
 
                     for linkType in LinkType.allCases {
-                        links[linkType] = coinInfoRecord?.links[linkType] ?? coinInfoResponse.links[linkType] ?? ""
+                        links[linkType] = coin?.meta.links[linkType] ?? coinInfoResponse.links[linkType] ?? ""
                     }
 
-                    let coinInfo = CoinInfo(
-                            code: coinInfoRecord?.code ?? "",
-                            name: coinInfoRecord?.name ?? "",
-                            description: coinInfoRecord?.description ?? coinInfoResponse.description,
+                    let data: CoinData = CoinData(coinType: coinType, code: coin?.data.code ?? "", name: coin?.data.name ?? "")
+                    let meta = CoinMeta(
+                            description: coin?.meta.description ?? coinInfoResponse.description,
                             links: links,
-                            rating: coinInfoRecord?.rating,
-                            categories: coinInfoRecord?.categories ?? [],
+                            rating: coin?.meta.rating,
+                            categories: coin?.meta.categories ?? [],
                             platforms: coinInfoResponse.platforms
                     )
 
                     return CoinMarketInfo(
-                            coinType: coinType,
+                            data: data,
+                            meta: meta,
                             currencyCode: currencyCode,
                             rate: coinInfoResponse.rate,
                             rateHigh24h: coinInfoResponse.rateHigh24h,
@@ -70,7 +70,6 @@ extension CoinGeckoManager: ICoinMarketsManager {
                             volume24h: coinInfoResponse.volume24h,
                             marketCap: coinInfoResponse.marketCap,
                             marketCapDiff24h: coinInfoResponse.marketCapDiff24h,
-                            info: coinInfo,
                             rateDiffs: coinInfoResponse.rateDiffs
                     )
                 }

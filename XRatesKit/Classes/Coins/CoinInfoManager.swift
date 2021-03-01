@@ -87,7 +87,7 @@ class CoinInfoManager {
 
 extension CoinInfoManager {
 
-    func coinInfo(coinType: CoinType) -> CoinInfo? {
+    func coinInfo(coinType: CoinType) -> (data: CoinData, meta: CoinMeta)? {
         storage.providerCoinInfo(coinType: coinType)
     }
 
