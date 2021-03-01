@@ -151,30 +151,6 @@ class GrdbStorage {
             }
         }
 
-        migrator.registerMigration("createCoinInfo") { db in
-            try db.create(table: CoinInfoRecord.databaseTableName) { t in
-                t.column(CoinInfoRecord.Columns.code.name, .text).notNull()
-                t.column(CoinInfoRecord.Columns.title.name, .text).notNull()
-                t.column(CoinInfoRecord.Columns.type.name, .text)
-
-                t.primaryKey([
-                    CoinInfoRecord.Columns.code.name,
-                    CoinInfoRecord.Columns.title.name,
-                ], onConflict: .replace)
-            }
-        }
-
-        migrator.registerMigration("createProviderCoinInfo") { db in
-            try db.create(table: ProviderCoinInfoRecord.databaseTableName) { t in
-                t.column(ProviderCoinInfoRecord.Columns.code.name, .text).notNull()
-                t.column(ProviderCoinInfoRecord.Columns.coinId.name, .text).notNull()
-
-                t.primaryKey([
-                    ProviderCoinInfoRecord.Columns.code.name
-                ], onConflict: .replace)
-            }
-        }
-
         migrator.registerMigration("addMarketInfoCoinId") { db in
             try db.drop(table: MarketInfoRecord.databaseTableName)
 
@@ -199,10 +175,10 @@ class GrdbStorage {
             }
         }
 
-        migrator.registerMigration("createCoinExternalIdListVersions") { db in
-            try db.create(table: CoinExternalIdListVersion.databaseTableName) { t in
-                t.column(CoinExternalIdListVersion.Columns.id.name, .text).notNull().primaryKey(onConflict: .replace)
-                t.column(CoinExternalIdListVersion.Columns.version.name, .integer).notNull()
+        migrator.registerMigration("createDataVersions") { db in
+            try db.create(table: DataVersion.databaseTableName) { t in
+                t.column(DataVersion.Columns.id.name, .text).notNull().primaryKey(onConflict: .replace)
+                t.column(DataVersion.Columns.version.name, .integer).notNull()
             }
         }
 
@@ -213,6 +189,49 @@ class GrdbStorage {
                 t.column(ProviderCoinRecord.Columns.name.name, .text).notNull()
                 t.column(ProviderCoinRecord.Columns.coingeckoId.name, .text)
                 t.column(ProviderCoinRecord.Columns.cryptocompareId.name, .text)
+            }
+        }
+
+        migrator.registerMigration("recreateCoinInfoRecords") { db in
+            if try db.tableExists("coin_info") {
+                try db.drop(index: "coin_info")
+            }
+            if try db.tableExists("provider_coin_info") {
+                try db.drop(index: "provider_coin_info")
+            }
+
+            try db.create(table: CoinInfoRecord.databaseTableName) { t in
+                t.column(CoinInfoRecord.Columns.coinId.name, .text).notNull().primaryKey(onConflict: .replace)
+                t.column(CoinInfoRecord.Columns.code.name, .text).notNull()
+                t.column(CoinInfoRecord.Columns.name.name, .text).notNull()
+                t.column(CoinInfoRecord.Columns.rating.name, .text)
+                t.column(CoinInfoRecord.Columns.description.name, .text)
+            }
+        }
+
+        migrator.registerMigration("createCoinCategories") { db in
+            try db.create(table: CoinCategory.databaseTableName) { t in
+                t.column(CoinCategory.Columns.id.name, .text).notNull().primaryKey(onConflict: .replace)
+                t.column(CoinCategory.Columns.name.name, .text).notNull()
+            }
+        }
+
+        migrator.registerMigration("createCoinCategoryCoinInfos") { db in
+            try db.create(table: CoinCategoryCoinInfo.databaseTableName) { t in
+                t.column(CoinCategoryCoinInfo.Columns.coinCategoryId.name, .text).notNull()
+                t.column(CoinCategoryCoinInfo.Columns.coinInfoId.name, .text).notNull()
+
+                t.primaryKey([CoinCategoryCoinInfo.Columns.coinCategoryId.name, CoinCategoryCoinInfo.Columns.coinInfoId.name], onConflict: .replace)
+            }
+        }
+
+        migrator.registerMigration("createLinks") { db in
+            try db.create(table: CoinLink.databaseTableName) { t in
+                t.column(CoinLink.Columns.coinInfoId.name, .text).notNull()
+                t.column(CoinLink.Columns.linkType.name, .text).notNull()
+                t.column(CoinLink.Columns.value.name, .text).notNull()
+                
+                t.primaryKey([CoinLink.Columns.coinInfoId.name, CoinLink.Columns.linkType.name], onConflict: .replace)
             }
         }
 
@@ -360,28 +379,77 @@ extension GrdbStorage: IGlobalMarketInfoStorage {
 
 }
 
-extension GrdbStorage: IProviderCoinInfoStorage {
+extension GrdbStorage: ICoinInfoStorage {
 
-    var providerCoinInfoCount: Int {
+    var coinInfosVersion: Int {
         try! dbPool.read { db in
-            try ProviderCoinInfoRecord
-                    .fetchCount(db)
+            try DataVersion.filter(DataVersion.Columns.id == DataVersion.DataTypes.coinInfos.rawValue).fetchOne(db)?.version ?? 0
         }
     }
 
-    func save(providerCoinInfos: [ProviderCoinInfoRecord]) {
+    func set(coinInfosVersion: Int) {
+        try! dbPool.write { db in
+            try DataVersion(id: DataVersion.DataTypes.coinInfos.rawValue, version: coinInfosVersion).save(db)
+        }
+    }
+    
+    func update(coinCategories: [CoinCategory]) {
         _ = try! dbPool.write { db in
-            for providerCoinInfo in providerCoinInfos {
-                try providerCoinInfo.insert(db)
+            try CoinCategory.deleteAll(db)
+
+            for category in coinCategories {
+                try category.insert(db)
             }
         }
     }
 
-    func providerCoinInfos(coinCodes: [String]) -> [ProviderCoinInfoRecord] {
+    func update(coinInfos: [CoinInfoRecord], categoryMaps: [CoinCategoryCoinInfo], links: [CoinLink]) {
+        _ = try! dbPool.write { db in
+            try CoinInfoRecord.deleteAll(db)
+            try CoinCategoryCoinInfo.deleteAll(db)
+            try CoinLink.deleteAll(db)
+
+            for coinInfo in coinInfos {
+                try coinInfo.insert(db)
+            }
+
+            for categoryMap in categoryMaps {
+                try categoryMap.insert(db)
+            }
+
+            for link in links {
+                try link.insert(db)
+            }
+        }
+    }
+
+    func providerCoinInfo(coinType: CoinType) -> (data: CoinData, meta: CoinMeta)? {
         try! dbPool.read { db in
-            try ProviderCoinInfoRecord
-                .filter(coinCodes.contains(CoinInfoRecord.Columns.code))
-                .fetchAll(db)
+            guard let record = try CoinInfoRecord.filter(CoinInfoRecord.Columns.coinId == coinType.id).fetchOne(db) else {
+                return nil
+            }
+
+            let categoryIds = try CoinCategoryCoinInfo.filter(CoinCategoryCoinInfo.Columns.coinInfoId == record.coinType.id).fetchAll(db).map { $0.coinCategoryId }
+            let categoryNames: [String] = try CoinCategory.filter(categoryIds.contains(CoinCategory.Columns.id)).fetchAll(db).map { $0.name }
+
+            let links = try CoinLink.filter(CoinLink.Columns.coinInfoId == record.coinType.id).fetchAll(db)
+            var linksMap = [LinkType: String]()
+            for link in links {
+                if let linkType = LinkType(rawValue: link.linkType) {
+                    linksMap[linkType] = link.value
+                }
+            }
+
+            let data = CoinData(coinType: coinType, code: record.code, name: record.name)
+            let meta = CoinMeta(
+                    description: record.description ?? "",
+                    links: linksMap,
+                    rating: record.rating,
+                    categories: categoryNames,
+                    platforms: [:]
+            )
+
+            return (data: data, meta: meta)
         }
     }
 
@@ -389,15 +457,15 @@ extension GrdbStorage: IProviderCoinInfoStorage {
 
 extension GrdbStorage: IProviderCoinsStorage {
 
-    var externalIdsVersion: Int {
+    var providerCoinsVersion: Int {
         try! dbPool.read { db in
-            try CoinExternalIdListVersion.fetchOne(db)?.version ?? 0
+            try DataVersion.filter(DataVersion.Columns.id == DataVersion.DataTypes.providerCoins.rawValue).fetchOne(db)?.version ?? 0
         }
     }
 
-    func set(externalIdsVersion: Int) {
+    func set(providerCoinsVersion: Int) {
         try! dbPool.write { db in
-            try CoinExternalIdListVersion(version: externalIdsVersion).save(db)
+            try DataVersion(id: DataVersion.DataTypes.providerCoins.rawValue, version: providerCoinsVersion).save(db)
         }
     }
 
@@ -437,6 +505,17 @@ extension GrdbStorage: IProviderCoinsStorage {
                     .filter(filter)
                     .fetchAll(db)
                     .first?.id
+        }
+    }
+
+    func find(text: String) -> [CoinData] {
+        try! dbPool.read { db in
+            try ProviderCoinRecord
+                    .filter(ProviderCoinRecord.Columns.code.like("%\(text)%") || ProviderCoinRecord.Columns.name.like("%\(text)%"))
+                    .fetchAll(db)
+                    .map { record in
+                        CoinData(coinType: CoinType(id: record.id), code: record.code, name: record.name)
+                    }
         }
     }
 

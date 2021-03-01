@@ -35,11 +35,15 @@ class MainController: UITabBarController {
         let chartController = ChartController(xRatesKit: xRatesKit, currencyCode: currencyCode, coinType: chartCoinType)
         chartController.tabBarItem = UITabBarItem(title: "Chart", image: UIImage(systemName: "chart.bar"), tag: 2)
 
+        let coinSearchController = CoinSearchController(xRatesKit: xRatesKit)
+        coinSearchController.tabBarItem = UITabBarItem(title: "Search", image: UIImage(systemName: "magnifyingglass"), tag: 0)
+
         viewControllers = [
             UINavigationController(rootViewController: topMarketInfoController),
             UINavigationController(rootViewController: marketInfoController),
             UINavigationController(rootViewController: historicalController),
-            UINavigationController(rootViewController: chartController)
+            UINavigationController(rootViewController: chartController),
+            UINavigationController(rootViewController: coinSearchController)
         ]
     }
 

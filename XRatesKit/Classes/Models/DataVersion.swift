@@ -1,17 +1,23 @@
 import GRDB
 
-class CoinExternalIdListVersion: Record {
-    let id = "coin_external_id_list_version"
+class DataVersion: Record {
+    let id: String
     let version: Int
 
-    init(version: Int) {
+    init(id: String, version: Int) {
+        self.id = id
         self.version = version
 
         super.init()
     }
 
     override class var databaseTableName: String {
-        "coin_external_id_list_versions"
+        "data_versions"
+    }
+
+    enum DataTypes: String {
+        case coinInfos
+        case providerCoins
     }
 
     enum Columns: String, ColumnExpression {
@@ -20,6 +26,7 @@ class CoinExternalIdListVersion: Record {
     }
 
     required init(row: Row) {
+        id = row[Columns.id]
         version = row[Columns.version]
 
         super.init(row: row)

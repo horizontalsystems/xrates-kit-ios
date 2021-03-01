@@ -64,7 +64,7 @@ class CoinMarketInfoController: UIViewController {
 
     private func bind(marketInfo: CoinMarketInfo) {
         var str = """
-                  coinId: \(marketInfo.coinType.id)
+                  coinId: \(marketInfo.data.coinType.id)
                   currencyCode: \(marketInfo.currencyCode)
                   rate: \(marketInfo.rate)
                   rateHigh24h: \(marketInfo.rateHigh24h)
@@ -75,15 +75,17 @@ class CoinMarketInfoController: UIViewController {
                   marketCap: \(marketInfo.marketCap)
                   marketCapDiff24h: \(marketInfo.marketCapDiff24h)
 
-                  description: \(marketInfo.info.description)
-                  categories: \(marketInfo.info.categories.joined(separator: ", "))
+                  description: \(marketInfo.meta.description)
+                  categories: \(marketInfo.meta.categories.joined(separator: ", "))
 
-                  = Links = 
-                  Website: \(marketInfo.info.links["website"] ?? "")
-                  Reddit: \(marketInfo.info.links["reddit"] ?? "")
-                  Twitter: \(marketInfo.info.links["twitter"] ?? "")
-                  Telegram: \(marketInfo.info.links["telegram"] ?? "")
-                  Github: \(marketInfo.info.links["github"] ?? "")
+                  == Categories ==
+                  \(marketInfo.meta.categories.joined(separator: "\n"))
+
+                  == Platforms ==
+                  \(marketInfo.meta.platforms.map{ (key, value) in "\(key.rawValue): \(value)" }.joined(separator: "\n"))
+
+                  == Links ==
+                  \(marketInfo.meta.links.map { (key, value) in "\(key.rawValue.uppercased()): \(value)" }.joined(separator: "\n"))
 
                   == Rate Diffs ==
                   """

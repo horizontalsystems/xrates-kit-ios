@@ -11,10 +11,11 @@ public class XRatesKit {
     private let chartInfoManager: IChartInfoManager
     private let chartInfoSyncManager: IChartInfoSyncManager
     private let newsPostsManager: INewsManager
+    private let providerCoinsManager: ProviderCoinsManager
 
     init(marketInfoManager: IMarketInfoManager, globalMarketInfoManager: GlobalMarketInfoManager, marketInfoSyncManager: IMarketInfoSyncManager,
          coinInfoManager: ICoinMarketsManager, historicalRateManager: IHistoricalRateManager,
-         chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager, newsPostsManager: INewsManager) {
+         chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager, newsPostsManager: INewsManager, providerCoinsManager: ProviderCoinsManager) {
         self.globalMarketInfoManager = globalMarketInfoManager
         self.marketInfoManager = marketInfoManager
         self.marketInfoSyncManager = marketInfoSyncManager
@@ -23,6 +24,7 @@ public class XRatesKit {
         self.chartInfoManager = chartInfoManager
         self.chartInfoSyncManager = chartInfoSyncManager
         self.newsPostsManager = newsPostsManager
+        self.providerCoinsManager = providerCoinsManager
     }
 
 }
@@ -93,6 +95,10 @@ extension XRatesKit {
         globalMarketInfoManager.globalMarketInfo(currencyCode: currencyCode)
     }
 
+    public func search(text: String) -> [CoinData] {
+        providerCoinsManager.search(text: text)
+    }
+
 }
 
 extension XRatesKit {
@@ -105,7 +111,9 @@ extension XRatesKit {
         let reachabilityManager = ReachabilityManager()
 
         let storage = GrdbStorage()
-        let providerCoinsManager = ProviderCoinsManager(storage: storage, parser: JsonFileParser())
+        let jsonParser = JsonFileParser()
+        let providerCoinsManager = ProviderCoinsManager(storage: storage, parser: jsonParser)
+        let coinInfoManager = CoinInfoManager(storage: storage, parser: jsonParser)
 
         let networkManager = NetworkManager(logger: logger)
         let coinPaprikaProvider = CoinPaprikaProvider(networkManager: networkManager)
@@ -115,7 +123,7 @@ extension XRatesKit {
 
         let horsysProvider = HorsysProvider(networkManager: networkManager)
         let coinGeckoProvider = CoinGeckoProvider(providerCoinsManager: providerCoinsManager, networkManager: networkManager, expirationInterval: marketInfoExpirationInterval)
-        let coinGeckoManager = CoinGeckoManager(provider: coinGeckoProvider, storage: storage)
+        let coinGeckoManager = CoinGeckoManager(coinInfoManager: coinInfoManager, provider: coinGeckoProvider, storage: storage)
 
         let marketInfoManager = MarketInfoManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
         let globalMarketInfoManager = GlobalMarketInfoManager(globalMarketInfoProvider: coinPaprikaProvider, defiMarketCapProvider: horsysProvider, storage: storage)
@@ -142,7 +150,8 @@ extension XRatesKit {
                 historicalRateManager: historicalRateManager,
                 chartInfoManager: chartInfoManager,
                 chartInfoSyncManager: chartInfoSyncManager,
-                newsPostsManager: newsPostManager
+                newsPostsManager: newsPostManager,
+                providerCoinsManager: providerCoinsManager
         )
 
         return kit

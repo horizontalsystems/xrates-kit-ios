@@ -78,9 +78,7 @@ class MarketInfoRecord: Record {
     }
 
     required init(row: Row) {
-        let coinId: String = row[Columns.coinId]
-
-        coinType = CoinType(id: coinId) ?? .unsupported(id: coinId)
+        coinType = CoinType(id: row[Columns.coinId])
         coinCode = row[Columns.coinCode]
         coinCurrency = row[Columns.currencyCode]
         timestamp = row[Columns.timestamp]

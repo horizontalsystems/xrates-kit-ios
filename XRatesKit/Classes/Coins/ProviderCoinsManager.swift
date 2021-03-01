@@ -31,7 +31,7 @@ class ProviderCoinsManager {
         self.storage = storage
         self.parser = parser
 
-        DispatchQueue.global(priority: .background).async { [weak self] in
+        DispatchQueue.global(qos: .background).async { [weak self] in
             self?.updateIds()
         }
     }
@@ -40,7 +40,7 @@ class ProviderCoinsManager {
         do {
             let list: ProviderCoinsList = try parser.parse(filename: filename)
 
-            guard list.version > storage.externalIdsVersion else {
+            guard list.version > storage.providerCoinsVersion else {
                 return
             }
 
@@ -49,7 +49,7 @@ class ProviderCoinsManager {
             }
 
             storage.update(providerCoins: coinRecords)
-            storage.set(externalIdsVersion: list.version)
+            storage.set(providerCoinsVersion: list.version)
         } catch {
             print(error.localizedDescription)
         }
@@ -65,6 +65,14 @@ extension ProviderCoinsManager {
 
     func coinType(providerId: String, provider: InfoProvider) -> CoinType? {
         storage.id(providerId: providerId, provider: provider).flatMap { CoinType(id: $0) }
+    }
+
+    func search(text: String) -> [CoinData] {
+        guard !text.isEmpty else {
+            return []
+        }
+
+        return storage.find(text: text)
     }
 
 }

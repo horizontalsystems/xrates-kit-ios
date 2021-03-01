@@ -18,7 +18,7 @@ class ProviderCoinRecord: Record {
     }
 
     override class var databaseTableName: String {
-        "coin_external_ids"
+        "provider_coin_records"
     }
 
     enum Columns: String, ColumnExpression {
