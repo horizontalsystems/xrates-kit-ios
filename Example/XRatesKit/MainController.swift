@@ -10,7 +10,8 @@ class MainController: UITabBarController {
         Coin(title: "Ethereum", code: "ETH", decimal: 0, type: .ethereum),
         Coin(title: "Bitcoin Cash", code: "BCH", decimal: 0, type: .bitcoinCash),
         Coin(title: "Dash", code: "DASH", decimal: 0, type: .dash),
-        Coin(title: "Binance", code: "BNB", decimal: 0, type: .binanceSmartChain),
+        Coin(title: "Binance", code: "BNB", decimal: 0, type: .bep2(symbol: "BNB")),
+        Coin(title: "Binance Smart Chain", code: "BNB", decimal: 0, type: .binanceSmartChain),
         Coin(title: "UNI Token", code: "Uni", decimal: 0, type: .erc20(address: "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984")),
         Coin(title: "aDAI Token", code: "ADAI", decimal: 0, type: .erc20(address: "0xfc1e690f61efd961294b3e1ce3313fbd8aa4f85d"))
     ]

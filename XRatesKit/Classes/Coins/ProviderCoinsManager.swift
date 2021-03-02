@@ -63,8 +63,8 @@ extension ProviderCoinsManager {
         storage.providerId(id: coinType.id, provider: provider)
     }
 
-    func coinType(providerId: String, provider: InfoProvider) -> CoinType? {
-        storage.id(providerId: providerId, provider: provider).flatMap { CoinType(id: $0) }
+    func coinTypes(providerId: String, provider: InfoProvider) -> [CoinType] {
+        storage.ids(providerId: providerId, provider: provider).map { CoinType(id: $0) }
     }
 
     func search(text: String) -> [CoinData] {

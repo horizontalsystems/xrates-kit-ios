@@ -46,8 +46,9 @@ extension CryptoCompareProvider: IMarketInfoProvider {
             return Single.just([])
         }
 
-        let externalIds = coinTypes.compactMap { providerCoinsManager.providerId(coinType: $0, provider: .CryptoCompare) }.joined(separator: ",")
-        let (url, parameters) = urlAndParams(path: "/data/pricemultifull", parameters: ["fsyms": externalIds, "tsyms": currencyCode])
+        let externalIds = coinTypes.compactMap { providerCoinsManager.providerId(coinType: $0, provider: .CryptoCompare) }
+        let externalIdsJoined = Array(Set(externalIds)).joined(separator: ",")
+        let (url, parameters) = urlAndParams(path: "/data/pricemultifull", parameters: ["fsyms": externalIdsJoined, "tsyms": currencyCode])
 
         let request = networkManager.session
                 .request(url, method: .get, parameters: parameters, interceptor: RateLimitRetrier())
@@ -59,12 +60,14 @@ extension CryptoCompareProvider: IMarketInfoProvider {
 
                         for (coinCode, values) in response.values {
                             for (currencyCode, marketInfoResponse) in values {
-                                guard let coinType = providerCoinsManager?.coinType(providerId: coinCode, provider: .CryptoCompare) else {
-                                    continue
+                                guard let coinTypes = providerCoinsManager?.coinTypes(providerId: coinCode, provider: .CryptoCompare) else {
+                                    return []
                                 }
 
-                                let record = MarketInfoRecord(coinType: coinType, coinCode: coinCode, currencyCode: currencyCode, response: marketInfoResponse)
-                                records.append(record)
+                                for coinType in coinTypes {
+                                    let record = MarketInfoRecord(coinType: coinType, coinCode: coinCode, currencyCode: currencyCode, response: marketInfoResponse)
+                                    records.append(record)
+                                }
                             }
                         }
 

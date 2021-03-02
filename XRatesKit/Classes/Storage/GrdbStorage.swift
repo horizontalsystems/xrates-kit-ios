@@ -235,6 +235,30 @@ class GrdbStorage {
             }
         }
 
+        migrator.registerMigration("changePrimaryKeyForMarketInfoRecord") { db in
+            try db.drop(table: MarketInfoRecord.databaseTableName)
+
+            try db.create(table: MarketInfoRecord.databaseTableName) { t in
+                t.column(MarketInfoRecord.Columns.coinId.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.coinCode.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.currencyCode.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.timestamp.name, .double).notNull()
+                t.column(MarketInfoRecord.Columns.rate.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.openDay.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.diff.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.volume.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.marketCap.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.supply.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.liquidity.name, .text).notNull()
+                t.column(MarketInfoRecord.Columns.rateDiffPeriod.name, .text).notNull()
+
+                t.primaryKey([
+                    MarketInfoRecord.Columns.coinId.name,
+                    MarketInfoRecord.Columns.currencyCode.name,
+                ], onConflict: .replace)
+            }
+        }
+
         return migrator
     }
 
@@ -491,20 +515,20 @@ extension GrdbStorage: IProviderCoinsStorage {
         }
     }
 
-    func id(providerId: String, provider: InfoProvider) -> String? {
+    func ids(providerId: String, provider: InfoProvider) -> [String] {
         try! dbPool.read { db in
             let filter: SQLExpressible
 
             switch provider {
             case .CoinGecko: filter = ProviderCoinRecord.Columns.coingeckoId == providerId
             case .CryptoCompare: filter = ProviderCoinRecord.Columns.cryptocompareId == providerId
-            default: return nil
+            default: return []
             }
 
             return try ProviderCoinRecord
                     .filter(filter)
                     .fetchAll(db)
-                    .first?.id
+                    .map { $0.id }
         }
     }
 
