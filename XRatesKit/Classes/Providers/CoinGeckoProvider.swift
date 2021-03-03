@@ -11,6 +11,7 @@ class CoinGeckoProvider {
     private let providerCoinsManager: ProviderCoinsManager
     private let networkManager: NetworkManager
     private let expirationInterval: TimeInterval
+    private let coinsPerPage = 200
 
     init(providerCoinsManager: ProviderCoinsManager, networkManager: NetworkManager, expirationInterval: TimeInterval) {
         self.providerCoinsManager = providerCoinsManager
@@ -18,8 +19,24 @@ class CoinGeckoProvider {
         self.expirationInterval = expirationInterval
     }
 
-    private func allCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int? = nil, coinIds: String? = nil) -> Single<[CoinMarket]> {
-        let perPage = itemCount.map { "&per_page=\($0)" } ?? ""
+    private func allCoinMarketsNextDelayedSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, page: Int, itemCount: Int?) -> Single<[CoinMarket]> {
+        guard let itemCount = itemCount, itemCount > coinsPerPage else {
+            return Single.just([])
+        }
+
+        let single = allCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, page: page + 1, itemCount: itemCount - coinsPerPage)
+
+        return Single<Int>
+                .timer(.seconds(1), scheduler: SerialDispatchQueueScheduler(qos: .background))
+                .flatMap { _ in single }
+    }
+
+    private func allCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, page: Int = 1, itemCount: Int? = nil, coinIds: String? = nil) -> Single<[CoinMarket]> {
+        var pageParams = ""
+        if let itemCount = itemCount {
+            let perPage = min(coinsPerPage, itemCount)
+            pageParams += "&per_page=\(perPage)&page=\(page)"
+        }
 
         let priceChangePercentage: String
         switch fetchDiffPeriod {
@@ -27,11 +44,15 @@ class CoinGeckoProvider {
         default: priceChangePercentage = "&price_change_percentage=\(fetchDiffPeriod.title)"
         }
 
-        let url = "\(provider.baseUrl)/coins/markets?\(coinIds ?? "")&vs_currency=\(currencyCode)\(priceChangePercentage)&order=market_cap_desc\(perPage)"
+        let url = "\(provider.baseUrl)/coins/markets?\(coinIds ?? "")&vs_currency=\(currencyCode)\(priceChangePercentage)&order=market_cap_desc\(pageParams)"
         let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
 
         let mapper = CoinGeckoTopMarketMapper(providerCoinManager: providerCoinsManager, currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, expirationInterval: expirationInterval)
         return networkManager.single(request: request, mapper: mapper)
+                .flatMap { [weak self] coinMarkets -> Single<[CoinMarket]> in
+                    let single = self?.allCoinMarketsNextDelayedSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, page: page, itemCount: itemCount) ?? Single.just([])
+                    return single.map { nextCoinMarkets -> [CoinMarket] in coinMarkets + nextCoinMarkets }
+                }
     }
 
 }
