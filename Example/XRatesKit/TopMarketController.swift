@@ -268,9 +268,9 @@ extension TopMarketController: UITableViewDataSource, UITableViewDelegate {
         }
 
         let topMarket = topMarkets[indexPath.row]
-        let favorite = favoriteCoinTypes.contains { coinType in topMarket.coinType == coinType }
+        let favorite = favoriteCoinTypes.contains { coinType in topMarket.coinData.coinType == coinType }
         cell.bind(topMarket: topMarket, favorite: favorite) { [weak self] in
-            self?.toggle(coinType: topMarket.coinType)
+            self?.toggle(coinType: topMarket.coinData.coinType)
         }
     }
 

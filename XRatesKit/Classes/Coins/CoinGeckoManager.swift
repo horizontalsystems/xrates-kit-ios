@@ -23,7 +23,7 @@ extension CoinGeckoManager: ICoinMarketsManager {
             .topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: itemCount)
             .do { [weak self] coinMarkets in
                 let marketInfoRecords = coinMarkets.map {
-                    MarketInfoRecord(marketInfo: $0.marketInfo, coinType: $0.coinType, coinCode: $0.coinCode)
+                    MarketInfoRecord(marketInfo: $0.marketInfo, coinType: $0.coinData.coinType, coinCode: $0.coinData.code)
                 }
 
                 self?.storage.save(marketInfoRecords: marketInfoRecords)
