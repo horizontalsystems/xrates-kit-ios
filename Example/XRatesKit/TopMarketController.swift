@@ -169,7 +169,7 @@ class TopMarketController: UIViewController {
         let single: Single<[CoinMarket]>
 
         switch segmentedView.selectedSegmentIndex {
-        case 0: single = xRatesKit.topMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: period, itemsCount: 200)
+        case 0: single = xRatesKit.topMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: period, itemsCount: 50)
         default: single = xRatesKit.favorites(currencyCode: currencyCode, fetchDiffPeriod: period, coinTypes: favoriteCoinTypes)
         }
 
@@ -268,9 +268,9 @@ extension TopMarketController: UITableViewDataSource, UITableViewDelegate {
         }
 
         let topMarket = topMarkets[indexPath.row]
-        let favorite = favoriteCoinTypes.contains { coinType in topMarket.coinType == coinType }
+        let favorite = favoriteCoinTypes.contains { coinType in topMarket.coinData.coinType == coinType }
         cell.bind(topMarket: topMarket, favorite: favorite) { [weak self] in
-            self?.toggle(coinType: topMarket.coinType)
+            self?.toggle(coinType: topMarket.coinData.coinType)
         }
     }
 

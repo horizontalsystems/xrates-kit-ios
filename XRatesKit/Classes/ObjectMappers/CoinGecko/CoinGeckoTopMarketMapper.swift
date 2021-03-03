@@ -59,8 +59,9 @@ class CoinGeckoTopMarketMapper: IApiMapper {
                 supply: supply,
                 rateDiffPeriod: rateDiffPeriod
             )
+            let coinData = CoinData(coinType: coinType, code: coinCode.uppercased(), name: coinTitle)
             
-            return CoinMarket(coinType: coinType, coinCode: coinCode.uppercased(), coinTitle: coinTitle, record: record, expirationInterval: expirationInterval)
+            return CoinMarket(coinData: coinData, record: record, expirationInterval: expirationInterval)
         }
     }
     

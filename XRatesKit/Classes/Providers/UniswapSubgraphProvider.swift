@@ -181,9 +181,11 @@ extension UniswapSubgraphProvider: IMarketInfoProvider {
                     marketCap: 0,
                     supply: 0,
                     liquidity: latestRate * token.totalLiquidity,
-                    rateDiffPeriod: rateDiffPeriod)
+                    rateDiffPeriod: rateDiffPeriod
+            )
+            let coinData = CoinData(coinType: coinType, code: token.coinCode, name: token.coinTitle)
 
-            return CoinMarket(coinType: coinType, coinCode: token.coinCode, coinTitle: token.coinTitle, record: marketInfoRecord, expirationInterval: expirationInterval)
+            return CoinMarket(coinData: coinData, record: marketInfoRecord, expirationInterval: expirationInterval)
         }.sorted { $0.marketInfo.liquidity > $1.marketInfo.liquidity }
     }
 
