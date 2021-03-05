@@ -70,4 +70,18 @@ public enum ChartType: Int, CaseIterable {
         }
     }
 
+    var days: Int {
+        switch self {
+        case .today: return 1
+        case .day: return 1
+        case .week: return 7
+        case .week2: return 14
+        case .month: return 30
+        case .month3: return 90
+        case .halfYear: return 180
+        case .year: return 360
+        case .year2: return 720
+        }
+    }
+
 }
