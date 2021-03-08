@@ -45,7 +45,7 @@ class ProviderCoinsManager {
             }
 
             let coinRecords = list.coins.map { coin in
-                ProviderCoinRecord(id: coin.id, code: coin.code, name: coin.name, coingeckoId: coin.externalId.coingecko, cryptocompareId: coin.externalId.cryptocompare)
+                ProviderCoinRecord(id: coin.id, code: coin.code.uppercased(), name: coin.name, coingeckoId: coin.externalId.coingecko, cryptocompareId: coin.externalId.cryptocompare)
             }
 
             storage.update(providerCoins: coinRecords)
