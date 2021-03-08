@@ -90,3 +90,19 @@ extension CoinGeckoProvider {
     }
 
 }
+
+extension CoinGeckoProvider: IChartPointProvider {
+
+    func chartPointsSingle(key: ChartInfoKey) -> Single<[ChartPoint]> {
+        guard let externalId = providerCoinsManager.providerId(coinType: key.coinType, provider: .CoinGecko) else {
+            return Single.error(ProviderCoinsManager.ExternalIdError.noMatchingCoinId)
+        }
+
+
+        let url = "\(provider.baseUrl)/coins/\(externalId)/market_chart?vs_currency=\(key.currencyCode)&interval=\(key.chartType.days)"
+        let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
+
+        return networkManager.single(request: request, mapper: CoinGeckoMarketChartsMapper())
+    }
+
+}

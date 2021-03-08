@@ -135,7 +135,8 @@ extension XRatesKit {
         let historicalRateManager = HistoricalRateManager(storage: storage, provider: cryptoCompareProvider)
 
         let chartInfoManager = ChartInfoManager(storage: storage, marketInfoManager: marketInfoManager)
-        let chartPointSchedulerFactory = ChartPointSchedulerFactory(manager: chartInfoManager, provider: cryptoCompareProvider, reachabilityManager: reachabilityManager, retryInterval: retryInterval, logger: logger)
+        let chartPointsProvider = BaseChartInfoProvider(cryptoCompareProvider: cryptoCompareProvider, coinGeckoProvider: coinGeckoProvider)
+        let chartPointSchedulerFactory = ChartPointSchedulerFactory(manager: chartInfoManager, provider: chartPointsProvider, reachabilityManager: reachabilityManager, retryInterval: retryInterval, logger: logger)
         let chartInfoSyncManager = ChartInfoSyncManager(schedulerFactory: chartPointSchedulerFactory, chartInfoManager: chartInfoManager, marketInfoSyncManager: marketInfoSyncManager)
 
         chartInfoManager.delegate = chartInfoSyncManager
