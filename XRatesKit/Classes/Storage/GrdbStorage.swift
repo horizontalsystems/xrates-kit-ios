@@ -194,10 +194,10 @@ class GrdbStorage {
 
         migrator.registerMigration("recreateCoinInfoRecords") { db in
             if try db.tableExists("coin_info") {
-                try db.drop(index: "coin_info")
+                try db.drop(table: "coin_info")
             }
             if try db.tableExists("provider_coin_info") {
-                try db.drop(index: "provider_coin_info")
+                try db.drop(table: "provider_coin_info")
             }
 
             try db.create(table: CoinInfoRecord.databaseTableName) { t in
@@ -236,7 +236,9 @@ class GrdbStorage {
         }
 
         migrator.registerMigration("changePrimaryKeyForMarketInfoRecord") { db in
-            try db.drop(table: MarketInfoRecord.databaseTableName)
+            if try db.tableExists(MarketInfoRecord.databaseTableName) {
+                try db.drop(table: MarketInfoRecord.databaseTableName)
+            }
 
             try db.create(table: MarketInfoRecord.databaseTableName) { t in
                 t.column(MarketInfoRecord.Columns.coinId.name, .text).notNull()
