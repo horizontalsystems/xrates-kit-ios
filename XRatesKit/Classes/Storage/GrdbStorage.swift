@@ -261,6 +261,46 @@ class GrdbStorage {
             }
         }
 
+        migrator.registerMigration("updateChartAndHistoricalWithCoinId") { db in
+            if try db.tableExists(ChartPointRecord.databaseTableName) {
+                try db.drop(table: ChartPointRecord.databaseTableName)
+            }
+
+            try db.create(table: ChartPointRecord.databaseTableName) { t in
+                t.column(ChartPointRecord.Columns.coinId.name, .text).notNull()
+                t.column(ChartPointRecord.Columns.currencyCode.name, .text).notNull()
+                t.column(ChartPointRecord.Columns.chartType.name, .integer).notNull()
+                t.column(ChartPointRecord.Columns.timestamp.name, .double).notNull()
+                t.column(ChartPointRecord.Columns.value.name, .text).notNull()
+                t.column(ChartPointRecord.Columns.volume.name).notNull()
+
+                t.primaryKey([
+                    ChartPointRecord.Columns.coinId.name,
+                    ChartPointRecord.Columns.currencyCode.name,
+                    ChartPointRecord.Columns.chartType.name,
+                    ChartPointRecord.Columns.timestamp.name,
+                ], onConflict: .replace)
+            }
+
+            if try db.tableExists(HistoricalRate.databaseTableName) {
+                try db.drop(table: HistoricalRate.databaseTableName)
+            }
+
+            try db.create(table: HistoricalRate.databaseTableName) { t in
+                t.column(HistoricalRate.Columns.coinId.name, .text).notNull()
+                t.column(HistoricalRate.Columns.currencyCode.name, .text).notNull()
+                t.column(HistoricalRate.Columns.value.name, .text).notNull()
+                t.column(HistoricalRate.Columns.timestamp.name, .double).notNull()
+
+                t.primaryKey([
+                    HistoricalRate.Columns.coinId.name,
+                    HistoricalRate.Columns.currencyCode.name,
+                    HistoricalRate.Columns.timestamp.name,
+                ], onConflict: .replace)
+            }
+
+        }
+
         return migrator
     }
 
