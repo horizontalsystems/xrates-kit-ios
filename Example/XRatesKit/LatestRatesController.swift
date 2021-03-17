@@ -4,14 +4,14 @@ import SnapKit
 import XRatesKit
 import CoinKit
 
-class MarketInfoController: UITableViewController {
+class LatestRatesController: UITableViewController {
     private let disposeBag = DisposeBag()
 
     private let xRatesKit: XRatesKit
     private let currencyCode: String
     private let coins: [Coin]
 
-    private var marketInfos = [CoinType: MarketInfo]()
+    private var latestRates = [CoinType: LatestRate]()
 
     init(xRatesKit: XRatesKit, currencyCode: String, coins: [Coin]) {
         self.xRatesKit = xRatesKit
@@ -38,10 +38,10 @@ class MarketInfoController: UITableViewController {
 
         fillInitialData()
 
-        xRatesKit.marketInfosObservable(currencyCode: currencyCode)
+        xRatesKit.latestRatesObservable(currencyCode: currencyCode)
                 .observeOn(MainScheduler.instance)
                 .subscribe(onNext: { [weak self] marketInfos in
-                    self?.marketInfos = marketInfos
+                    self?.latestRates = marketInfos
                     self?.tableView.reloadData()
                 })
                 .disposed(by: disposeBag)
@@ -70,7 +70,7 @@ class MarketInfoController: UITableViewController {
 
         let coin = coins[indexPath.row]
 
-        cell.bind(coinCode: coin.code, marketInfo: marketInfos[coin.type])
+        cell.bind(coinCode: coin.code, latestRate: latestRates[coin.type])
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -87,7 +87,7 @@ class MarketInfoController: UITableViewController {
 
     private func fillInitialData() {
         for coin in coins {
-            marketInfos[coin.type] = xRatesKit.marketInfo(coinType: coin.type, currencyCode: currencyCode)
+            latestRates[coin.type] = xRatesKit.latestRate(coinType: coin.type, currencyCode: currencyCode)
         }
     }
 

@@ -23,7 +23,7 @@
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		D36AAB4123A749060065B32B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D36AAB3E23A749060065B32B /* AppDelegate.swift */; };
 		D36AAB4223A749060065B32B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D36AAB3F23A749060065B32B /* Assets.xcassets */; };
-		D36AAB4323A749060065B32B /* MarketInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D36AAB4023A749060065B32B /* MarketInfoController.swift */; };
+		D36AAB4323A749060065B32B /* LatestRatesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D36AAB4023A749060065B32B /* LatestRatesController.swift */; };
 		D36AAB4523A749750065B32B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D36AAB4423A749750065B32B /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -64,7 +64,7 @@
 		C818E59F43FA673B3F80FA41 /* Pods-XRatesKit_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XRatesKit_Example.debug.xcconfig"; path = "Target Support Files/Pods-XRatesKit_Example/Pods-XRatesKit_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		D36AAB3E23A749060065B32B /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D36AAB3F23A749060065B32B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		D36AAB4023A749060065B32B /* MarketInfoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketInfoController.swift; sourceTree = "<group>"; };
+		D36AAB4023A749060065B32B /* LatestRatesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LatestRatesController.swift; sourceTree = "<group>"; };
 		D36AAB4423A749750065B32B /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D468B0099E16C7EE5FBCA96E /* Pods-XRatesKit_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XRatesKit_Tests.debug.xcconfig"; path = "Target Support Files/Pods-XRatesKit_Tests/Pods-XRatesKit_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		EE664037D3BEE7AF9A904FAD /* XRatesKit.swift.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.podspec; name = XRatesKit.swift.podspec; path = ../XRatesKit.swift.podspec; sourceTree = "<group>"; };
@@ -120,7 +120,7 @@
 				D36AAB3F23A749060065B32B /* Assets.xcassets */,
 				D36AAB3E23A749060065B32B /* AppDelegate.swift */,
 				11B355B5791B609C7828E257 /* MainController.swift */,
-				D36AAB4023A749060065B32B /* MarketInfoController.swift */,
+				D36AAB4023A749060065B32B /* LatestRatesController.swift */,
 				11B354D1B2B234232EF9B9E3 /* HistoricalController.swift */,
 				11B35481811B4D6FA4528FC6 /* ChartController.swift */,
 				D36AAB4423A749750065B32B /* LaunchScreen.storyboard */,
@@ -391,7 +391,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D36AAB4323A749060065B32B /* MarketInfoController.swift in Sources */,
+				D36AAB4323A749060065B32B /* LatestRatesController.swift in Sources */,
 				D36AAB4123A749060065B32B /* AppDelegate.swift in Sources */,
 				11B35CB24BE6AF3424F71198 /* MainController.swift in Sources */,
 				11B354711C0333DBE0C0C2A8 /* HistoricalController.swift in Sources */,

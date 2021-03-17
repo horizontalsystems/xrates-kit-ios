@@ -4,11 +4,11 @@ class ChartInfoManager {
     weak var delegate: IChartInfoManagerDelegate?
 
     private let storage: IChartPointStorage
-    private let marketInfoManager: IMarketInfoManager
+    private let latestRateManager: ILatestRatesManager
 
-    init(storage: IChartPointStorage, marketInfoManager: IMarketInfoManager) {
+    init(storage: IChartPointStorage, latestRateManager: ILatestRatesManager) {
         self.storage = storage
-        self.marketInfoManager = marketInfoManager
+        self.latestRateManager = latestRateManager
     }
 
     private var utcStartOfToday: Date {
@@ -75,14 +75,6 @@ extension ChartInfoManager: IChartInfoManager {
     func handleUpdated(chartPoints: [ChartPoint], key: ChartInfoKey) {
         var records = chartPoints.map {
             ChartPointRecord(key: key, chartPoint: $0)
-        }
-
-        let dayStartTimestamp = utcStartOfToday.timeIntervalSince1970
-        if key.chartType == .today, let updatePointIndex = records.firstIndex(where: { $0.chartPoint.timestamp == dayStartTimestamp }),
-           let marketInfo = marketInfoManager.marketInfo(key: PairKey(coinType: key.coinType, currencyCode: key.currencyCode)),
-           marketInfo.rateOpenDay != 0 {
-            let updateRecord = records[updatePointIndex]
-            records[updatePointIndex] = ChartPointRecord(key: key, chartPoint: ChartPoint(timestamp: updateRecord.chartPoint.timestamp, value: marketInfo.rateOpenDay, volume: updateRecord.chartPoint.volume))
         }
 
         storage.deleteChartPointRecords(key: key)

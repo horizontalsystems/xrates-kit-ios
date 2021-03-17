@@ -1,39 +1,39 @@
 import RxSwift
 import CoinKit
 
-class MarketInfoSyncManager {
-    private let schedulerFactory: MarketInfoSchedulerFactory
+class LatestRatesSyncManager {
+    private let schedulerFactory: LatestRatesSchedulerFactory
 
     private var coinTypes = [CoinType]()
     private var currencyCode: String
 
-    private var subjects = [PairKey: PublishSubject<MarketInfo>]()
-    private var currencySubjects = [String: PublishSubject<[CoinType: MarketInfo]>]()
+    private var subjects = [PairKey: PublishSubject<LatestRate>]()
+    private var currencySubjects = [String: PublishSubject<[CoinType: LatestRate]>]()
     private var scheduler: IMarketInfoScheduler?
 
     private let queue = DispatchQueue(label: "io.horizontalsystems.x_rates_kit.market_info_sync_manager", qos: .userInitiated)
 
-    init(currencyCode: String, schedulerFactory: MarketInfoSchedulerFactory) {
+    init(currencyCode: String, schedulerFactory: LatestRatesSchedulerFactory) {
         self.currencyCode = currencyCode
         self.schedulerFactory = schedulerFactory
     }
 
-    private func subject(key: PairKey) -> PublishSubject<MarketInfo> {
+    private func subject(key: PairKey) -> PublishSubject<LatestRate> {
         if let subject = subjects[key] {
             return subject
         }
 
-        let subject = PublishSubject<MarketInfo>()
+        let subject = PublishSubject<LatestRate>()
         subjects[key] = subject
         return subject
     }
 
-    private func currencySubject(currencyCode: String) -> PublishSubject<[CoinType: MarketInfo]> {
+    private func currencySubject(currencyCode: String) -> PublishSubject<[CoinType: LatestRate]> {
         if let subject = currencySubjects[currencyCode] {
             return subject
         }
 
-        let subject = PublishSubject<[CoinType: MarketInfo]>()
+        let subject = PublishSubject<[CoinType: LatestRate]>()
         currencySubjects[currencyCode] = subject
         return subject
     }
@@ -51,7 +51,7 @@ class MarketInfoSyncManager {
 
 }
 
-extension MarketInfoSyncManager: IMarketInfoSyncManager {
+extension LatestRatesSyncManager: ILatestRateSyncManager {
 
     func set(coinTypes: [CoinType]) {
         self.coinTypes = coinTypes
@@ -67,13 +67,13 @@ extension MarketInfoSyncManager: IMarketInfoSyncManager {
         scheduler?.forceSchedule()
     }
 
-    func marketInfoObservable(key: PairKey) -> Observable<MarketInfo> {
+    func latestRateObservable(key: PairKey) -> Observable<LatestRate> {
         queue.sync {
             subject(key: key).asObservable()
         }
     }
 
-    func marketInfosObservable(currencyCode: String) -> Observable<[CoinType: MarketInfo]> {
+    func latestRatesObservable(currencyCode: String) -> Observable<[CoinType: LatestRate]> {
         queue.sync {
             currencySubject(currencyCode: currencyCode).asObservable()
         }
@@ -81,17 +81,17 @@ extension MarketInfoSyncManager: IMarketInfoSyncManager {
 
 }
 
-extension MarketInfoSyncManager: IMarketInfoManagerDelegate {
+extension LatestRatesSyncManager: ILatestRatesManagerDelegate {
 
-    func didUpdate(marketInfo: MarketInfo, key: PairKey) {
+    func didUpdate(latestRate: LatestRate, key: PairKey) {
         queue.async {
-            self.subjects[key]?.onNext(marketInfo)
+            self.subjects[key]?.onNext(latestRate)
         }
     }
 
-    func didUpdate(marketInfos: [CoinType: MarketInfo], currencyCode: String) {
+    func didUpdate(latestRates: [CoinType: LatestRate], currencyCode: String) {
         queue.async {
-            self.currencySubjects[currencyCode]?.onNext(marketInfos)
+            self.currencySubjects[currencyCode]?.onNext(latestRates)
         }
     }
 

@@ -5,12 +5,10 @@ class CoinGeckoManager {
     private let disposeBag = DisposeBag()
 
     private let provider: CoinGeckoProvider
-    private let storage: IMarketInfoStorage
     private let coinInfoManager: CoinInfoManager
 
-    init(coinInfoManager: CoinInfoManager, provider: CoinGeckoProvider, storage: IMarketInfoStorage) {
+    init(coinInfoManager: CoinInfoManager, provider: CoinGeckoProvider) {
         self.provider = provider
-        self.storage = storage
         self.coinInfoManager = coinInfoManager
     }
 
@@ -19,15 +17,7 @@ class CoinGeckoManager {
 extension CoinGeckoManager: ICoinMarketsManager {
 
     func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int) -> Single<[CoinMarket]> {
-        provider
-            .topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: itemCount)
-            .do { [weak self] coinMarkets in
-                let marketInfoRecords = coinMarkets.map {
-                    MarketInfoRecord(marketInfo: $0.marketInfo, coinType: $0.coinData.coinType, coinCode: $0.coinData.code)
-                }
-
-                self?.storage.save(marketInfoRecords: marketInfoRecords)
-            }
+        provider.topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: itemCount)
     }
 
     func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coinTypes: [CoinType]) -> Single<[CoinMarket]> {

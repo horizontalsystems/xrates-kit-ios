@@ -70,17 +70,38 @@ public enum ChartType: Int, CaseIterable {
         }
     }
 
-    var days: Int {
+    var coinGeckoPointCount: Int {
+        switch self {
+        case .today, .day: return pointCount
+        default: return pointCount * 2
+        }
+    }
+
+    var coinGeckoDaysParameter: Int {
         switch self {
         case .today: return 1
         case .day: return 1
-        case .week: return 7
-        case .week2: return 14
-        case .month: return 30
-        case .month3: return 90
-        case .halfYear: return 180
-        case .year: return 360
-        case .year2: return 720
+        case .week: return 7 * 2
+        case .week2: return 14 * 2
+        case .month: return 30 * 2
+        case .month3: return 90 * 2
+        case .halfYear: return 180 * 2
+        case .year: return 360 * 2
+        case .year2: return 720 * 2
+        }
+    }
+
+    var intervalInSeconds: TimeInterval {
+        switch self {
+        case .today: return TimeInterval(interval * 60)              // 30 minutes
+        case .day: return TimeInterval(interval * 60)                // 30 minutes
+        case .week: return TimeInterval(interval * 60 * 60)          // 4 hours
+        case .week2: return TimeInterval(interval * 60 * 60)         // 8 hours
+        case .month: return TimeInterval(interval * 60 * 60)         // 12 hours
+        case .month3: return TimeInterval(interval * 24 * 60 * 60)   // 2 days
+        case .halfYear: return TimeInterval(interval * 24 * 60 * 60) // 3 days
+        case .year: return TimeInterval(interval * 24 * 60 * 60)     // 7 days
+        case .year2: return TimeInterval(interval * 24 * 60 * 60)    // 14 days
         }
     }
 

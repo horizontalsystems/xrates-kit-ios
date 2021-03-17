@@ -16,18 +16,20 @@ public struct MarketInfo {
 
     private let expirationInterval: TimeInterval
 
-    init(record: MarketInfoRecord, expirationInterval: TimeInterval) {
-        coinType = record.coinType
-        currencyCode = record.coinCurrency
-        rate = record.rate
-        rateOpenDay = record.rateOpenDay
-        rateDiff = record.rateDiff
-        volume = record.volume
-        marketCap = record.marketCap
-        supply = record.supply
-        liquidity = record.liquidity
-        rateDiffPeriod = record.rateDiffPeriod
-        timestamp = record.timestamp
+    init(coinType: CoinType, currencyCode: String, rate: Decimal, rateOpenDay: Decimal, rateDiff: Decimal,
+         volume: Decimal, supply: Decimal, rateDiffPeriod: Decimal, timestamp: TimeInterval,
+         liquidity: Decimal, marketCap: Decimal, expirationInterval: TimeInterval) {
+        self.coinType = coinType
+        self.currencyCode = currencyCode
+        self.rate = rate
+        self.rateOpenDay = rateOpenDay
+        self.rateDiff = rateDiff
+        self.volume = volume
+        self.supply = supply
+        self.rateDiffPeriod = rateDiffPeriod
+        self.timestamp = timestamp
+        self.liquidity = liquidity
+        self.marketCap = marketCap
 
         self.expirationInterval = expirationInterval
     }

@@ -3,34 +3,34 @@ import CoinKit
 
 // Market Info
 
-protocol IMarketInfoManager {
+protocol ILatestRatesManager {
     func lastSyncTimestamp(coinTypes: [CoinType], currencyCode: String) -> TimeInterval?
-    func marketInfo(key: PairKey) -> MarketInfo?
-    func handleUpdated(records: [MarketInfoRecord], currencyCode: String)
+    func latestRate(key: PairKey) -> LatestRate?
+    func handleUpdated(records: [LatestRateRecord], currencyCode: String)
     func notifyExpired(coinTypes: [CoinType], currencyCode: String)
 }
 
-protocol IMarketInfoManagerDelegate: AnyObject {
-    func didUpdate(marketInfo: MarketInfo, key: PairKey)
-    func didUpdate(marketInfos: [CoinType: MarketInfo], currencyCode: String)
+protocol ILatestRatesManagerDelegate: AnyObject {
+    func didUpdate(latestRate: LatestRate, key: PairKey)
+    func didUpdate(latestRates: [CoinType: LatestRate], currencyCode: String)
 }
 
-protocol IMarketInfoProvider: class {
-    func marketInfoRecords(coinTypes: [CoinType], currencyCode: String) -> Single<[MarketInfoRecord]>
+protocol ILatestRatesProvider: class {
+    func latestRateRecords(coinTypes: [CoinType], currencyCode: String) -> Single<[LatestRateRecord]>
 }
 
-protocol IMarketInfoStorage {
-    func marketInfoRecord(key: PairKey) -> MarketInfoRecord?
-    func marketInfoRecordsSortedByTimestamp(coinTypes: [CoinType], currencyCode: String) -> [MarketInfoRecord]
-    func save(marketInfoRecords: [MarketInfoRecord])
+protocol ILatestRatesStorage {
+    func latestRateRecord(key: PairKey) -> LatestRateRecord?
+    func latestRateRecordsSortedByTimestamp(coinTypes: [CoinType], currencyCode: String) -> [LatestRateRecord]
+    func save(marketInfoRecords: [LatestRateRecord])
 }
 
-protocol IMarketInfoSyncManager {
+protocol ILatestRateSyncManager {
     func set(coinTypes: [CoinType])
     func set(currencyCode: String)
     func refresh()
-    func marketInfoObservable(key: PairKey) -> Observable<MarketInfo>
-    func marketInfosObservable(currencyCode: String) -> Observable<[CoinType: MarketInfo]>
+    func latestRateObservable(key: PairKey) -> Observable<LatestRate>
+    func latestRatesObservable(currencyCode: String) -> Observable<[CoinType: LatestRate]>
 }
 
 protocol IMarketInfoScheduler {
@@ -49,8 +49,8 @@ protocol IMarketInfoSchedulerProvider {
 // Top Markets
 
 protocol ITopMarketsStorage {
-    func topMarkets(currencyCode: String, limit: Int) -> [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]
-    func save(topMarkets: [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)])
+    func topMarkets(currencyCode: String, limit: Int) -> [(coin: TopMarketCoin, marketInfo: LatestRateRecord)]
+    func save(topMarkets: [(coin: TopMarketCoin, marketInfo: LatestRateRecord)])
 }
 
 protocol ICoinMarketsManager {

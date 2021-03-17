@@ -21,4 +21,14 @@ enum InfoProvider: String {
         }
     }
 
+    var requestInterval: TimeInterval {
+        switch self {
+        case .CryptoCompare: return 0
+        case .CoinPaprika: return 0.15
+        case .CoinGecko: return 0.6
+        case .GraphNetwork: return 0
+        case .Horsys: return 0.15
+        }
+    }
+
 }
