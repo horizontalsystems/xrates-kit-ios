@@ -33,12 +33,12 @@ protocol ILatestRateSyncManager {
     func latestRatesObservable(currencyCode: String) -> Observable<[CoinType: LatestRate]>
 }
 
-protocol IMarketInfoScheduler {
+protocol ILatestRatesScheduler {
     func schedule()
     func forceSchedule()
 }
 
-protocol IMarketInfoSchedulerProvider {
+protocol ILatestRatesSchedulerProvider {
     var lastSyncTimestamp: TimeInterval? { get }
     var expirationInterval: TimeInterval { get }
     var retryInterval: TimeInterval { get }

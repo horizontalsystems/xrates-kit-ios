@@ -9,7 +9,7 @@ class LatestRatesSyncManager {
 
     private var subjects = [PairKey: PublishSubject<LatestRate>]()
     private var currencySubjects = [String: PublishSubject<[CoinType: LatestRate]>]()
-    private var scheduler: IMarketInfoScheduler?
+    private var scheduler: ILatestRatesScheduler?
 
     private let queue = DispatchQueue(label: "io.horizontalsystems.x_rates_kit.market_info_sync_manager", qos: .userInitiated)
 

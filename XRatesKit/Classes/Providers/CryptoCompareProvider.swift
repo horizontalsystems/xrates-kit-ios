@@ -165,6 +165,10 @@ extension CryptoCompareProvider: INewsProvider {
 extension CryptoCompareProvider: IFiatXRatesProvider {
 
     func latestFiatXRates(sourceCurrency: String, targetCurrency: String) -> Single<Decimal> {
+        guard sourceCurrency.uppercased() != targetCurrency.uppercased() else {
+            return Single.just(1)
+        }
+
         let (url, parameters) = urlAndParams(path: "/data/price", parameters: ["fsym": sourceCurrency, "tsyms": targetCurrency])
 
         let request = networkManager.session

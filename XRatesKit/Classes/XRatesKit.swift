@@ -124,10 +124,11 @@ extension XRatesKit {
 
         let horsysProvider = HorsysProvider(networkManager: networkManager)
         let coinGeckoProvider = CoinGeckoProvider(providerCoinsManager: providerCoinsManager, expirationInterval: marketInfoExpirationInterval, logger: logger)
+        let cryptoCompareProvider = CryptoCompareProvider(providerCoinsManager: providerCoinsManager, networkManager: networkManager, apiKey: cryptoCompareApiKey, timeoutInterval: 10, expirationInterval: marketInfoExpirationInterval, topMarketsCount: topMarketsCount, indicatorPointCount: indicatorPointCount)
         let coinGeckoManager = CoinGeckoManager(coinInfoManager: coinInfoManager, provider: coinGeckoProvider)
 
         let latestRatesManager = LatestRatesManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
-        let globalMarketInfoManager = GlobalMarketInfoManager(globalMarketInfoProvider: coinPaprikaProvider, defiMarketCapProvider: horsysProvider, storage: storage)
+        let globalMarketInfoManager = GlobalMarketInfoManager(globalMarketInfoProvider: coinPaprikaProvider, defiMarketCapProvider: horsysProvider, fiatXRatesProvider: cryptoCompareProvider, storage: storage)
 
         let latestRatesSchedulerFactory = LatestRatesSchedulerFactory(manager: latestRatesManager, provider: coinGeckoProvider, reachabilityManager: reachabilityManager, expirationInterval: marketInfoExpirationInterval, retryInterval: retryInterval, logger: logger)
         let latestRatesSyncManager = LatestRatesSyncManager(currencyCode: currencyCode, schedulerFactory: latestRatesSchedulerFactory)
@@ -141,7 +142,6 @@ extension XRatesKit {
 
         chartInfoManager.delegate = chartInfoSyncManager
 
-        let cryptoCompareProvider = CryptoCompareProvider(providerCoinsManager: providerCoinsManager, networkManager: networkManager, apiKey: cryptoCompareApiKey, timeoutInterval: 10, expirationInterval: marketInfoExpirationInterval, topMarketsCount: topMarketsCount, indicatorPointCount: indicatorPointCount)
         let newsPostManager = NewsManager(provider: cryptoCompareProvider, state: NewsState(expirationTime: 30 * 60))
 
         let kit = XRatesKit(

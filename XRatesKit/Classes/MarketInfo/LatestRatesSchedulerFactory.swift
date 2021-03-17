@@ -19,7 +19,7 @@ class LatestRatesSchedulerFactory {
         self.logger = logger
     }
 
-    func scheduler(coinTypes: [CoinType], currencyCode: String) -> MarketInfoScheduler {
+    func scheduler(coinTypes: [CoinType], currencyCode: String) -> LatestRatesScheduler {
         let schedulerProvider = LatestRatesSchedulerProvider(
                 coinTypes: coinTypes,
                 currencyCode: currencyCode,
@@ -29,7 +29,7 @@ class LatestRatesSchedulerFactory {
                 retryInterval: retryInterval
         )
 
-        return MarketInfoScheduler(provider: schedulerProvider, reachabilityManager: reachabilityManager, logger: logger)
+        return LatestRatesScheduler(provider: schedulerProvider, reachabilityManager: reachabilityManager, logger: logger)
     }
 
 }

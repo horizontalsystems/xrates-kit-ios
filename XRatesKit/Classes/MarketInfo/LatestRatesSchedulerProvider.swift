@@ -32,7 +32,7 @@ class LatestRatesSchedulerProvider {
 
 }
 
-extension LatestRatesSchedulerProvider: IMarketInfoSchedulerProvider {
+extension LatestRatesSchedulerProvider: ILatestRatesSchedulerProvider {
 
     var lastSyncTimestamp: TimeInterval? {
         manager.lastSyncTimestamp(coinTypes: coinTypes, currencyCode: currencyCode)
