@@ -1,10 +1,10 @@
 import RxSwift
 import HsToolKit
 
-class MarketInfoScheduler {
+class LatestRatesScheduler {
     private let bufferInterval: TimeInterval = 5
 
-    private let provider: IMarketInfoSchedulerProvider
+    private let provider: ILatestRatesSchedulerProvider
     private let reachabilityManager: IReachabilityManager
     private var logger: Logger?
 
@@ -14,7 +14,7 @@ class MarketInfoScheduler {
     private var syncInProgress = false
     private var expirationNotified = false
 
-    init(provider: IMarketInfoSchedulerProvider, reachabilityManager: IReachabilityManager, logger: Logger? = nil) {
+    init(provider: ILatestRatesSchedulerProvider, reachabilityManager: IReachabilityManager, logger: Logger? = nil) {
         self.provider = provider
         self.reachabilityManager = reachabilityManager
         self.logger = logger
@@ -115,7 +115,7 @@ class MarketInfoScheduler {
 
 }
 
-extension MarketInfoScheduler: IMarketInfoScheduler {
+extension LatestRatesScheduler: ILatestRatesScheduler {
 
     func schedule() {
         logger?.debug("MARKET INFO: Auto schedule")

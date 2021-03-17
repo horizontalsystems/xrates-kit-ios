@@ -3,7 +3,7 @@ import RxSwift
 class ChartInfoSyncManager {
     private let schedulerFactory: ChartPointSchedulerFactory
     private let chartInfoManager: IChartInfoManager
-    private let marketInfoSyncManager: IMarketInfoSyncManager
+    private let marketInfoSyncManager: ILatestRateSyncManager
 
     private var subjects = [ChartInfoKey: PublishSubject<ChartInfo>]()
     private var schedulers = [ChartInfoKey: ChartPointScheduler]()
@@ -12,7 +12,7 @@ class ChartInfoSyncManager {
 
     private let queue = DispatchQueue(label: "io.horizontalsystems.x_rates_kit.chart_info_sync_manager", qos: .userInitiated)
 
-    init(schedulerFactory: ChartPointSchedulerFactory, chartInfoManager: IChartInfoManager, marketInfoSyncManager: IMarketInfoSyncManager) {
+    init(schedulerFactory: ChartPointSchedulerFactory, chartInfoManager: IChartInfoManager, marketInfoSyncManager: ILatestRateSyncManager) {
         self.schedulerFactory = schedulerFactory
         self.chartInfoManager = chartInfoManager
         self.marketInfoSyncManager = marketInfoSyncManager

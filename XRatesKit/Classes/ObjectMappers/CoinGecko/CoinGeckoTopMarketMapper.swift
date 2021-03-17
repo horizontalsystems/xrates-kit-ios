@@ -46,22 +46,25 @@ class CoinGeckoTopMarketMapper: IApiMapper {
             
             let rateDiffPeriod = Decimal(convertibleValue: tokenData[priceDiffFieldName]) ?? 0
             let rateDiff24h = Decimal(convertibleValue: tokenData["price_change_percentage_24h"]) ?? 0
-            
-            let record = MarketInfoRecord(
-                coinType: coinType,
-                coinCode: coinCode.uppercased(),
-                currencyCode: currencyCode,
-                rate: rate,
-                openDay: 0,
-                diff: rateDiff24h,
-                volume: volume,
-                marketCap: marketCap,
-                supply: supply,
-                rateDiffPeriod: rateDiffPeriod
-            )
+            let timestamp = Date().timeIntervalSince1970
+
             let coinData = CoinData(coinType: coinType, code: coinCode.uppercased(), name: coinTitle)
-            
-            return CoinMarket(coinData: coinData, record: record, expirationInterval: expirationInterval)
+            let marketInfo = MarketInfo(
+                    coinType: coinType,
+                    currencyCode: currencyCode,
+                    rate: rate,
+                    rateOpenDay: 0,
+                    rateDiff: rateDiff24h,
+                    volume: volume,
+                    supply: supply,
+                    rateDiffPeriod: rateDiffPeriod,
+                    timestamp: timestamp,
+                    liquidity: 0,
+                    marketCap: marketCap,
+                    expirationInterval: expirationInterval
+            )
+
+            return CoinMarket(coinData: coinData, marketInfo: marketInfo)
         }
     }
     

@@ -67,7 +67,7 @@ class CoinPaprikaProvider {
         return networkManager.single(request: request)
     }
 
-    private func marketOverviewData(currencyCode: String) -> Single<CoinPaprikaGlobalMarketInfoMapper.MarketPartialInfo> {
+    private func marketOverviewData() -> Single<CoinPaprikaGlobalMarketInfoMapper.MarketPartialInfo> {
         let request = networkManager.session.request("\(baseUrl)/global", method: .get, encoding: JSONEncoding())
 
         return networkManager.single(request: request, mapper: CoinPaprikaGlobalMarketInfoMapper())
@@ -83,9 +83,9 @@ class CoinPaprikaProvider {
 
 extension CoinPaprikaProvider {
 
-    func globalCoinMarketsInfo(currencyCode: String) -> RxSwift.Single<AllMarketInfo> {
+    func globalCoinMarketsInfo() -> RxSwift.Single<AllMarketInfo> {
         Single.zip(
-            marketOverviewData(currencyCode: currencyCode),
+            marketOverviewData(),
             marketCap(timestamp: Date().timeIntervalSince1970 - Self.hours24InSeconds)
         ) { partialOverview, btcMarketCap in
             let openingMarketCap = 100 * partialOverview.marketCap / (partialOverview.marketCapDiff24h + 100)

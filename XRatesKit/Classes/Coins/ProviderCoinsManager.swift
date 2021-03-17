@@ -55,6 +55,17 @@ class ProviderCoinsManager {
         }
     }
 
+    func providerIds(coinTypes: [CoinType], provider: InfoProvider) -> [CoinType: String] {
+        var map = [CoinType: String]()
+        for coinType in coinTypes {
+            if let coinCode = providerId(coinType: coinType, provider: provider) {
+                map[coinType] = coinCode
+            }
+        }
+
+        return map
+    }
+
 }
 
 extension ProviderCoinsManager {

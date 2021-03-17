@@ -63,21 +63,15 @@ class MarketInfoCell: UITableViewCell {
         super.init(coder: aDecoder)
     }
 
-    func bind(coinCode: String, marketInfo: MarketInfo?) {
+    func bind(coinCode: String, latestRate: LatestRate?) {
         coinCodeLabel.text = coinCode
 
-        if let marketInfo = marketInfo {
-            rateLabel.text = MarketInfoCell.rateFormatter.string(from: marketInfo.rate as NSNumber)
-            rateLabel.textColor = marketInfo.expired ? .lightGray : .black
+        if let latestRate = latestRate {
+            rateLabel.text = MarketInfoCell.rateFormatter.string(from: latestRate.rate as NSNumber)
+            rateLabel.textColor = latestRate.expired ? .lightGray : .black
 
-            diffLabel.text = MarketInfoCell.rateFormatter.string(from: marketInfo.rateDiff as NSNumber)
-
-            let volumeText = MarketInfoCell.marketInfoFormatter.string(from: marketInfo.volume as NSNumber) ?? "n/a"
-            let marketCapText = MarketInfoCell.marketInfoFormatter.string(from: marketInfo.marketCap as NSNumber) ?? "n/a"
-            let supplyText = MarketInfoCell.marketInfoFormatter.string(from: marketInfo.supply as NSNumber) ?? "n/a"
-            marketInfoLabel.text = "VLM: \(volumeText)\nMKC: \(marketCapText)\nSPL: \(supplyText)"
-
-            dateLabel.text = MarketInfoCell.dateFormatter.string(from: Date(timeIntervalSince1970: marketInfo.timestamp))
+            diffLabel.text = MarketInfoCell.rateFormatter.string(from: latestRate.rateDiff24h as NSNumber)
+            dateLabel.text = MarketInfoCell.dateFormatter.string(from: Date(timeIntervalSince1970: latestRate.timestamp))
         } else {
             rateLabel.text = nil
             diffLabel.text = "n/a"

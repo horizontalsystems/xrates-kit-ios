@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (5.2.2)
+  - Alamofire (5.4.1)
   - Chart.swift (1.2):
     - SnapKit (~> 5.0)
   - CoinKit.swift (0.1.0):
@@ -70,11 +70,11 @@ CHECKOUT OPTIONS:
     :commit: de2cce21ac3ab6ace727132dc95fbb42b717eaa1
     :git: https://github.com/horizontalsystems/coin-kit-ios
   HsToolKit.swift:
-    :commit: 52d655b99381d1940e215f22382f0814cc0c8bc3
+    :commit: 2f088bff0c737fb1c74e007ce85a9f1ea685cfc7
     :git: https://github.com/horizontalsystems/hs-tool-kit-ios
 
 SPEC CHECKSUMS:
-  Alamofire: 814429acc853c6c54ff123fc3d2ef66803823ce0
+  Alamofire: 2291f7d21ca607c491dd17642e5d40fdcda0e65c
   Chart.swift: 2634973317e2637347d160b99992b7b21cbf7644
   CoinKit.swift: 346a1c1d64e8664d54e8434241682a6f3bc7a0be
   GRDB.swift: 8cc3ab7c8b8b4ac1761deb8dca4b51c1c9d429f8

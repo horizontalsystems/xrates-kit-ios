@@ -9,14 +9,15 @@ class CoinGeckoProvider {
     private let provider = InfoProvider.CoinGecko
 
     private let providerCoinsManager: ProviderCoinsManager
-    private let networkManager: NetworkManager
+    private let networkManager: ProviderNetworkManager
     private let expirationInterval: TimeInterval
     private let coinsPerPage = 250
 
-    init(providerCoinsManager: ProviderCoinsManager, networkManager: NetworkManager, expirationInterval: TimeInterval) {
+    init(providerCoinsManager: ProviderCoinsManager, expirationInterval: TimeInterval, logger: Logger) {
         self.providerCoinsManager = providerCoinsManager
-        self.networkManager = networkManager
         self.expirationInterval = expirationInterval
+
+        networkManager = ProviderNetworkManager(requestInterval: provider.requestInterval, logger: logger)
     }
 
     private func marketsRequest(currencyCode: String, fetchDiffPeriod: TimePeriod, pageParams: String = "", coinIdsParams: String = "") -> DataRequest {
@@ -64,7 +65,7 @@ extension CoinGeckoProvider {
 
         return networkManager.single(request: request, mapper: mapper)
                 .flatMap { [weak self] coinMarkets -> Single<[CoinMarket]> in
-                    guard let provider = self else {
+                    guard let provider = self, coinMarkets.count > 0 else {
                         return Single.just(coinMarkets)
                     }
 
@@ -78,11 +79,8 @@ extension CoinGeckoProvider {
                     }
                     nextItemCount = nextItemCount - provider.coinsPerPage
 
-                    let single = provider.topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: nextItemCount, page: page + 1)
-
-                    return Single<Int>
-                            .timer(.seconds(1), scheduler: SerialDispatchQueueScheduler(qos: .background))
-                            .flatMap { _ in single }
+                    return provider
+                            .topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: nextItemCount, page: page + 1)
                             .map { nextCoinMarkets -> [CoinMarket] in coinMarkets + nextCoinMarkets }
                 }
     }
@@ -106,11 +104,106 @@ extension CoinGeckoProvider: IChartPointProvider {
             return Single.error(ProviderCoinsManager.ExternalIdError.noMatchingCoinId)
         }
 
-
-        let url = "\(provider.baseUrl)/coins/\(externalId)/market_chart?vs_currency=\(key.currencyCode)&days=\(key.chartType.days)"
+        let url = "\(provider.baseUrl)/coins/\(externalId)/market_chart?vs_currency=\(key.currencyCode)&days=\(key.chartType.coinGeckoDaysParameter)"
         let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
 
         return networkManager.single(request: request, mapper: CoinGeckoMarketChartsMapper())
+                .map { points in
+                    guard key.chartType.coinGeckoPointCount <= points.count else {
+                        return points
+                    }
+
+                    var result = [ChartPoint]()
+                    var nextPointTime: TimeInterval = 0
+                    var aggregatedVolume: Decimal?
+
+                    for point in points {
+                        point.volume.flatMap { aggregatedVolume = (aggregatedVolume ?? 0) + $0 }
+
+                        if point.timestamp >= nextPointTime {
+                            let volume = key.chartType.resource == "histoday" ? aggregatedVolume : nil
+                            result.append(ChartPoint(timestamp: point.timestamp, value: point.value, volume: volume))
+
+                            nextPointTime = point.timestamp + key.chartType.intervalInSeconds - 180
+                            aggregatedVolume = nil
+                        }
+                    }
+
+                    return result
+                }
+    }
+
+}
+
+extension CoinGeckoProvider: ILatestRatesProvider {
+
+    func latestRateRecords(coinTypes: [CoinType], currencyCode: String) -> Single<[LatestRateRecord]> {
+        var coinTypesMap = [String: [CoinType]]()
+        for coinType in coinTypes {
+            if let providerCoinId = providerCoinsManager.providerId(coinType: coinType, provider: .CoinGecko) {
+                if coinTypesMap[providerCoinId] == nil {
+                    coinTypesMap[providerCoinId] = [coinType]
+                } else {
+                    coinTypesMap[providerCoinId]?.append(coinType)
+                }
+            }
+        }
+
+        let coinIdsParams = "&ids=\(coinTypesMap.keys.joined(separator: ","))"
+
+        let url = "\(provider.baseUrl)/simple/price?\(coinIdsParams)" +
+                        "&vs_currencies=\(currencyCode)&include_market_cap=false" +
+                        "&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
+
+        let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
+
+        return networkManager.single(request: request, mapper: CoinGeckoCoinPriceMapper(coinTypesMap: coinTypesMap, currencyCode: currencyCode))
+    }
+
+}
+
+extension CoinGeckoProvider: IHistoricalRateProvider {
+
+    func getHistoricalRate(coinType: CoinType, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
+        guard let externalId = providerCoinsManager.providerId(coinType: coinType, provider: .CoinGecko) else {
+            return Single.error(ProviderCoinsManager.ExternalIdError.noMatchingCoinId)
+        }
+
+        let currentTime = Date().timeIntervalSince1970
+        let startTime, endTime: TimeInterval
+
+        if currentTime - timestamp <= 24 - 10 * 60 {
+            startTime = timestamp - 10 * 60
+            endTime = timestamp + 10 * 60
+        } else {
+            startTime = timestamp - 2 * 60 * 60
+            endTime = timestamp + 2 * 60 * 60
+        }
+
+        let url = "\(provider.baseUrl)/coins/\(externalId)/market_chart/range?vs_currency=\(currencyCode)&from=\(startTime)&to=\(endTime)"
+        let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
+
+        return networkManager.single(request: request, mapper: CoinGeckoMarketChartsMapper())
+                .map { rates in
+                    var nearestTime: TimeInterval?
+                    var nearestRate: Decimal = 0
+
+                    for rate in rates {
+                        let timeDiff = abs(rate.timestamp - timestamp)
+
+                        if let time = nearestTime {
+                            if timeDiff < time {
+                                nearestTime = timeDiff
+                                nearestRate = rate.value
+                            }
+                        } else {
+                            nearestTime = timeDiff
+                            nearestRate = rate.value
+                        }
+                    }
+
+                    return nearestRate
+                }
     }
 
 }

@@ -20,6 +20,7 @@ class TopMarketController: UIViewController {
     private let globalVolumeLabel = UILabel()
     private let globalVolumeDiffLabel = UILabel()
     private let globalDominanceLabel = UILabel()
+    private let marketCapLabel = UILabel()
     private let defiMarketCapLabel = UILabel()
     private let defiTvl = UILabel()
 
@@ -87,16 +88,16 @@ class TopMarketController: UIViewController {
         globalDominanceLabel.font = .systemFont(ofSize: 14)
         globalDominanceLabel.textColor = .black
 
-        globalWrapper.addSubview(defiMarketCapLabel)
-        defiMarketCapLabel.snp.makeConstraints { maker in
-            maker.top.equalTo(globalVolumeLabel.snp.bottom).offset(4)
-            maker.leading.equalTo(globalVolumeLabel.snp.trailing).offset(8)
+        globalWrapper.addSubview(marketCapLabel)
+        marketCapLabel.snp.makeConstraints { maker in
+            maker.top.equalTo(globalVolumeDiffLabel.snp.bottom).offset(4)
+            maker.leading.equalTo(globalVolumeDiffLabel.snp.leading)
             maker.trailing.equalToSuperview()
             maker.height.equalTo(28)
         }
 
-        defiMarketCapLabel.font = .systemFont(ofSize: 14)
-        defiMarketCapLabel.textColor = .black
+        marketCapLabel.font = .systemFont(ofSize: 14)
+        marketCapLabel.textColor = .black
 
         globalWrapper.addSubview(defiTvl)
         defiTvl.snp.makeConstraints { maker in
@@ -108,6 +109,17 @@ class TopMarketController: UIViewController {
 
         defiTvl.font = .systemFont(ofSize: 14)
         defiTvl.textColor = .black
+
+        globalWrapper.addSubview(defiMarketCapLabel)
+        defiMarketCapLabel.snp.makeConstraints { maker in
+            maker.top.equalTo(marketCapLabel.snp.bottom).offset(4)
+            maker.leading.equalTo(marketCapLabel.snp.leading)
+            maker.trailing.equalToSuperview()
+            maker.height.equalTo(28)
+        }
+
+        defiMarketCapLabel.font = .systemFont(ofSize: 14)
+        defiMarketCapLabel.textColor = .black
 
         view.addSubview(segmentedView)
         segmentedView.snp.makeConstraints { maker in
@@ -201,6 +213,7 @@ class TopMarketController: UIViewController {
             globalVolumeLabel.text = nil
             globalVolumeDiffLabel.text = nil
             globalDominanceLabel.text = nil
+            marketCapLabel.text = nil
             defiMarketCapLabel.text = nil
             defiTvl.text = nil
 
@@ -210,6 +223,7 @@ class TopMarketController: UIViewController {
         globalVolumeLabel.text = "Vol: \(string(from: globalInfo.volume24h))"
         globalVolumeDiffLabel.text = "VolDiff: \(string(from: globalInfo.volume24hDiff24h))"
         globalDominanceLabel.text = "Dom: \(string(from: globalInfo.btcDominance))"
+        marketCapLabel.text = "Cap: \(string(from: globalInfo.marketCap / 1_000_000))M"
         defiMarketCapLabel.text = "DefiCap: \(string(from: globalInfo.defiMarketCap / 1_000_000))M"
         defiTvl.text = "TVL: \(string(from: globalInfo.defiTvl / 1_000_000))M"
     }

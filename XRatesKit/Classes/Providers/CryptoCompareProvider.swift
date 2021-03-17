@@ -39,9 +39,9 @@ class CryptoCompareProvider {
 
 }
 
-extension CryptoCompareProvider: IMarketInfoProvider {
+extension CryptoCompareProvider: ILatestRatesProvider {
 
-    func marketInfoRecords(coinTypes: [CoinType], currencyCode: String) -> Single<[MarketInfoRecord]> {
+    func latestRateRecords(coinTypes: [CoinType], currencyCode: String) -> Single<[LatestRateRecord]> {
         guard !coinTypes.isEmpty else {
             return Single.just([])
         }
@@ -55,8 +55,8 @@ extension CryptoCompareProvider: IMarketInfoProvider {
                 .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
 
         return networkManager.single(request: request)
-                    .map { [weak providerCoinsManager] (response: CryptoCompareMarketInfoResponse) -> [MarketInfoRecord] in
-                        var records = [MarketInfoRecord]()
+                    .map { [weak providerCoinsManager] (response: CryptoCompareMarketInfoResponse) -> [LatestRateRecord] in
+                        var records = [LatestRateRecord]()
 
                         for (coinCode, values) in response.values {
                             for (currencyCode, marketInfoResponse) in values {
@@ -65,7 +65,7 @@ extension CryptoCompareProvider: IMarketInfoProvider {
                                 }
 
                                 for coinType in coinTypes {
-                                    let record = MarketInfoRecord(coinType: coinType, coinCode: coinCode, currencyCode: currencyCode, response: marketInfoResponse)
+                                    let record = LatestRateRecord(coinType: coinType, currencyCode: currencyCode, response: marketInfoResponse)
                                     records.append(record)
                                 }
                             }
@@ -165,6 +165,10 @@ extension CryptoCompareProvider: INewsProvider {
 extension CryptoCompareProvider: IFiatXRatesProvider {
 
     func latestFiatXRates(sourceCurrency: String, targetCurrency: String) -> Single<Decimal> {
+        guard sourceCurrency.uppercased() != targetCurrency.uppercased() else {
+            return Single.just(1)
+        }
+
         let (url, parameters) = urlAndParams(path: "/data/price", parameters: ["fsym": sourceCurrency, "tsyms": targetCurrency])
 
         let request = networkManager.session

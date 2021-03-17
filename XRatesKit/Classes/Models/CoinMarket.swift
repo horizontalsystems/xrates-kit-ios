@@ -3,11 +3,11 @@ import CoinKit
 
 public struct CoinMarket {
     public let coinData: CoinData
-    public var marketInfo: MarketInfo
+    public let marketInfo: MarketInfo
 
-    init(coinData: CoinData, record: MarketInfoRecord, expirationInterval: TimeInterval) {
+    init(coinData: CoinData, marketInfo: MarketInfo) {
         self.coinData = coinData
-        marketInfo = MarketInfo(record: record, expirationInterval: expirationInterval)
+        self.marketInfo = marketInfo
     }
 
 }

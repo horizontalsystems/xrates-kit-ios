@@ -38,7 +38,7 @@ class HorsysProvider {
 
 extension HorsysProvider {
 
-    func globalDefiMarketCap(currencyCode: String) -> Single<DefiMarketInfo> {
+    func globalDefiMarketCap() -> Single<DefiMarketInfo> {
         let url = "\(provider.baseUrl)/markets/global/defi"
         let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
 

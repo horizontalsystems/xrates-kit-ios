@@ -2,15 +2,15 @@ import Foundation
 import HsToolKit
 import CoinKit
 
-class MarketInfoSchedulerFactory {
-    private let manager: IMarketInfoManager
-    private let provider: IMarketInfoProvider
+class LatestRatesSchedulerFactory {
+    private let manager: ILatestRatesManager
+    private let provider: ILatestRatesProvider
     private let reachabilityManager: IReachabilityManager
     private let expirationInterval: TimeInterval
     private let retryInterval: TimeInterval
     private var logger: Logger?
 
-    init(manager: IMarketInfoManager, provider: IMarketInfoProvider, reachabilityManager: IReachabilityManager, expirationInterval: TimeInterval, retryInterval: TimeInterval, logger: Logger? = nil) {
+    init(manager: ILatestRatesManager, provider: ILatestRatesProvider, reachabilityManager: IReachabilityManager, expirationInterval: TimeInterval, retryInterval: TimeInterval, logger: Logger? = nil) {
         self.manager = manager
         self.provider = provider
         self.reachabilityManager = reachabilityManager
@@ -19,8 +19,8 @@ class MarketInfoSchedulerFactory {
         self.logger = logger
     }
 
-    func scheduler(coinTypes: [CoinType], currencyCode: String) -> MarketInfoScheduler {
-        let schedulerProvider = MarketInfoSchedulerProvider(
+    func scheduler(coinTypes: [CoinType], currencyCode: String) -> LatestRatesScheduler {
+        let schedulerProvider = LatestRatesSchedulerProvider(
                 coinTypes: coinTypes,
                 currencyCode: currencyCode,
                 manager: manager,
@@ -29,7 +29,7 @@ class MarketInfoSchedulerFactory {
                 retryInterval: retryInterval
         )
 
-        return MarketInfoScheduler(provider: schedulerProvider, reachabilityManager: reachabilityManager, logger: logger)
+        return LatestRatesScheduler(provider: schedulerProvider, reachabilityManager: reachabilityManager, logger: logger)
     }
 
 }

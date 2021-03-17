@@ -18,25 +18,6 @@ class GrdbStorage {
     var migrator: DatabaseMigrator {
         var migrator = DatabaseMigrator()
 
-        migrator.registerMigration("createMarketInfo") { db in
-            try db.create(table: MarketInfoRecord.databaseTableName) { t in
-                t.column(MarketInfoRecord.Columns.coinCode.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.currencyCode.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.timestamp.name, .double).notNull()
-                t.column(MarketInfoRecord.Columns.rate.name, .text).notNull()
-                t.column("open24Hour", .text).notNull()
-                t.column(MarketInfoRecord.Columns.diff.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.volume.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.marketCap.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.supply.name, .text).notNull()
-
-                t.primaryKey([
-                    MarketInfoRecord.Columns.coinCode.name,
-                    MarketInfoRecord.Columns.currencyCode.name,
-                ], onConflict: .replace)
-            }
-        }
-
         migrator.registerMigration("createHistoricalRates") { db in
             try db.create(table: HistoricalRate.databaseTableName) { t in
                 t.column(HistoricalRate.Columns.coinId.name, .text).notNull()
@@ -87,27 +68,6 @@ class GrdbStorage {
             }
         }
 
-        migrator.registerMigration("addMarketInfoOpenDay") { db in
-            try db.drop(table: MarketInfoRecord.databaseTableName)
-
-            try db.create(table: MarketInfoRecord.databaseTableName) { t in
-                t.column(MarketInfoRecord.Columns.coinCode.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.currencyCode.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.timestamp.name, .double).notNull()
-                t.column(MarketInfoRecord.Columns.rate.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.openDay.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.diff.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.volume.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.marketCap.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.supply.name, .text).notNull()
-
-                t.primaryKey([
-                    MarketInfoRecord.Columns.coinCode.name,
-                    MarketInfoRecord.Columns.currencyCode.name,
-                ], onConflict: .replace)
-            }
-        }
-
         migrator.registerMigration("createGlobalMarketInfo") { db in
             try db.create(table: GlobalCoinMarket.databaseTableName) { t in
                 t.column(GlobalCoinMarket.Columns.currencyCode.name, .text).notNull()
@@ -124,53 +84,6 @@ class GrdbStorage {
 
                 t.primaryKey([
                     GlobalCoinMarket.Columns.currencyCode.name
-                ], onConflict: .replace)
-            }
-        }
-
-        migrator.registerMigration("addMarketInfoLiquidityAndDiffPeriod") { db in
-            try db.drop(table: MarketInfoRecord.databaseTableName)
-
-            try db.create(table: MarketInfoRecord.databaseTableName) { t in
-                t.column(MarketInfoRecord.Columns.coinCode.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.currencyCode.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.timestamp.name, .double).notNull()
-                t.column(MarketInfoRecord.Columns.rate.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.openDay.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.diff.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.volume.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.marketCap.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.supply.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.liquidity.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.rateDiffPeriod.name, .text).notNull()
-
-                t.primaryKey([
-                    MarketInfoRecord.Columns.coinCode.name,
-                    MarketInfoRecord.Columns.currencyCode.name,
-                ], onConflict: .replace)
-            }
-        }
-
-        migrator.registerMigration("addMarketInfoCoinId") { db in
-            try db.drop(table: MarketInfoRecord.databaseTableName)
-
-            try db.create(table: MarketInfoRecord.databaseTableName) { t in
-                t.column(MarketInfoRecord.Columns.coinId.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.coinCode.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.currencyCode.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.timestamp.name, .double).notNull()
-                t.column(MarketInfoRecord.Columns.rate.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.openDay.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.diff.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.volume.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.marketCap.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.supply.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.liquidity.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.rateDiffPeriod.name, .text).notNull()
-
-                t.primaryKey([
-                    MarketInfoRecord.Columns.coinCode.name,
-                    MarketInfoRecord.Columns.currencyCode.name,
                 ], onConflict: .replace)
             }
         }
@@ -235,33 +148,7 @@ class GrdbStorage {
             }
         }
 
-        migrator.registerMigration("changePrimaryKeyForMarketInfoRecord") { db in
-            if try db.tableExists(MarketInfoRecord.databaseTableName) {
-                try db.drop(table: MarketInfoRecord.databaseTableName)
-            }
-
-            try db.create(table: MarketInfoRecord.databaseTableName) { t in
-                t.column(MarketInfoRecord.Columns.coinId.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.coinCode.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.currencyCode.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.timestamp.name, .double).notNull()
-                t.column(MarketInfoRecord.Columns.rate.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.openDay.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.diff.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.volume.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.marketCap.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.supply.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.liquidity.name, .text).notNull()
-                t.column(MarketInfoRecord.Columns.rateDiffPeriod.name, .text).notNull()
-
-                t.primaryKey([
-                    MarketInfoRecord.Columns.coinId.name,
-                    MarketInfoRecord.Columns.currencyCode.name,
-                ], onConflict: .replace)
-            }
-        }
-
-        migrator.registerMigration("updateChartAndHistoricalWithCoinId") { db in
+        migrator.registerMigration("changeChartAndHistoricalCoinId") { db in
             if try db.tableExists(ChartPointRecord.databaseTableName) {
                 try db.drop(table: ChartPointRecord.databaseTableName)
             }
@@ -272,7 +159,7 @@ class GrdbStorage {
                 t.column(ChartPointRecord.Columns.chartType.name, .integer).notNull()
                 t.column(ChartPointRecord.Columns.timestamp.name, .double).notNull()
                 t.column(ChartPointRecord.Columns.value.name, .text).notNull()
-                t.column(ChartPointRecord.Columns.volume.name).notNull()
+                t.column(ChartPointRecord.Columns.volume.name)
 
                 t.primaryKey([
                     ChartPointRecord.Columns.coinId.name,
@@ -298,7 +185,25 @@ class GrdbStorage {
                     HistoricalRate.Columns.timestamp.name,
                 ], onConflict: .replace)
             }
+        }
 
+        migrator.registerMigration("recreateLatestRates") { db in
+            if try db.tableExists("market_info") {
+                try db.drop(table: "market_info")
+            }
+
+            try db.create(table: LatestRateRecord.databaseTableName) { t in
+                t.column(LatestRateRecord.Columns.coinId.name, .text).notNull()
+                t.column(LatestRateRecord.Columns.currencyCode.name, .text).notNull()
+                t.column(LatestRateRecord.Columns.rate.name, .text).notNull()
+                t.column(LatestRateRecord.Columns.rateDiff24h.name, .text).notNull()
+                t.column(LatestRateRecord.Columns.timestamp.name, .double).notNull()
+
+                t.primaryKey([
+                    LatestRateRecord.Columns.coinId.name,
+                    LatestRateRecord.Columns.currencyCode.name,
+                ], onConflict: .replace)
+            }
         }
 
         return migrator
@@ -306,24 +211,24 @@ class GrdbStorage {
 
 }
 
-extension GrdbStorage: IMarketInfoStorage {
+extension GrdbStorage: ILatestRatesStorage {
 
-    func marketInfoRecord(key: PairKey) -> MarketInfoRecord? {
+    func latestRateRecord(key: PairKey) -> LatestRateRecord? {
         try! dbPool.read { db in
-            try MarketInfoRecord.filter(MarketInfoRecord.Columns.coinId == key.coinType.id && MarketInfoRecord.Columns.currencyCode == key.currencyCode).fetchOne(db)
+            try LatestRateRecord.filter(LatestRateRecord.Columns.coinId == key.coinType.id && LatestRateRecord.Columns.currencyCode == key.currencyCode).fetchOne(db)
         }
     }
 
-    func marketInfoRecordsSortedByTimestamp(coinTypes: [CoinType], currencyCode: String) -> [MarketInfoRecord] {
+    func latestRateRecordsSortedByTimestamp(coinTypes: [CoinType], currencyCode: String) -> [LatestRateRecord] {
         try! dbPool.read { db in
-            try MarketInfoRecord
-                    .filter(coinTypes.map{ $0.id }.contains(MarketInfoRecord.Columns.coinId) && MarketInfoRecord.Columns.currencyCode == currencyCode)
-                    .order(MarketInfoRecord.Columns.timestamp)
+            try LatestRateRecord
+                    .filter(coinTypes.map{ $0.id }.contains(LatestRateRecord.Columns.coinId) && LatestRateRecord.Columns.currencyCode == currencyCode)
+                    .order(LatestRateRecord.Columns.timestamp)
                     .fetchAll(db)
         }
     }
 
-    func save(marketInfoRecords: [MarketInfoRecord]) {
+    func save(marketInfoRecords: [LatestRateRecord]) {
         _ = try! dbPool.write { db in
             for rate in marketInfoRecords {
                 try rate.insert(db)
@@ -335,9 +240,9 @@ extension GrdbStorage: IMarketInfoStorage {
 
 extension GrdbStorage: ITopMarketsStorage {
 
-    func topMarkets(currencyCode: String, limit: Int) -> [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)] {
-        try! dbPool.read { db -> [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)] in
-            let marketInfoC = MarketInfoRecord.Columns.allCases.count
+    func topMarkets(currencyCode: String, limit: Int) -> [(coin: TopMarketCoin, marketInfo: LatestRateRecord)] {
+        try! dbPool.read { db -> [(coin: TopMarketCoin, marketInfo: LatestRateRecord)] in
+            let marketInfoC = LatestRateRecord.Columns.allCases.count
             let coinC = TopMarketCoin.Columns.allCases.count
 
             let adapter = ScopeAdapter([
@@ -354,7 +259,7 @@ extension GrdbStorage: ITopMarketsStorage {
                       """
 
             let rows = try Row.fetchCursor(db, sql: sql, adapter: adapter)
-            var topMarkets = [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]()
+            var topMarkets = [(coin: TopMarketCoin, marketInfo: LatestRateRecord)]()
 
             while let row = try rows.next() {
                 topMarkets.append((coin: row["coin"], marketInfo: row["marketInfo"]))
@@ -364,7 +269,7 @@ extension GrdbStorage: ITopMarketsStorage {
         }
     }
 
-    func save(topMarkets: [(coin: TopMarketCoin, marketInfo: MarketInfoRecord)]) {
+    func save(topMarkets: [(coin: TopMarketCoin, marketInfo: LatestRateRecord)]) {
         _ = try! dbPool.write { db in
             try TopMarketCoin.deleteAll(db)
             var position = 0
