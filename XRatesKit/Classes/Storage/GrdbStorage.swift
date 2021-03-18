@@ -206,6 +206,32 @@ class GrdbStorage {
             }
         }
 
+        migrator.registerMigration("createCoinFunds") { db in
+            try db.create(table: CoinFund.databaseTableName) { t in
+                t.column(CoinFund.Columns.id.name, .text).notNull().primaryKey(onConflict: .replace)
+                t.column(CoinFund.Columns.name.name, .text).notNull()
+                t.column(CoinFund.Columns.url.name, .text).notNull()
+                t.column(CoinFund.Columns.category.name, .text).notNull()
+            }
+        }
+
+        migrator.registerMigration("createCoinFundCoinInfos") { db in
+            try db.create(table: CoinFundCoinInfo.databaseTableName) { t in
+                t.column(CoinFundCoinInfo.Columns.coinFundId.name, .text).notNull()
+                t.column(CoinFundCoinInfo.Columns.coinInfoId.name, .text).notNull()
+
+                t.primaryKey([CoinFundCoinInfo.Columns.coinFundId.name, CoinFundCoinInfo.Columns.coinInfoId.name], onConflict: .replace)
+            }
+        }
+
+        migrator.registerMigration("createCoinFundCategory") { db in
+            try db.create(table: CoinFundCategory.databaseTableName) { t in
+                t.column(CoinFundCategory.Columns.id.name, .text).notNull().primaryKey(onConflict: .replace)
+                t.column(CoinFundCategory.Columns.name.name, .text).notNull()
+                t.column(CoinFundCategory.Columns.order.name, .integer).notNull()
+            }
+        }
+
         return migrator
     }
 
@@ -374,10 +400,31 @@ extension GrdbStorage: ICoinInfoStorage {
         }
     }
 
-    func update(coinInfos: [CoinInfoRecord], categoryMaps: [CoinCategoryCoinInfo], links: [CoinLink]) {
+    func update(coinFunds: [CoinFund]) {
+        _ = try! dbPool.write { db in
+            try CoinFund.deleteAll(db)
+
+            for fund in coinFunds {
+                try fund.insert(db)
+            }
+        }
+    }
+
+    func update(coinFundCategories: [CoinFundCategory]) {
+        _ = try! dbPool.write { db in
+            try CoinFundCategory.deleteAll(db)
+
+            for fundCategory in coinFundCategories {
+                try fundCategory.insert(db)
+            }
+        }
+    }
+
+    func update(coinInfos: [CoinInfoRecord], categoryMaps: [CoinCategoryCoinInfo], fundMaps: [CoinFundCoinInfo], links: [CoinLink]) {
         _ = try! dbPool.write { db in
             try CoinInfoRecord.deleteAll(db)
             try CoinCategoryCoinInfo.deleteAll(db)
+            try CoinFundCoinInfo.deleteAll(db)
             try CoinLink.deleteAll(db)
 
             for coinInfo in coinInfos {
@@ -386,6 +433,10 @@ extension GrdbStorage: ICoinInfoStorage {
 
             for categoryMap in categoryMaps {
                 try categoryMap.insert(db)
+            }
+
+            for fundMap in fundMaps {
+                try fundMap.insert(db)
             }
 
             for link in links {
@@ -403,6 +454,15 @@ extension GrdbStorage: ICoinInfoStorage {
             let categoryIds = try CoinCategoryCoinInfo.filter(CoinCategoryCoinInfo.Columns.coinInfoId == record.coinType.id).fetchAll(db).map { $0.coinCategoryId }
             let categoryNames: [String] = try CoinCategory.filter(categoryIds.contains(CoinCategory.Columns.id)).fetchAll(db).map { $0.name }
 
+            let fundIds = try CoinFundCoinInfo.filter(CoinFundCoinInfo.Columns.coinInfoId == record.coinType.id).fetchAll(db).map { $0.coinFundId }
+            let funds: [CoinFund] = try CoinFund.filter(fundIds.contains(CoinCategory.Columns.id)).fetchAll(db)
+            let fundCategoryIds = Array(Set(funds.map { $0.category }))
+            let categories: [CoinFundCategory] = try CoinFundCategory.filter(fundCategoryIds.contains(CoinFundCategory.Columns.id)).order(CoinFundCategory.Columns.order.asc).fetchAll(db)
+
+            for category in categories {
+                category.funds = funds.filter { $0.category == category.id }
+            }
+
             let links = try CoinLink.filter(CoinLink.Columns.coinInfoId == record.coinType.id).fetchAll(db)
             var linksMap = [LinkType: String]()
             for link in links {
@@ -417,6 +477,7 @@ extension GrdbStorage: ICoinInfoStorage {
                     links: linksMap,
                     rating: record.rating,
                     categories: categoryNames,
+                    fundCategories: categories,
                     platforms: [:]
             )
 

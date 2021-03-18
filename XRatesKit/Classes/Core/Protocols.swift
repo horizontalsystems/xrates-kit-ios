@@ -159,7 +159,9 @@ protocol ICoinInfoStorage {
     var coinInfosVersion: Int { get }
     func set(coinInfosVersion: Int)
     func update(coinCategories: [CoinCategory])
-    func update(coinInfos: [CoinInfoRecord], categoryMaps: [CoinCategoryCoinInfo], links: [CoinLink])
+    func update(coinFunds: [CoinFund])
+    func update(coinFundCategories: [CoinFundCategory])
+    func update(coinInfos: [CoinInfoRecord], categoryMaps: [CoinCategoryCoinInfo], fundMaps: [CoinFundCoinInfo], links: [CoinLink])
     func providerCoinInfo(coinType: CoinType) -> (data: CoinData, meta: CoinMeta)?
 }
 
