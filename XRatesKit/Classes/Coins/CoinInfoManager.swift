@@ -4,6 +4,8 @@ import CoinKit
 fileprivate struct CoinsList: Decodable {
     let version: Int
     let categories: [CoinCategory]
+    let funds: [CoinFund]
+    let fundCategories: [CoinFundCategory]
     let coins: [CoinsCoinInfo]
 }
 
@@ -12,6 +14,7 @@ fileprivate struct CoinsCoinInfo: Decodable {
     let code: String
     let name: String
     let categories: [String]
+    let funds: [String]
     let active: Bool
     let description: String?
     let rating: String?
@@ -61,6 +64,7 @@ class CoinInfoManager {
 
             var coinInfos = [CoinInfoRecord]()
             var coinCategoryCoinInfos = [CoinCategoryCoinInfo]()
+            var coinFundCoinInfos = [CoinFundCoinInfo]()
             var links = [CoinLink]()
 
             for coin in list.coins {
@@ -70,13 +74,19 @@ class CoinInfoManager {
                     coinCategoryCoinInfos.append(CoinCategoryCoinInfo(coinCategoryId: categoryId, coinInfoId: coin.id))
                 }
 
+                for fundId in coin.funds {
+                    coinFundCoinInfos.append(CoinFundCoinInfo(coinFundId: fundId, coinInfoId: coin.id))
+                }
+
                 for (linkType, linkValue) in coin.links.links {
                     links.append(CoinLink(coinInfoId: coin.id, linkType: linkType.rawValue, value: linkValue))
                 }
             }
 
             storage.update(coinCategories: list.categories)
-            storage.update(coinInfos: coinInfos, categoryMaps: coinCategoryCoinInfos, links: links)
+            storage.update(coinFunds: list.funds)
+            storage.update(coinFundCategories: list.fundCategories)
+            storage.update(coinInfos: coinInfos, categoryMaps: coinCategoryCoinInfos, fundMaps: coinFundCoinInfos, links: links)
             storage.set(coinInfosVersion: list.version)
         } catch {
             print(error.localizedDescription)

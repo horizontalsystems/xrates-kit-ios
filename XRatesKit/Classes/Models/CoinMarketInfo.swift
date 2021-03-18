@@ -26,6 +26,7 @@ public struct CoinMeta {
     public let links: [LinkType: String]
     public let rating: String?
     public let categories: [String]
+    public let fundCategories: [CoinFundCategory]
     public let platforms: [CoinPlatformType: String]
 }
 

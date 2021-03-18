@@ -45,6 +45,7 @@ extension CoinGeckoManager: ICoinMarketsManager {
                             links: links,
                             rating: coin?.meta.rating,
                             categories: coin?.meta.categories ?? [],
+                            fundCategories: coin?.meta.fundCategories ?? [],
                             platforms: coinInfoResponse.platforms
                     )
 

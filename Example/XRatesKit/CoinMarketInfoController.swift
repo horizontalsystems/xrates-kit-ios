@@ -76,10 +76,12 @@ class CoinMarketInfoController: UIViewController {
                   marketCapDiff24h: \(marketInfo.marketCapDiff24h)
 
                   description: \(marketInfo.meta.description)
-                  categories: \(marketInfo.meta.categories.joined(separator: ", "))
 
                   == Categories ==
                   \(marketInfo.meta.categories.joined(separator: "\n"))
+
+                  == Funds ==
+                  \(marketInfo.meta.fundCategories.map{ c in "==== \(c.name)\n\(c.funds.map { "\($0.name) - \($0.url)" }.joined(separator: "\n"))" }.joined(separator: "\n\n"))
 
                   == Platforms ==
                   \(marketInfo.meta.platforms.map{ (key, value) in "\(key.rawValue): \(value)" }.joined(separator: "\n"))
