@@ -61,7 +61,8 @@ extension CoinGeckoManager: ICoinMarketsManager {
                             volume24h: coinInfoResponse.volume24h,
                             marketCap: coinInfoResponse.marketCap,
                             marketCapDiff24h: coinInfoResponse.marketCapDiff24h,
-                            rateDiffs: coinInfoResponse.rateDiffs
+                            rateDiffs: coinInfoResponse.rateDiffs,
+                            tickers: coinInfoResponse.tickers
                     )
                 }
     }

@@ -48,7 +48,7 @@ extension CoinGeckoProvider {
             return Single.error(ProviderCoinsManager.ExternalIdError.noMatchingCoinId)
         }
 
-        let url = "\(provider.baseUrl)/coins/\(externalId)?localization=false&tickers=false&developer_data=false&sparkline=false"
+        let url = "\(provider.baseUrl)/coins/\(externalId)?localization=false&tickers=true&developer_data=false&sparkline=false"
         let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
 
         let mapper = CoinGeckoCoinMarketInfoMapper(coinType: coinType, currencyCode: currencyCode.lowercased(), timePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes.map { $0.lowercased() })

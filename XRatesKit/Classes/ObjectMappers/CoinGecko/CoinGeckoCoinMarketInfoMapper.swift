@@ -15,6 +15,7 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
         let rateDiffs: [TimePeriod: [String: Decimal]]
         let links: [LinkType: String]
         let platforms: [CoinPlatformType: String]
+        let tickers: [MarketTicker]
     }
     
     private let coinType: CoinType
@@ -43,11 +44,12 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
         guard let coinMap = data as? [String: Any] else {
             throw NetworkManager.RequestError.invalidResponse(statusCode: statusCode, data: data)
         }
-        
+
         guard let marketDataMap = coinMap["market_data"] as? [String: Any] else {
             throw NetworkManager.RequestError.invalidResponse(statusCode: statusCode, data: data)
         }
-        
+
+        let symbol = coinMap["symbol"] as? String ?? ""
         let rate = fiatValueDecimal(marketData: marketDataMap, key: "current_price")
         let rateHigh24h = fiatValueDecimal(marketData: marketDataMap, key: "high_24h")
         let rateLow24h = fiatValueDecimal(marketData: marketDataMap, key: "low_24h")
@@ -99,20 +101,48 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
         
         var platforms = [CoinPlatformType: String]()
         
-        if let platform = coinMap["asset_platform_id"] as? String {
-            let platformType: CoinPlatformType?
-            
-            switch platform {
-                case "tron": platformType = CoinPlatformType.tron
-                case "ethereum": platformType = CoinPlatformType.ethereum
-                case "eos": platformType = CoinPlatformType.eos
-                case "binance-smart-chain": platformType = CoinPlatformType.binanceSmartChain
-                case "binancecoin": platformType = CoinPlatformType.binance
-                default: platformType = nil
+        if let platformsMap = coinMap["platforms"] as? [String: String] {
+            for (platformName, contractAddress) in platformsMap {
+                let platformType: CoinPlatformType?
+
+                switch platformName {
+                    case "tron": platformType = CoinPlatformType.tron
+                    case "ethereum": platformType = CoinPlatformType.ethereum
+                    case "eos": platformType = CoinPlatformType.eos
+                    case "binance-smart-chain": platformType = CoinPlatformType.binanceSmartChain
+                    case "binancecoin": platformType = CoinPlatformType.binance
+                    default: platformType = nil
+                }
+
+                if let platformType = platformType {
+                    platforms[platformType] = contractAddress
+                }
             }
-            
-            if let platformType = platformType, let address = coinMap["contract_address"] as? String {
-                platforms[platformType] = address
+        }
+
+        var tickers = [MarketTicker]()
+        let contractAddresses = platforms.values.map { $0.lowercased() }
+
+        if let tickersArray = coinMap["tickers"] as? [[String: Any]] {
+            for tickerMap in tickersArray {
+                if var base = tickerMap["base"] as? String,
+                   var target = tickerMap["target"] as? String,
+                   let marketMap = tickerMap["market"] as? [String: Any], let marketName = marketMap["name"] as? String,
+                   let lastRate = Decimal(convertibleValue: tickerMap["last"]),
+                   let volume = Decimal(convertibleValue: tickerMap["volume"]) {
+
+
+                    if !contractAddresses.isEmpty {
+                        if contractAddresses.contains(base.lowercased()) {
+                            base = symbol.uppercased()
+
+                        } else if contractAddresses.contains(target.lowercased()) {
+                            target = symbol.uppercased()
+                        }
+                    }
+
+                    tickers.append(MarketTicker(base: base, target: target, marketName: marketName, rate: lastRate, volume: volume))
+                }
             }
         }
         
@@ -128,7 +158,8 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
             description: description,
             rateDiffs: rateDiffs,
             links: links,
-            platforms: platforms
+            platforms: platforms,
+            tickers: tickers
         )
     }
     
