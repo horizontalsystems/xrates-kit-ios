@@ -4,24 +4,24 @@ public struct CoinMarketInfo {
     public let data: CoinData
     public let meta: CoinMeta
     public let currencyCode: String
-    public let rate: Decimal
-    public let rateHigh24h: Decimal
-    public let rateLow24h: Decimal
-    public let totalSupply: Decimal
-    public let circulatingSupply: Decimal
-    public let volume24h: Decimal
-    public let marketCap: Decimal
-    public let marketCapDiff24h: Decimal
+    public let rate: Decimal?
+    public let rateHigh24h: Decimal?
+    public let rateLow24h: Decimal?
+    public let totalSupply: Decimal?
+    public let circulatingSupply: Decimal?
+    public let volume24h: Decimal?
+    public let marketCap: Decimal?
+    public let marketCapDiff24h: Decimal?
     public var rateDiffs: [TimePeriod: [String: Decimal]]
     public let tickers: [MarketTicker]
 }
 
 public struct MarketTicker {
-    public let base: String
-    public let target: String
+    public let base: String?
+    public let target: String?
     public let marketName: String
-    public let rate: Decimal
-    public let volume: Decimal
+    public let rate: Decimal?
+    public let volume: Decimal?
 }
 
 public struct CoinData {

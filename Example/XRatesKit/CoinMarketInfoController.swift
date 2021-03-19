@@ -66,14 +66,14 @@ class CoinMarketInfoController: UIViewController {
         var str = """
                   coinId: \(marketInfo.data.coinType.id)
                   currencyCode: \(marketInfo.currencyCode)
-                  rate: \(marketInfo.rate)
-                  rateHigh24h: \(marketInfo.rateHigh24h)
-                  rateLow24h: \(marketInfo.rateLow24h)
-                  totalSupply: \(marketInfo.totalSupply)
-                  circulatingSupply: \(marketInfo.circulatingSupply)
-                  volume24h: \(marketInfo.volume24h)
-                  marketCap: \(marketInfo.marketCap)
-                  marketCapDiff24h: \(marketInfo.marketCapDiff24h)
+                  rate: \(marketInfo.rate ?? -1)
+                  rateHigh24h: \(marketInfo.rateHigh24h ?? -1)
+                  rateLow24h: \(marketInfo.rateLow24h ?? -1)
+                  totalSupply: \(marketInfo.totalSupply ?? -1)
+                  circulatingSupply: \(marketInfo.circulatingSupply ?? -1)
+                  volume24h: \(marketInfo.volume24h ?? -1)
+                  marketCap: \(marketInfo.marketCap ?? -1)
+                  marketCapDiff24h: \(marketInfo.marketCapDiff24h ?? -1)
 
                   description: \(marketInfo.meta.description)
 
@@ -85,6 +85,9 @@ class CoinMarketInfoController: UIViewController {
 
                   == Platforms ==
                   \(marketInfo.meta.platforms.map{ (key, value) in "\(key.rawValue): \(value)" }.joined(separator: "\n"))
+
+                  == Markets ==
+                  \(marketInfo.tickers.map{ ticker in "\(ticker.marketName): \(ticker.base ?? "n/a")/\(ticker.target ?? "n/a") (rate: \(ticker.rate ?? -1); volume: \(ticker.volume ?? -1))" }.joined(separator: "\n"))
 
                   == Links ==
                   \(marketInfo.meta.links.map { (key, value) in "\(key.rawValue.uppercased()): \(value)" }.joined(separator: "\n"))
