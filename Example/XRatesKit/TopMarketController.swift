@@ -178,6 +178,12 @@ class TopMarketController: UIViewController {
         topMarkets = []
         tableView.reloadData()
 
+        sendRequest(order: "First")
+        sendRequest(order: "Second")
+        sendRequest(order: "Third")
+    }
+
+    private func sendRequest(order: String) {
         let single: Single<[CoinMarket]>
 
         switch segmentedView.selectedSegmentIndex {

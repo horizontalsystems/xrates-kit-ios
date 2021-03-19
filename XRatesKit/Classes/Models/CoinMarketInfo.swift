@@ -13,6 +13,15 @@ public struct CoinMarketInfo {
     public let marketCap: Decimal
     public let marketCapDiff24h: Decimal
     public var rateDiffs: [TimePeriod: [String: Decimal]]
+    public let tickers: [MarketTicker]
+}
+
+public struct MarketTicker {
+    public let base: String
+    public let target: String
+    public let marketName: String
+    public let rate: Decimal
+    public let volume: Decimal
 }
 
 public struct CoinData {

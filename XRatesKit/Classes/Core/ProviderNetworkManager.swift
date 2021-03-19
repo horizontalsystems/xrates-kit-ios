@@ -23,23 +23,25 @@ class ProviderNetworkManager {
     }
 
     func single<Mapper: IApiMapper>(request: DataRequest, mapper: Mapper) -> Single<Mapper.T> {
-        logger.info("Request: \(request.description)")
-        let currentTime = Date().timeIntervalSince1970
-        let timePassedFromLastRequest =  currentTime - lastRequestTime
-        let timeToWait = requestInterval - timePassedFromLastRequest
+        networkManager.single(request: request, mapper: mapper)
 
-        let single = networkManager.single(request: request, mapper: mapper)
-        lastRequestTime = currentTime
-
-        guard timeToWait > 0 else {
-            return single
-        }
-
-        logger.info("Delay for \(timeToWait) milliseconds")
-
-        return Single<Int>
-                .timer(.seconds(1), scheduler: scheduler)
-                .flatMap { _ in single }
+//        logger.info("Request: \(request.description)")
+//        let currentTime = Date().timeIntervalSince1970
+//        let timePassedFromLastRequest =  currentTime - lastRequestTime
+//        let timeToWait = requestInterval - timePassedFromLastRequest
+//
+//        let single = networkManager.single(request: request, mapper: mapper)
+//        lastRequestTime = currentTime
+//
+//        guard timeToWait > 0 else {
+//            return single
+//        }
+//
+//        logger.info("Delay for \(timeToWait) milliseconds")
+//
+//        return Single<Int>
+//                .timer(.seconds(1), scheduler: scheduler)
+//                .flatMap { _ in single }
     }
 
 }
