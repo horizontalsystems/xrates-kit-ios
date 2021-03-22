@@ -5,11 +5,8 @@ import RxSwift
 
 class ProviderNetworkManager {
     private let networkManager: NetworkManager
-    private let requestInterval: TimeInterval
+    private let scheduler: DelayScheduler
     private let logger: Logger
-
-    private var lastRequestTime = Date().timeIntervalSince1970
-    private let scheduler = SerialDispatchQueueScheduler(qos: .background)
 
     var session: Session {
         networkManager.session
@@ -17,31 +14,35 @@ class ProviderNetworkManager {
 
     init(requestInterval: TimeInterval, logger: Logger) {
         networkManager = NetworkManager(logger: logger)
-
-        self.requestInterval = requestInterval
+        scheduler = DelayScheduler(delay: requestInterval, queue: .global(qos: .utility))
         self.logger = logger
     }
 
     func single<Mapper: IApiMapper>(request: DataRequest, mapper: Mapper) -> Single<Mapper.T> {
         networkManager.single(request: request, mapper: mapper)
+                .subscribeOn(scheduler)
+    }
 
-//        logger.info("Request: \(request.description)")
-//        let currentTime = Date().timeIntervalSince1970
-//        let timePassedFromLastRequest =  currentTime - lastRequestTime
-//        let timeToWait = requestInterval - timePassedFromLastRequest
-//
-//        let single = networkManager.single(request: request, mapper: mapper)
-//        lastRequestTime = currentTime
-//
-//        guard timeToWait > 0 else {
-//            return single
-//        }
-//
-//        logger.info("Delay for \(timeToWait) milliseconds")
-//
-//        return Single<Int>
-//                .timer(.seconds(1), scheduler: scheduler)
-//                .flatMap { _ in single }
+}
+
+class DelayScheduler: ImmediateSchedulerType {
+    private var lastDispatch: DispatchTime = .now()
+    private let queue: DispatchQueue
+    private let dispatchDelay: TimeInterval
+
+    init(delay: TimeInterval, queue: DispatchQueue = .main) {
+        self.queue = queue
+        dispatchDelay = delay
+    }
+
+    func schedule<StateType>(_ state: StateType, action: @escaping (StateType) -> Disposable) -> Disposable {
+        let cancel = SingleAssignmentDisposable()
+        lastDispatch = max(lastDispatch + dispatchDelay, .now())
+        queue.asyncAfter(deadline: lastDispatch) {
+            guard cancel.isDisposed == false else { return }
+            cancel.setDisposable(action(state))
+        }
+        return cancel
     }
 
 }
