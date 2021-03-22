@@ -163,12 +163,12 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
                               var target = tickerMap["target"] as? String,
                               let marketMap = tickerMap["market"] as? [String: Any],
                               let marketName = marketMap["name"] as? String,
-                              let marketId = marketMap["identifier"] as? String else {
+                              let marketId = marketMap["identifier"] as? String,
+                              let lastRate = Decimal(convertibleValue: tickerMap["last"]),
+                              let volume = Decimal(convertibleValue: tickerMap["volume"]),
+                              lastRate > 0, volume > 0 else {
                             return nil
                         }
-
-                        let lastRate = Decimal(convertibleValue: tickerMap["last"])
-                        let volume = Decimal(convertibleValue: tickerMap["volume"])
 
                         if !contractAddresses.isEmpty {
                             if contractAddresses.contains(base.lowercased()) {
