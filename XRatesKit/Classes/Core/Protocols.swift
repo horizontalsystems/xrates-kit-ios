@@ -158,6 +158,7 @@ protocol IFiatXRatesProvider {
 // Coins
 
 protocol ICoinInfoStorage {
+    var categorizedCoins: [CoinType] { get }
     var coinInfosVersion: Int { get }
     func set(coinInfosVersion: Int)
     func update(coinCategories: [CoinCategory])
@@ -168,10 +169,12 @@ protocol ICoinInfoStorage {
 }
 
 protocol IProviderCoinsStorage {
-    var providerCoinsVersion: Int { get }
-    func set(providerCoinsVersion: Int)
+    func version(type: DataVersion.DataTypes) -> Int
+    func set(version: Int, toType type: DataVersion.DataTypes)
     func update(providerCoins: [ProviderCoinRecord])
     func providerId(id: String, provider: InfoProvider) -> String?
     func ids(providerId: String, provider: InfoProvider) -> [String]
     func find(text: String) -> [CoinData]
+    func clearPriorities()
+    func set(priority: Int, forCoin: CoinType)
 }

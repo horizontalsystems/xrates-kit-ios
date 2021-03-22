@@ -12,10 +12,12 @@ public class XRatesKit {
     private let chartInfoSyncManager: IChartInfoSyncManager
     private let newsPostsManager: INewsManager
     private let providerCoinsManager: ProviderCoinsManager
+    private let coinSyncer: CoinSyncer
 
     init(latestRateManager: ILatestRatesManager, globalMarketInfoManager: GlobalMarketInfoManager, latestRateSyncManager: ILatestRateSyncManager,
          coinInfoManager: ICoinMarketsManager, historicalRateManager: IHistoricalRateManager,
-         chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager, newsPostsManager: INewsManager, providerCoinsManager: ProviderCoinsManager) {
+         chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager, newsPostsManager: INewsManager, providerCoinsManager: ProviderCoinsManager,
+         coinSyncer: CoinSyncer) {
         self.globalMarketInfoManager = globalMarketInfoManager
         self.latestRateManager = latestRateManager
         self.latestRateSyncManager = latestRateSyncManager
@@ -25,6 +27,7 @@ public class XRatesKit {
         self.chartInfoSyncManager = chartInfoSyncManager
         self.newsPostsManager = newsPostsManager
         self.providerCoinsManager = providerCoinsManager
+        self.coinSyncer = coinSyncer
     }
 
 }
@@ -115,19 +118,18 @@ extension XRatesKit {
                                 indicatorPointCount: Int = 60, marketInfoExpirationInterval: TimeInterval = 60, topMarketsCount: Int = 10,
                                 retryInterval: TimeInterval = 30, minLogLevel: Logger.Level = .error) -> XRatesKit {
         let logger = Logger(minLogLevel: minLogLevel)
-
         let reachabilityManager = ReachabilityManager()
-
         let storage = GrdbStorage()
+
         let jsonParser = JsonFileParser()
         let providerCoinsManager = ProviderCoinsManager(storage: storage, parser: jsonParser)
         let coinInfoManager = CoinInfoManager(storage: storage, parser: jsonParser)
 
         let networkManager = NetworkManager(logger: logger)
         let coinPaprikaProvider = CoinPaprikaProvider(networkManager: networkManager)
+        let coinGeckoProvider = CoinGeckoProvider(providerCoinsManager: providerCoinsManager, expirationInterval: marketInfoExpirationInterval, logger: logger)
 
         let horsysProvider = HorsysProvider(networkManager: networkManager)
-        let coinGeckoProvider = CoinGeckoProvider(providerCoinsManager: providerCoinsManager, expirationInterval: marketInfoExpirationInterval, logger: logger)
         let cryptoCompareProvider = CryptoCompareProvider(providerCoinsManager: providerCoinsManager, networkManager: networkManager, apiKey: cryptoCompareApiKey, timeoutInterval: 10, expirationInterval: marketInfoExpirationInterval, topMarketsCount: topMarketsCount, indicatorPointCount: indicatorPointCount)
         let coinGeckoManager = CoinGeckoManager(coinInfoManager: coinInfoManager, provider: coinGeckoProvider)
 
@@ -145,8 +147,10 @@ extension XRatesKit {
         let chartInfoSyncManager = ChartInfoSyncManager(schedulerFactory: chartPointSchedulerFactory, chartInfoManager: chartInfoManager, marketInfoSyncManager: latestRatesSyncManager)
 
         chartInfoManager.delegate = chartInfoSyncManager
+        providerCoinsManager.provider = coinGeckoProvider
 
         let newsPostManager = NewsManager(provider: cryptoCompareProvider, state: NewsState(expirationTime: 30 * 60))
+        let coinSyncer = CoinSyncer(providerCoinsManager: providerCoinsManager, coinInfoManager: coinInfoManager)
 
         let kit = XRatesKit(
                 latestRateManager: latestRatesManager,
@@ -157,7 +161,8 @@ extension XRatesKit {
                 chartInfoManager: chartInfoManager,
                 chartInfoSyncManager: chartInfoSyncManager,
                 newsPostsManager: newsPostManager,
-                providerCoinsManager: providerCoinsManager
+                providerCoinsManager: providerCoinsManager,
+                coinSyncer: coinSyncer
         )
 
         return kit

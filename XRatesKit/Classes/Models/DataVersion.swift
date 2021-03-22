@@ -18,6 +18,7 @@ class DataVersion: Record {
     enum DataTypes: String {
         case coinInfos
         case providerCoins
+        case providerCoinsPriority
     }
 
     enum Columns: String, ColumnExpression {

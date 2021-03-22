@@ -6,6 +6,7 @@ class ProviderCoinRecord: Record {
     let name: String
     let coingeckoId: String?
     let cryptocompareId: String?
+    var priority = Int.max
 
     init(id: String, code: String, name: String, coingeckoId: String?, cryptocompareId: String?) {
         self.id = id
@@ -27,6 +28,7 @@ class ProviderCoinRecord: Record {
         case name
         case coingeckoId
         case cryptocompareId
+        case priority
     }
 
     required init(row: Row) {
@@ -35,6 +37,7 @@ class ProviderCoinRecord: Record {
         name = row[Columns.name]
         coingeckoId = row[Columns.coingeckoId]
         cryptocompareId = row[Columns.cryptocompareId]
+        priority = row[Columns.priority]
 
         super.init(row: row)
     }
@@ -45,6 +48,7 @@ class ProviderCoinRecord: Record {
         container[Columns.name] = name
         container[Columns.coingeckoId] = coingeckoId
         container[Columns.cryptocompareId] = cryptocompareId
+        container[Columns.priority] = priority
     }
 
 }
