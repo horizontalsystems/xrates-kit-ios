@@ -2,13 +2,19 @@ import RxSwift
 import CoinKit
 
 class LatestRatesManager {
+    enum RateError: Error {
+        case noRateReceived
+    }
+
     weak var delegate: ILatestRatesManagerDelegate?
 
     private let storage: ILatestRatesStorage
+    private let provider: ILatestRatesProvider
     private let expirationInterval: TimeInterval
 
-    init(storage: ILatestRatesStorage, expirationInterval: TimeInterval) {
+    init(storage: ILatestRatesStorage, provider: ILatestRatesProvider, expirationInterval: TimeInterval) {
         self.storage = storage
+        self.provider = provider
         self.expirationInterval = expirationInterval
     }
 
@@ -46,6 +52,17 @@ extension LatestRatesManager: ILatestRatesManager {
 
     func latestRate(key: PairKey) -> LatestRate? {
         storage.latestRateRecord(key: key).map { latestRate(record: $0) }
+    }
+
+    func latestRateSingle(key: PairKey) -> Single<LatestRate> {
+        provider.latestRateRecords(coinTypes: [key.coinType], currencyCode: key.currencyCode)
+                .map { [weak self] in
+                    if let record = $0.first, let rate = self?.latestRate(record: record) {
+                        return rate
+                    } else {
+                        throw LatestRatesManager.RateError.noRateReceived
+                    }
+                }
     }
 
     func handleUpdated(records: [LatestRateRecord], currencyCode: String) {
