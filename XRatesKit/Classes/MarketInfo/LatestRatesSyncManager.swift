@@ -79,6 +79,10 @@ extension LatestRatesSyncManager: ILatestRateSyncManager {
         }
     }
 
+    func syncing(coinType: CoinType) -> Bool {
+        coinTypes.contains(coinType)
+    }
+
 }
 
 extension LatestRatesSyncManager: ILatestRatesManagerDelegate {

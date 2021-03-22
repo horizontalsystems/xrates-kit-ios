@@ -48,7 +48,11 @@ extension XRatesKit {
     }
 
     public func latestRateObservable(coinType: CoinType, currencyCode: String) -> Observable<LatestRate> {
-        latestRateSyncManager.latestRateObservable(key: PairKey(coinType: coinType, currencyCode: currencyCode))
+        if latestRateSyncManager.syncing(coinType: coinType) {
+            return latestRateSyncManager.latestRateObservable(key: PairKey(coinType: coinType, currencyCode: currencyCode))
+        } else {
+            return latestRateManager.latestRateSingle(key: PairKey(coinType: coinType, currencyCode: currencyCode)).asObservable()
+        }
     }
 
     public func latestRatesObservable(currencyCode: String) -> Observable<[CoinType: LatestRate]> {
@@ -127,7 +131,7 @@ extension XRatesKit {
         let cryptoCompareProvider = CryptoCompareProvider(providerCoinsManager: providerCoinsManager, networkManager: networkManager, apiKey: cryptoCompareApiKey, timeoutInterval: 10, expirationInterval: marketInfoExpirationInterval, topMarketsCount: topMarketsCount, indicatorPointCount: indicatorPointCount)
         let coinGeckoManager = CoinGeckoManager(coinInfoManager: coinInfoManager, provider: coinGeckoProvider)
 
-        let latestRatesManager = LatestRatesManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
+        let latestRatesManager = LatestRatesManager(storage: storage, provider: coinGeckoProvider, expirationInterval: marketInfoExpirationInterval)
         let globalMarketInfoManager = GlobalMarketInfoManager(globalMarketInfoProvider: coinPaprikaProvider, defiMarketCapProvider: horsysProvider, fiatXRatesProvider: cryptoCompareProvider, storage: storage)
 
         let latestRatesSchedulerFactory = LatestRatesSchedulerFactory(manager: latestRatesManager, provider: coinGeckoProvider, reachabilityManager: reachabilityManager, expirationInterval: marketInfoExpirationInterval, retryInterval: retryInterval, logger: logger)

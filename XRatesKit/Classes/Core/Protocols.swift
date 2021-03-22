@@ -6,6 +6,7 @@ import CoinKit
 protocol ILatestRatesManager {
     func lastSyncTimestamp(coinTypes: [CoinType], currencyCode: String) -> TimeInterval?
     func latestRate(key: PairKey) -> LatestRate?
+    func latestRateSingle(key: PairKey) -> Single<LatestRate>
     func handleUpdated(records: [LatestRateRecord], currencyCode: String)
     func notifyExpired(coinTypes: [CoinType], currencyCode: String)
 }
@@ -31,6 +32,7 @@ protocol ILatestRateSyncManager {
     func refresh()
     func latestRateObservable(key: PairKey) -> Observable<LatestRate>
     func latestRatesObservable(currencyCode: String) -> Observable<[CoinType: LatestRate]>
+    func syncing(coinType: CoinType) -> Bool
 }
 
 protocol ILatestRatesScheduler {
