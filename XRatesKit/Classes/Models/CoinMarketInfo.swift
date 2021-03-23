@@ -30,6 +30,12 @@ public struct CoinData {
     public let name: String
 }
 
+public struct ProviderCoinData {
+    public let providerId: String
+    public let code: String
+    public let name: String
+}
+
 public struct CoinMeta {
     public let description: String
     public let links: [LinkType: String]
