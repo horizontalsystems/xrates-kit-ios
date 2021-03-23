@@ -1,5 +1,6 @@
 import ObjectMapper
 import CoinKit
+import RxSwift
 
 fileprivate struct ProviderCoinsList: Decodable {
     let version: Int
@@ -23,24 +24,27 @@ class ProviderCoinsManager {
         case noMatchingCoinId
     }
 
-    private let filename = "provider.coins"
-    private let storage: IProviderCoinsStorage
-    private let parser: JsonFileParser
+    private static let priorityUpdateInterval: TimeInterval = 10 * 24 * 60 * 60 // 10 days
 
-    init(storage: IProviderCoinsStorage, parser: JsonFileParser) {
+    private let disposeBag = DisposeBag()
+
+    private let filename = "provider.coins"
+    private let storage: IProviderCoinsStorage & ICoinInfoStorage
+    private let parser: JsonFileParser
+    private let categorizedCoinOrder = 0
+
+    weak var provider: CoinGeckoProvider?
+
+    init(storage: IProviderCoinsStorage & ICoinInfoStorage, parser: JsonFileParser) {
         self.storage = storage
         self.parser = parser
-
-        DispatchQueue.global(qos: .background).async { [weak self] in
-            self?.updateIds()
-        }
     }
 
     private func updateIds() {
         do {
             let list: ProviderCoinsList = try parser.parse(filename: filename)
 
-            guard list.version > storage.providerCoinsVersion else {
+            guard list.version > storage.version(type: .providerCoins) else {
                 return
             }
 
@@ -49,11 +53,64 @@ class ProviderCoinsManager {
             }
 
             storage.update(providerCoins: coinRecords)
-            storage.set(providerCoinsVersion: list.version)
+            storage.set(version: list.version, toType: .providerCoins)
         } catch {
             print(error.localizedDescription)
         }
     }
+
+    private func updatePriorities(topCoins: [CoinMarket]) {
+        var priorityCoins = [CoinType: Int]()
+
+        for coinType in storage.categorizedCoins {
+            priorityCoins[coinType] = categorizedCoinOrder
+        }
+
+        for (index, coin) in topCoins.enumerated() {
+            guard priorityCoins[coin.coinData.coinType] == nil else {
+                continue
+            }
+
+            priorityCoins[coin.coinData.coinType] = index + 1
+        }
+
+        storage.clearPriorities()
+        for (coinType, priority) in priorityCoins {
+            storage.set(priority: priority, forCoin: coinType)
+        }
+
+        storage.set(version: Int(Date().timeIntervalSince1970), toType: .providerCoinsPriority)
+    }
+
+}
+
+extension ProviderCoinsManager {
+
+    func sync() -> Single<Void> {
+        Single<Void>.create { [weak self] observer in
+            self?.updateIds()
+            observer(.success(()))
+
+            return Disposables.create()
+        }
+    }
+
+    func updatePriorities() {
+        guard Date().timeIntervalSince1970 - TimeInterval(storage.version(type: .providerCoinsPriority)) > ProviderCoinsManager.priorityUpdateInterval else {
+            return
+        }
+
+        provider?.topCoinMarketsSingle(currencyCode: "USD", fetchDiffPeriod: .hour24, itemCount: 400)
+                .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+                .subscribe(onSuccess: { [weak self] topCoins in
+                    self?.updatePriorities(topCoins: topCoins)
+                })
+                .disposed(by: disposeBag)
+    }
+
+}
+
+extension ProviderCoinsManager {
 
     func providerData(coinTypes: [CoinType], provider: InfoProvider) -> [CoinType: ProviderCoinData] {
         var map = [CoinType: ProviderCoinData]()
@@ -65,10 +122,6 @@ class ProviderCoinsManager {
 
         return map
     }
-
-}
-
-extension ProviderCoinsManager {
 
     func providerData(coinType: CoinType, provider: InfoProvider) -> ProviderCoinData? {
         storage.providerData(id: coinType.id, provider: provider)

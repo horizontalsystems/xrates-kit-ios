@@ -232,6 +232,12 @@ class GrdbStorage {
             }
         }
 
+        migrator.registerMigration("addPriorityToCoinInfoRecord") { db in
+            try db.alter(table: ProviderCoinRecord.databaseTableName) { t in
+                t.add(column: ProviderCoinRecord.Columns.priority.name, .integer).notNull()
+            }
+        }
+
         return migrator
     }
 
@@ -378,6 +384,18 @@ extension GrdbStorage: IGlobalMarketInfoStorage {
 
 extension GrdbStorage: ICoinInfoStorage {
 
+    var categorizedCoins: [CoinType] {
+        try! dbPool.read { db in
+            let sql = """
+                      SELECT \(CoinInfoRecord.databaseTableName).*
+                      FROM \(CoinInfoRecord.databaseTableName)
+                      INNER JOIN \(CoinCategoryCoinInfo.databaseTableName) ON \(CoinCategoryCoinInfo.databaseTableName).\(CoinCategoryCoinInfo.Columns.coinInfoId.name) == \(CoinInfoRecord.databaseTableName).\(CoinInfoRecord.Columns.coinId.name)
+                      """
+
+            return try CoinInfoRecord.fetchAll(db, sql: sql).map { $0.coinType }
+        }
+    }
+
     var coinInfosVersion: Int {
         try! dbPool.read { db in
             try DataVersion.filter(DataVersion.Columns.id == DataVersion.DataTypes.coinInfos.rawValue).fetchOne(db)?.version ?? 0
@@ -489,15 +507,15 @@ extension GrdbStorage: ICoinInfoStorage {
 
 extension GrdbStorage: IProviderCoinsStorage {
 
-    var providerCoinsVersion: Int {
+    func version(type: DataVersion.DataTypes) -> Int {
         try! dbPool.read { db in
-            try DataVersion.filter(DataVersion.Columns.id == DataVersion.DataTypes.providerCoins.rawValue).fetchOne(db)?.version ?? 0
+            try DataVersion.filter(DataVersion.Columns.id == type.rawValue).fetchOne(db)?.version ?? 0
         }
     }
 
-    func set(providerCoinsVersion: Int) {
+    func set(version: Int, toType type: DataVersion.DataTypes) {
         try! dbPool.write { db in
-            try DataVersion(id: DataVersion.DataTypes.providerCoins.rawValue, version: providerCoinsVersion).save(db)
+            try DataVersion(id: type.rawValue, version: version).save(db)
         }
     }
 
@@ -558,10 +576,26 @@ extension GrdbStorage: IProviderCoinsStorage {
         try! dbPool.read { db in
             try ProviderCoinRecord
                     .filter(ProviderCoinRecord.Columns.code.like("%\(text)%") || ProviderCoinRecord.Columns.name.like("%\(text)%"))
+                    .order(ProviderCoinRecord.Columns.priority.asc)
                     .fetchAll(db)
                     .map { record in
                         CoinData(coinType: CoinType(id: record.id), code: record.code, name: record.name)
                     }
+        }
+    }
+
+    func clearPriorities() {
+        try! dbPool.write { db in
+            try ProviderCoinRecord.updateAll(db, [Column(ProviderCoinRecord.Columns.priority.name).set(to: Int.max)])
+        }
+    }
+
+    func set(priority: Int, forCoin coin: CoinType) {
+        try! dbPool.write { db in
+            try db.execute(
+                    sql: "UPDATE \(ProviderCoinRecord.databaseTableName) SET \(ProviderCoinRecord.Columns.priority.name) = :priority WHERE id = :id",
+                    arguments: ["priority": priority, "id": coin.id]
+            )
         }
     }
 

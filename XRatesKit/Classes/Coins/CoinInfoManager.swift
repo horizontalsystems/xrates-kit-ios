@@ -1,5 +1,6 @@
 import ObjectMapper
 import CoinKit
+import RxSwift
 
 fileprivate struct CoinsList: Decodable {
     let version: Int
@@ -48,13 +49,9 @@ class CoinInfoManager {
     init(storage: ICoinInfoStorage, parser: JsonFileParser) {
         self.storage = storage
         self.parser = parser
-
-        DispatchQueue.global(qos: .background).async { [weak self] in
-            self?.updateIds()
-        }
     }
 
-    private func updateIds() {
+    private func updateCoins() {
         do {
             let list: CoinsList = try parser.parse(filename: filename)
 
@@ -96,6 +93,15 @@ class CoinInfoManager {
 }
 
 extension CoinInfoManager {
+
+    func sync() -> Single<Void> {
+        Single<Void>.create { [weak self] observer in
+            self?.updateCoins()
+            observer(.success(()))
+
+            return Disposables.create()
+        }
+    }
 
     func coinInfo(coinType: CoinType) -> (data: CoinData, meta: CoinMeta)? {
         storage.providerCoinInfo(coinType: coinType)
