@@ -103,8 +103,12 @@ extension XRatesKit {
         providerCoinsManager.search(text: text)
     }
 
-    public func cryptoCompareCoinCodes(coinTypes: [CoinType]) -> [CoinType: String] {
-        providerCoinsManager.providerIds(coinTypes: coinTypes, provider: .CryptoCompare)
+    public func notificationCoinData(coinTypes: [CoinType]) -> [CoinType: ProviderCoinData] {
+        providerCoinsManager.providerData(coinTypes: coinTypes, provider: .CryptoCompare)
+    }
+
+    public func notificationDataExist(coinType: CoinType) -> Bool {
+        providerCoinsManager.providerId(coinType: coinType, provider: .CryptoCompare) != nil
     }
 
 }
