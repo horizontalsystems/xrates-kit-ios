@@ -11,21 +11,23 @@ public class XRatesKit {
     private let chartInfoManager: IChartInfoManager
     private let chartInfoSyncManager: IChartInfoSyncManager
     private let newsPostsManager: INewsManager
+    private let coinInfoManager: CoinInfoManager
     private let providerCoinsManager: ProviderCoinsManager
     private let coinSyncer: CoinSyncer
 
     init(latestRateManager: ILatestRatesManager, globalMarketInfoManager: GlobalMarketInfoManager, latestRateSyncManager: ILatestRateSyncManager,
-         coinInfoManager: ICoinMarketsManager, historicalRateManager: IHistoricalRateManager,
-         chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager, newsPostsManager: INewsManager, providerCoinsManager: ProviderCoinsManager,
-         coinSyncer: CoinSyncer) {
+         coinMarketsManager: ICoinMarketsManager, historicalRateManager: IHistoricalRateManager,
+         chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager, newsPostsManager: INewsManager,
+         coinInfoManager: CoinInfoManager, providerCoinsManager: ProviderCoinsManager, coinSyncer: CoinSyncer) {
         self.globalMarketInfoManager = globalMarketInfoManager
         self.latestRateManager = latestRateManager
         self.latestRateSyncManager = latestRateSyncManager
-        self.coinMarketsManager = coinInfoManager
+        self.coinMarketsManager = coinMarketsManager
         self.historicalRateManager = historicalRateManager
         self.chartInfoManager = chartInfoManager
         self.chartInfoSyncManager = chartInfoSyncManager
         self.newsPostsManager = newsPostsManager
+        self.coinInfoManager = coinInfoManager
         self.providerCoinsManager = providerCoinsManager
         self.coinSyncer = coinSyncer
     }
@@ -98,6 +100,10 @@ extension XRatesKit {
         coinMarketsManager.coinMarketInfoSingle(coinType: coinType, currencyCode: currencyCode, rateDiffTimePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes)
     }
 
+    public func coinTypes(forCategoryId categoryId: String) -> [CoinType] {
+        coinInfoManager.coinTypes(forCategoryId: categoryId)
+    }
+
     public func globalMarketInfoSingle(currencyCode: String) -> Single<GlobalCoinMarket> {
         globalMarketInfoManager.globalMarketInfo(currencyCode: currencyCode)
     }
@@ -160,11 +166,12 @@ extension XRatesKit {
                 latestRateManager: latestRatesManager,
                 globalMarketInfoManager: globalMarketInfoManager,
                 latestRateSyncManager: latestRatesSyncManager,
-                coinInfoManager: coinGeckoManager,
+                coinMarketsManager: coinGeckoManager,
                 historicalRateManager: historicalRateManager,
                 chartInfoManager: chartInfoManager,
                 chartInfoSyncManager: chartInfoSyncManager,
                 newsPostsManager: newsPostManager,
+                coinInfoManager: coinInfoManager,
                 providerCoinsManager: providerCoinsManager,
                 coinSyncer: coinSyncer
         )
