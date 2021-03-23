@@ -529,6 +529,20 @@ extension GrdbStorage: IProviderCoinsStorage {
         }
     }
 
+    func providerData(id: String, provider: InfoProvider) -> ProviderCoinData? {
+        try! dbPool.read { db in
+            guard let record = try ProviderCoinRecord.filter(ProviderCoinRecord.Columns.id == id).fetchAll(db).first else {
+                return nil
+            }
+
+            switch provider {
+            case .CoinGecko: return record.coingeckoId.map { ProviderCoinData(providerId: $0, code: record.code, name: record.name) }
+            case .CryptoCompare: return record.cryptocompareId.map { ProviderCoinData(providerId: $0, code: record.code, name: record.name) }
+            default: return nil
+            }
+        }
+    }
+
     func providerId(id: String, provider: InfoProvider) -> String? {
         try! dbPool.read { db in
             let record = try ProviderCoinRecord.filter(ProviderCoinRecord.Columns.id == id).fetchAll(db).first

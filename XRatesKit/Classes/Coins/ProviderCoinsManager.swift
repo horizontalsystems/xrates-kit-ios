@@ -108,15 +108,23 @@ extension ProviderCoinsManager {
                 .disposed(by: disposeBag)
     }
 
-    func providerIds(coinTypes: [CoinType], provider: InfoProvider) -> [CoinType: String] {
-        var map = [CoinType: String]()
+}
+
+extension ProviderCoinsManager {
+
+    func providerData(coinTypes: [CoinType], provider: InfoProvider) -> [CoinType: ProviderCoinData] {
+        var map = [CoinType: ProviderCoinData]()
         for coinType in coinTypes {
-            if let coinCode = providerId(coinType: coinType, provider: provider) {
-                map[coinType] = coinCode
+            if let coinData = providerData(coinType: coinType, provider: provider) {
+                map[coinType] = coinData
             }
         }
 
         return map
+    }
+
+    func providerData(coinType: CoinType, provider: InfoProvider) -> ProviderCoinData? {
+        storage.providerData(id: coinType.id, provider: provider)
     }
 
     func providerId(coinType: CoinType, provider: InfoProvider) -> String? {
