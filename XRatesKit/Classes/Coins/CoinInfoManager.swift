@@ -90,6 +90,10 @@ class CoinInfoManager {
         }
     }
 
+    func coinTypes(forCategoryId categoryId: String) -> [CoinType] {
+        storage.coins(forCategoryId: categoryId).map { $0.coinType }
+    }
+
 }
 
 extension CoinInfoManager {

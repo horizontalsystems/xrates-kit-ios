@@ -234,7 +234,7 @@ class GrdbStorage {
 
         migrator.registerMigration("addPriorityToCoinInfoRecord") { db in
             try db.alter(table: ProviderCoinRecord.databaseTableName) { t in
-                t.add(column: ProviderCoinRecord.Columns.priority.name, .integer).notNull()
+                t.add(column: ProviderCoinRecord.Columns.priority.name, .integer).notNull().defaults(to: Int.max)
             }
         }
 
@@ -500,6 +500,14 @@ extension GrdbStorage: ICoinInfoStorage {
             )
 
             return (data: data, meta: meta)
+        }
+    }
+
+    func coins(forCategoryId categoryId: String) -> [CoinInfoRecord] {
+        try! dbPool.read { db in
+            let coinCategoryCoinInfos = try CoinCategoryCoinInfo.filter(CoinCategoryCoinInfo.Columns.coinCategoryId == categoryId).fetchAll(db).map { $0.coinInfoId }
+
+            return try CoinInfoRecord.filter(coinCategoryCoinInfos.contains(CoinInfoRecord.Columns.coinId)).fetchAll(db)
         }
     }
 
