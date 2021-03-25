@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 10,
   "providers": [
     {
       "id": "cryptocompare",
@@ -2090,7 +2090,7 @@
     {
       "id": "erc20|0x7be00ed6796b21656732e8f739fc1b8f1c53da0d",
       "code": "acxt",
-      "name": "AC eXchange Token",
+      "name": "ACDX Exchange Token",
       "external_id": {
         "coingecko": "ac-exchange-token"
       }
@@ -3009,7 +3009,7 @@
       }
     },
     {
-      "id": "erc20|0xa22525aad7a794d5b923ecb036ced9eb66d7d5ed",
+      "id": "erc20|0xf4e447c390167e5a17a95ab2475b71d4ea785200",
       "code": "allbi",
       "name": "ALL BEST ICO",
       "external_id": {
@@ -3093,6 +3093,15 @@
       "external_id": {
         "coingecko": "all-me",
         "cryptocompare": "ME"
+      }
+    },
+    {
+      "id": "erc20|0x4c6719bf85903d18c295da44216f862b01b36f43",
+      "code": "alh",
+      "name": "AlloHash",
+      "external_id": {
+        "coingecko": "allohash",
+        "cryptocompare": "ALH"
       }
     },
     {
@@ -3397,6 +3406,14 @@
       }
     },
     {
+      "id": "erc20|0x72c14bc8e28f18e91a2e9551802d3fb2cb80e712",
+      "code": "ami",
+      "name": "AMMYI Coin",
+      "external_id": {
+        "coingecko": "ammyi-coin"
+      }
+    },
+    {
       "id": "erc20|0x38c87aa89b2b8cd9b95b736e1fa7b612ea972169",
       "code": "amo",
       "name": "AMO Coin",
@@ -3454,7 +3471,8 @@
       "code": "aapx",
       "name": "AMPnet",
       "external_id": {
-        "coingecko": "ampnet"
+        "coingecko": "ampnet",
+        "cryptocompare": "AAPX"
       }
     },
     {
@@ -3499,6 +3517,14 @@
       "external_id": {
         "coingecko": "anchor-neural-world-token",
         "cryptocompare": "ANW"
+      }
+    },
+    {
+      "id": "erc20|0x0f3adc247e91c3c50bc08721355a41037e89bc20",
+      "code": "anc",
+      "name": "Anchor Protocol",
+      "external_id": {
+        "coingecko": "anchor-protocol"
       }
     },
     {
@@ -3716,6 +3742,14 @@
       }
     },
     {
+      "id": "erc20|0x26ea1f595f6567b7050fbba24f6a66e19db4d560",
+      "code": "ape$",
+      "name": "APE Punk",
+      "external_id": {
+        "coingecko": "ape-punk"
+      }
+    },
+    {
       "id": "bep20|0x355ad7abb7bdd53bec94c068f3abbcb2e2571d0d",
       "code": "nana",
       "name": "Ape Tools",
@@ -3729,6 +3763,14 @@
       "name": "apeUSD-AAVE Synthetic USD (Dec 2021)",
       "external_id": {
         "coingecko": "apeusd-aave-synthetic-usd-dec-2021"
+      }
+    },
+    {
+      "id": "erc20|0x0f775ad69e3c93d599d3315a130bd82a0cdda397",
+      "code": "apeUSD-LINK-DEC21",
+      "name": "apeUSD-LINK Synthetic USD (Dec 2021)",
+      "external_id": {
+        "coingecko": "apeusd-link-synthetic-usd-dec-2021"
       }
     },
     {
@@ -3959,7 +4001,15 @@
       "code": "aqua",
       "name": "Aqua",
       "external_id": {
-        "coingecko": "aqua",
+        "coingecko": "aqua"
+      }
+    },
+    {
+      "id": "unsupported|aquachain",
+      "code": "aqua",
+      "name": "Aquachain",
+      "external_id": {
+        "coingecko": "aquachain",
         "cryptocompare": "AQUA"
       }
     },
@@ -4075,6 +4125,14 @@
       }
     },
     {
+      "id": "erc20|0xed30dd7e50edf3581ad970efc5d9379ce2614adb",
+      "code": "arcx",
+      "name": "ARC Governance",
+      "external_id": {
+        "coingecko": "arc-governance"
+      }
+    },
+    {
       "id": "erc20|0x1f3f9d3068568f8040775be2e8c03c103c61f3af",
       "code": "arch",
       "name": "Archer DAO Governance Token",
@@ -4166,7 +4224,8 @@
       "code": "argon",
       "name": "Argon",
       "external_id": {
-        "coingecko": "argon"
+        "coingecko": "argon",
+        "cryptocompare": "ARGON"
       }
     },
     {
@@ -4343,6 +4402,14 @@
     },
     {
       "id": "erc20|0xf013e0ea26cb386b3021783a3201bf2652778f93",
+      "code": "arts",
+      "name": "ARTISTA",
+      "external_id": {
+        "coingecko": "artista"
+      }
+    },
+    {
+      "id": "bep20|0xc5a7e6385d77214cf4acb62a59d861709fac2161",
       "code": "arts",
       "name": "ARTISTA",
       "external_id": {
@@ -4536,15 +4603,6 @@
       }
     },
     {
-      "id": "erc20|0xeaee3a142ac4e0494bfb60d493b804ca9a739339",
-      "code": "atc",
-      "name": "Astosch",
-      "external_id": {
-        "coingecko": "astosch",
-        "cryptocompare": "ATC"
-      }
-    },
-    {
       "id": "unsupported|astr-coin",
       "code": "astr",
       "name": "ASTR Coin",
@@ -4603,6 +4661,14 @@
       "external_id": {
         "coingecko": "atbcoin",
         "cryptocompare": "ATB"
+      }
+    },
+    {
+      "id": "erc20|0x8052327f1baf94a9dc8b26b9100f211ee3774f54",
+      "code": "atd",
+      "name": "A2DAO",
+      "external_id": {
+        "coingecko": "atd"
       }
     },
     {
@@ -4669,15 +4735,7 @@
       "code": "atm",
       "name": "Atletico Madrid Fan Token",
       "external_id": {
-        "coingecko": "atletico-madrid"
-      }
-    },
-    {
-      "id": "erc20|0x9b11efcaaa1890f6ee52c6bb7cf8153ac5d74139",
-      "code": "atm",
-      "name": "ATMChain",
-      "external_id": {
-        "coingecko": "atmchain",
+        "coingecko": "atletico-madrid",
         "cryptocompare": "ATM"
       }
     },
@@ -4945,7 +5003,8 @@
       "code": "aval",
       "name": "Avaluse",
       "external_id": {
-        "coingecko": "avaluse"
+        "coingecko": "avaluse",
+        "cryptocompare": "AVAL"
       }
     },
     {
@@ -5144,7 +5203,8 @@
       "code": "b26",
       "name": "B26",
       "external_id": {
-        "coingecko": "b26"
+        "coingecko": "b26",
+        "cryptocompare": "B26"
       }
     },
     {
@@ -5200,14 +5260,6 @@
       }
     },
     {
-      "id": "erc20|0xb2b9335791346e94245dcd316a9c9ed486e6dd7f",
-      "code": "PIPT",
-      "name": "Baby Power Index Pool Token",
-      "external_id": {
-        "coingecko": "baby-power-index-pool-token"
-      }
-    },
-    {
       "id": "erc20|0xdb13fb60d3fddabc41743d9d603ce3f42c17d057",
       "code": "baby",
       "name": "Baby Token",
@@ -5247,6 +5299,22 @@
       "external_id": {
         "coingecko": "badger-dao",
         "cryptocompare": "BADGER"
+      }
+    },
+    {
+      "id": "erc20|0x19d97d8fa813ee2f51ad4b4e04ea08baf4dffc28",
+      "code": "bbadger",
+      "name": "Badger Sett Badger",
+      "external_id": {
+        "coingecko": "badger-sett-badger"
+      }
+    },
+    {
+      "id": "erc20|0x7e7e112a68d8d2e221e11047a72ffc1065c38e1a",
+      "code": "bdigg",
+      "name": "Badger Sett Digg",
+      "external_id": {
+        "coingecko": "badger-sett-digg"
       }
     },
     {
@@ -5548,15 +5616,6 @@
       }
     },
     {
-      "id": "unsupported|bar",
-      "code": "bar",
-      "name": "Balance Accounted Receipt",
-      "external_id": {
-        "coingecko": "bar",
-        "cryptocompare": "BAR"
-      }
-    },
-    {
       "id": "unsupported|bare",
       "code": "bare",
       "name": "BARE",
@@ -5769,6 +5828,14 @@
       "external_id": {
         "coingecko": "bata",
         "cryptocompare": "BTA"
+      }
+    },
+    {
+      "id": "unsupported|batorrent",
+      "code": "ba",
+      "name": "BaTorrent",
+      "external_id": {
+        "coingecko": "batorrent"
       }
     },
     {
@@ -6061,6 +6128,14 @@
       }
     },
     {
+      "id": "bep20|0x43a0ee2e4c005277195f409e77919d1b1a5c9c1f",
+      "code": "blvr",
+      "name": "BELIEVER",
+      "external_id": {
+        "coingecko": "believer"
+      }
+    },
+    {
       "id": "erc20|0xfbcecb002177e530695b8976638fbd18d2038c3c",
       "code": "befx",
       "name": "Belifex",
@@ -6099,7 +6174,8 @@
       "code": "belt",
       "name": "Belt",
       "external_id": {
-        "coingecko": "belt"
+        "coingecko": "belt",
+        "cryptocompare": "BELT"
       }
     },
     {
@@ -6120,6 +6196,14 @@
     },
     {
       "id": "erc20|0x67c597624b17b16fb77959217360b7cd18284253",
+      "code": "mark",
+      "name": "Benchmark Protocol",
+      "external_id": {
+        "coingecko": "benchmark-protocol"
+      }
+    },
+    {
+      "id": "bep20|0x26a5dfab467d4f58fb266648cae769503cec9580",
       "code": "mark",
       "name": "Benchmark Protocol",
       "external_id": {
@@ -6561,15 +6645,6 @@
       }
     },
     {
-      "id": "erc20|0x49aec0752e68d0282db544c677f6ba407ba17ed7",
-      "code": "xbl",
-      "name": "Billionaire Token",
-      "external_id": {
-        "coingecko": "billionaire-token",
-        "cryptocompare": "XBL"
-      }
-    },
-    {
       "id": "bep20|0x6fd7c98458a943f469e1cf4ea85b173f5cd342f4",
       "code": "bhc",
       "name": "BillionHappiness",
@@ -6730,7 +6805,8 @@
       "code": "biot",
       "name": "Bio Passport",
       "external_id": {
-        "coingecko": "biopassport"
+        "coingecko": "biopassport",
+        "cryptocompare": "BIOT"
       }
     },
     {
@@ -6913,7 +6989,8 @@
       "code": "bcp",
       "name": "BitcashPay",
       "external_id": {
-        "coingecko": "bitcashpay"
+        "coingecko": "bitcashpay",
+        "cryptocompare": "BCP"
       }
     },
     {
@@ -7704,6 +7781,15 @@
       }
     },
     {
+      "id": "unsupported|bitcrex-coin",
+      "code": "bic",
+      "name": "Bitcrex Coin",
+      "external_id": {
+        "coingecko": "bitcrex-coin",
+        "cryptocompare": "BIC"
+      }
+    },
+    {
       "id": "erc20|0x0371f7b219fff864b437bcfb564810f323fffcca",
       "code": "btcr",
       "name": "Bitcurate",
@@ -7930,14 +8016,6 @@
       "name": "BITIFEX",
       "external_id": {
         "coingecko": "bitifex"
-      }
-    },
-    {
-      "id": "erc20|0xe4f1bcae296ff9385842fc24cc7d18ab94121223",
-      "code": "btfm",
-      "name": "BiTing",
-      "external_id": {
-        "coingecko": "biting"
       }
     },
     {
@@ -8284,6 +8362,14 @@
       }
     },
     {
+      "id": "unsupported|bitsz",
+      "code": "bitsz",
+      "name": "Bitsz",
+      "external_id": {
+        "coingecko": "bitsz"
+      }
+    },
+    {
       "id": "erc20|0x594e8f548ae1eb5a22b4d48a90ae9bc48e7c4742",
       "code": "bttr",
       "name": "BitTiger",
@@ -8377,14 +8463,6 @@
       "name": "BitUnits Europa",
       "external_id": {
         "coingecko": "bitunits-europa"
-      }
-    },
-    {
-      "id": "unsupported|bitunits-titan",
-      "code": "titan",
-      "name": "BitUnits Titan",
-      "external_id": {
-        "coingecko": "bitunits-titan"
       }
     },
     {
@@ -8572,6 +8650,15 @@
       }
     },
     {
+      "id": "bep20|0xaec7e1f531bb09115103c53ba76829910ec48966",
+      "code": "blank",
+      "name": "Blank",
+      "external_id": {
+        "coingecko": "blank",
+        "cryptocompare": "BLANK"
+      }
+    },
+    {
       "id": "unsupported|blast",
       "code": "blast",
       "name": "BLAST",
@@ -8711,6 +8798,15 @@
       "external_id": {
         "coingecko": "blockchain-cuties-universe",
         "cryptocompare": "CUTE"
+      }
+    },
+    {
+      "id": "erc20|0x14da7b27b2e0fedefe0a664118b0c9bc68e2e9af",
+      "code": "bcug",
+      "name": "Blockchain Cuties Universe Governance",
+      "external_id": {
+        "coingecko": "blockchain-cuties-universe-governance",
+        "cryptocompare": "BCUG"
       }
     },
     {
@@ -9489,6 +9585,14 @@
       }
     },
     {
+      "id": "erc20|0xc8ce75f643ecad864fc625902a6a07371f38320d",
+      "code": "boot",
+      "name": "Bootleg NFT",
+      "external_id": {
+        "coingecko": "bootleg-nft"
+      }
+    },
+    {
       "id": "erc20|0x26fb86579e371c7aedc461b2ddef0a8628c93d3b",
       "code": "bora",
       "name": "BORA",
@@ -9752,7 +9856,8 @@
       "code": "brick",
       "name": "r/FortNiteBR Bricks",
       "external_id": {
-        "coingecko": "brick"
+        "coingecko": "brick",
+        "cryptocompare": "BRICK"
       }
     },
     {
@@ -9906,7 +10011,8 @@
       "code": "bscv",
       "name": "Bscview",
       "external_id": {
-        "coingecko": "bscview"
+        "coingecko": "bscview",
+        "cryptocompare": "BSCV"
       }
     },
     {
@@ -9924,6 +10030,14 @@
       "external_id": {
         "coingecko": "bsys",
         "cryptocompare": "BSYS"
+      }
+    },
+    {
+      "id": "erc20|0x270371c58d9d775ed73971dd414656107384f235",
+      "code": "btap",
+      "name": "BTA Protocol",
+      "external_id": {
+        "coingecko": "bta-protocol"
       }
     },
     {
@@ -9998,14 +10112,6 @@
       "name": "BTC On-Chain Beta Portfolio Set",
       "external_id": {
         "coingecko": "btc-on-chain-beta-portfolio-set"
-      }
-    },
-    {
-      "id": "erc20|0x81c55017f7ce6e72451ced49ff7bab1e3df64d0c",
-      "code": "btcminvol",
-      "name": "BTC Range Bound Min Volatility Set",
-      "external_id": {
-        "coingecko": "btc-range-bound-min-volatility-set"
       }
     },
     {
@@ -10261,14 +10367,6 @@
       "external_id": {
         "coingecko": "burger-swap",
         "cryptocompare": "BURGER"
-      }
-    },
-    {
-      "id": "erc20|0x827eed050df933f6fda3a606b5f716cec660ecba",
-      "code": "bd",
-      "name": "BurnDrop",
-      "external_id": {
-        "coingecko": "burndrop"
       }
     },
     {
@@ -10727,6 +10825,14 @@
       }
     },
     {
+      "id": "erc20|0xe2da716381d7e0032cecaa5046b34223fc3f218d",
+      "code": "cut",
+      "name": "Carbon Utility Token",
+      "external_id": {
+        "coingecko": "carbon-utility-token"
+      }
+    },
+    {
       "id": "unsupported|cardano",
       "code": "ada",
       "name": "Cardano",
@@ -10995,15 +11101,6 @@
       }
     },
     {
-      "id": "erc20|0x01e45b8d0c51f05f17385dd3416fe3aa5bfd89ac",
-      "code": "cb",
-      "name": "COINBIG",
-      "external_id": {
-        "coingecko": "cb-token",
-        "cryptocompare": "CB"
-      }
-    },
-    {
       "id": "erc20|0x15c9dd08fb16331b9749a8d7d16bcd71c985f190",
       "code": "cc",
       "name": "CC",
@@ -11104,6 +11201,15 @@
       "name": "Celeum",
       "external_id": {
         "coingecko": "celeum"
+      }
+    },
+    {
+      "id": "erc20|0x26c8afbbfe1ebaca03c2bb082e69d0476bffe099",
+      "code": "cell",
+      "name": "Cellframe",
+      "external_id": {
+        "coingecko": "cellframe",
+        "cryptocompare": "CELL"
       }
     },
     {
@@ -11285,7 +11391,8 @@
       "code": "cgg",
       "name": "Chain Guardians",
       "external_id": {
-        "coingecko": "chain-guardians"
+        "coingecko": "chain-guardians",
+        "cryptocompare": "CGG"
       }
     },
     {
@@ -11566,7 +11673,8 @@
       "code": "chow",
       "name": "Chow Chow Finance",
       "external_id": {
-        "coingecko": "chow-chow-finance"
+        "coingecko": "chow-chow-finance",
+        "cryptocompare": "CHOW"
       }
     },
     {
@@ -11728,15 +11836,6 @@
       "name": "City Coin",
       "external_id": {
         "coingecko": "city-coin"
-      }
-    },
-    {
-      "id": "erc20|0x0bc2149d073f62510c99d908f52d0d703da1f135",
-      "code": "ccc",
-      "name": "Ciupek Capital Coin",
-      "external_id": {
-        "coingecko": "ciupek-capital-coin",
-        "cryptocompare": "CCC"
       }
     },
     {
@@ -12298,7 +12397,8 @@
       "code": "stc",
       "name": "CoinStarter",
       "external_id": {
-        "coingecko": "coinstarter"
+        "coingecko": "coinstarter",
+        "cryptocompare": "STC"
       }
     },
     {
@@ -13023,14 +13123,6 @@
       "external_id": {
         "coingecko": "covesting",
         "cryptocompare": "COV"
-      }
-    },
-    {
-      "id": "erc20|0x6b466b0232640382950c45440ea5b630744eca99",
-      "code": "cvd",
-      "name": "Covid19",
-      "external_id": {
-        "coingecko": "covid19"
       }
     },
     {
@@ -13879,15 +13971,6 @@
       }
     },
     {
-      "id": "erc20|0x0eb6e56aacae6a21bde99c826ac798d225488c3d",
-      "code": "crvt",
-      "name": "Crypto Revolution",
-      "external_id": {
-        "coingecko": "crypto-revolution",
-        "cryptocompare": "CREV"
-      }
-    },
-    {
       "id": "erc20|0xec7d3e835da3f6118079fa9a236b267d044fd7ca",
       "code": "crs",
       "name": "Crypto Rewards Studio",
@@ -14129,6 +14212,14 @@
       "external_id": {
         "coingecko": "cudos",
         "cryptocompare": "CUDOS"
+      }
+    },
+    {
+      "id": "bep20|0x9b9d617d3445f0147ece2322bace8db2768d2770",
+      "code": "cue",
+      "name": "CUE Protocol",
+      "external_id": {
+        "coingecko": "cue-protocol"
       }
     },
     {
@@ -14383,7 +14474,8 @@
       "code": "ctf",
       "name": "CyberTime Finance",
       "external_id": {
-        "coingecko": "cybertime-finance"
+        "coingecko": "cybertime-finance",
+        "cryptocompare": "CTF"
       }
     },
     {
@@ -14461,6 +14553,15 @@
       "external_id": {
         "coingecko": "daex",
         "cryptocompare": "DAX"
+      }
+    },
+    {
+      "id": "erc20|0xfc979087305a826c2b2a0056cfaba50aad3e6439",
+      "code": "dafi",
+      "name": "Dafi Protocol",
+      "external_id": {
+        "coingecko": "dafi-protocol",
+        "cryptocompare": "DAFI"
       }
     },
     {
@@ -15472,7 +15573,8 @@
       "code": "dfx",
       "name": "Definitex",
       "external_id": {
-        "coingecko": "definitex"
+        "coingecko": "definitex",
+        "cryptocompare": "DFX"
       }
     },
     {
@@ -15554,12 +15656,28 @@
       }
     },
     {
+      "id": "bep20|0x75de745a333a47fe786e8dbbf3e9440d3d5bc809",
+      "code": "dfsocial",
+      "name": "DefiSocial",
+      "external_id": {
+        "coingecko": "defisocial"
+      }
+    },
+    {
       "id": "erc20|0xfa6de2697d59e88ed7fc4dfe5a33dac43565ea41",
       "code": "defi5",
       "name": "DEFI Top 5 Index",
       "external_id": {
         "coingecko": "defi-top-5-tokens-index",
         "cryptocompare": "DEFI5"
+      }
+    },
+    {
+      "id": "erc20|0x20a68f9e34076b2dc15ce726d7eebb83b694702d",
+      "code": "isla",
+      "name": "DefiVille Island",
+      "external_id": {
+        "coingecko": "defiville-island"
       }
     },
     {
@@ -16104,7 +16222,7 @@
     {
       "id": "unsupported|dfinity-iou",
       "code": "icp",
-      "name": "Dfinity [IOU]",
+      "name": "Internet Computer [IOU]",
       "external_id": {
         "coingecko": "dfinity-iou"
       }
@@ -16217,6 +16335,14 @@
       "name": "Die",
       "external_id": {
         "coingecko": "die"
+      }
+    },
+    {
+      "id": "erc20|0xc8ba3cf103e5a1658209c366153197ac7fa9c9b1",
+      "code": "dfn",
+      "name": "Difo Network",
+      "external_id": {
+        "coingecko": "difo-network"
       }
     },
     {
@@ -16854,7 +16980,7 @@
     {
       "id": "erc20|0x9ceb84f92a0561fa3cc4132ab9c0b76a59787544",
       "code": "doki",
-      "name": "Doki Doki Finance",
+      "name": "Doki Doki",
       "external_id": {
         "coingecko": "doki-doki-finance",
         "cryptocompare": "DOKI"
@@ -16865,7 +16991,8 @@
       "code": "dola",
       "name": "Dola USD Stablecoin",
       "external_id": {
-        "coingecko": "dola-usd"
+        "coingecko": "dola-usd",
+        "cryptocompare": "DOLA"
       }
     },
     {
@@ -16933,6 +17060,15 @@
       "external_id": {
         "coingecko": "dopecoin",
         "cryptocompare": "DOPE"
+      }
+    },
+    {
+      "id": "erc20|0xbc4171f45ef0ef66e76f979df021a34b46dcc81d",
+      "code": "dora",
+      "name": "Dora Factory",
+      "external_id": {
+        "coingecko": "dora-factory",
+        "cryptocompare": "DORA"
       }
     },
     {
@@ -17121,15 +17257,6 @@
       }
     },
     {
-      "id": "erc20|0xf2b87ce9c2ce65e786d6ffee0fdb9629ceff05f2",
-      "code": "dsc",
-      "name": "Dreamscape",
-      "external_id": {
-        "coingecko": "dreamscape",
-        "cryptocompare": "DSCP"
-      }
-    },
-    {
       "id": "unsupported|dreamscoin",
       "code": "dream",
       "name": "DreamsCoin",
@@ -17245,7 +17372,8 @@
       "code": "duk+",
       "name": "Dukascoin",
       "external_id": {
-        "coingecko": "dukascoin"
+        "coingecko": "dukascoin",
+        "cryptocompare": "DUK+"
       }
     },
     {
@@ -17808,7 +17936,8 @@
       "code": "edda",
       "name": "EDDASwap",
       "external_id": {
-        "coingecko": "eddaswap"
+        "coingecko": "eddaswap",
+        "cryptocompare": "EDDA"
       }
     },
     {
@@ -17991,6 +18120,14 @@
       "name": "Elastic Bitcoin",
       "external_id": {
         "coingecko": "elastic-bitcoin"
+      }
+    },
+    {
+      "id": "erc20|0x2aa5ce395b00cc486159adbdd97c55b535cf2cf9",
+      "code": "egt",
+      "name": "ElasticDAO",
+      "external_id": {
+        "coingecko": "elastic-dao"
       }
     },
     {
@@ -18199,6 +18336,14 @@
       "external_id": {
         "coingecko": "ellaism",
         "cryptocompare": "ELLA"
+      }
+    },
+    {
+      "id": "bep20|0xa7f552078dcc247c2684336020c03648500c6d9f",
+      "code": "eps",
+      "name": "Ellipsis",
+      "external_id": {
+        "coingecko": "ellipsis"
       }
     },
     {
@@ -18685,14 +18830,6 @@
       }
     },
     {
-      "id": "unsupported|eoshash",
-      "code": "hash",
-      "name": "EOSHASH",
-      "external_id": {
-        "coingecko": "eoshash"
-      }
-    },
-    {
       "id": "unsupported|eos-pow-coin",
       "code": "pow",
       "name": "EOS PoW Coin",
@@ -19133,7 +19270,8 @@
       "code": "etha",
       "name": "ETHA Lend",
       "external_id": {
-        "coingecko": "etha-lend"
+        "coingecko": "etha-lend",
+        "cryptocompare": "ETHA"
       }
     },
     {
@@ -19317,14 +19455,6 @@
       }
     },
     {
-      "id": "erc20|0x78481fb80caabb252909218164266ac83f815000",
-      "code": "ehy",
-      "name": "Ethereum High Yield Set",
-      "external_id": {
-        "coingecko": "ethereum-high-yield-set"
-      }
-    },
-    {
       "id": "erc20|0x54efec15d08428c7ba31f8f085d4860ee6e38313",
       "code": "etlt",
       "name": "Ethereum Lightning Token",
@@ -19444,6 +19574,15 @@
       }
     },
     {
+      "id": "erc20|0x33e07f5055173cf8febede8b21b12d1e2b523205",
+      "code": "eland",
+      "name": "Etherland",
+      "external_id": {
+        "coingecko": "etherland",
+        "cryptocompare": "ELAND"
+      }
+    },
+    {
       "id": "erc20|0x6c37bf4f042712c978a73e3fd56d1f5738dd7c43",
       "code": "elet",
       "name": "Elementeum",
@@ -19456,7 +19595,8 @@
       "code": "ern",
       "name": "Ethernity Chain",
       "external_id": {
-        "coingecko": "ethernity-chain"
+        "coingecko": "ethernity-chain",
+        "cryptocompare": "ERN"
       }
     },
     {
@@ -19956,7 +20096,8 @@
       "code": "evc",
       "name": "Evrice",
       "external_id": {
-        "coingecko": "evrice"
+        "coingecko": "evrice",
+        "cryptocompare": "EVRICE"
       }
     },
     {
@@ -20490,6 +20631,14 @@
       }
     },
     {
+      "id": "bep20|0xa72a0564d0e887123112e6a4dc1aba7611ad861d",
+      "code": "feb",
+      "name": "FEB",
+      "external_id": {
+        "coingecko": "feb"
+      }
+    },
+    {
       "id": "unsupported|fedoracoin",
       "code": "tips",
       "name": "Fedoracoin",
@@ -20554,6 +20703,14 @@
       "name": "Fera",
       "external_id": {
         "coingecko": "fera"
+      }
+    },
+    {
+      "id": "unsupported|ferma",
+      "code": "ferma",
+      "name": "Ferma",
+      "external_id": {
+        "coingecko": "ferma"
       }
     },
     {
@@ -20631,14 +20788,6 @@
       "name": "FIL12",
       "external_id": {
         "coingecko": "fil12"
-      }
-    },
-    {
-      "id": "unsupported|fil36",
-      "code": "fil36",
-      "name": "FIL36",
-      "external_id": {
-        "coingecko": "fil36"
       }
     },
     {
@@ -21012,7 +21161,7 @@
       "name": "Flashstake",
       "external_id": {
         "coingecko": "flash-stake",
-        "cryptocompare": "FLASHST"
+        "cryptocompare": "FLASH"
       }
     },
     {
@@ -21133,6 +21282,14 @@
       }
     },
     {
+      "id": "bep20|0x2263bf3c00787a7cfa17aef830261d1fe342fd5b",
+      "code": "flo",
+      "name": "FlourMix",
+      "external_id": {
+        "coingecko": "flourmix"
+      }
+    },
+    {
       "id": "unsupported|flow",
       "code": "flow",
       "name": "Flow",
@@ -21162,7 +21319,7 @@
     {
       "id": "erc20|0x469eda64aed3a3ad6f868c44564291aa415cb1d9",
       "code": "flux",
-      "name": "FLUX",
+      "name": "Datamine FLUX",
       "external_id": {
         "coingecko": "flux"
       }
@@ -21622,11 +21779,11 @@
       }
     },
     {
-      "id": "erc20|0x7d91e637589ec3bb54d8213a9e92dc6e8d12da91",
+      "id": "erc20|0x35bd01fc9d6d5d81ca9e055db88dc49aa2c699a8",
       "code": "fwb",
-      "name": "Friends With Benefits",
+      "name": "Friends With Benefits Pro",
       "external_id": {
-        "coingecko": "friends-with-benefits"
+        "coingecko": "friends-with-benefits-pro"
       }
     },
     {
@@ -21782,7 +21939,7 @@
     {
       "id": "erc20|0x419d0d8bdd9af5e606ae2232ed285aff190e711b",
       "code": "fun",
-      "name": "FunFair",
+      "name": "Fun Token",
       "external_id": {
         "coingecko": "funfair",
         "cryptocompare": "FUN"
@@ -21928,7 +22085,7 @@
     {
       "id": "erc20|0x8c15ef5b4b21951d50e53e4fbda8298ffad25057",
       "code": "fx",
-      "name": "f(x) Coin",
+      "name": "Function X",
       "external_id": {
         "coingecko": "fx-coin",
         "cryptocompare": "FUNX"
@@ -22313,14 +22470,6 @@
       }
     },
     {
-      "id": "unsupported|gate",
-      "code": "gate",
-      "name": "G.A.T.E",
-      "external_id": {
-        "coingecko": "gate"
-      }
-    },
-    {
       "id": "erc20|0xe66747a101bff2dba3697199dcce5b743b454759",
       "code": "gt",
       "name": "GateToken",
@@ -22414,6 +22563,14 @@
       "external_id": {
         "coingecko": "gems-2",
         "cryptocompare": "GEM"
+      }
+    },
+    {
+      "id": "bep20|0x444a0e0c139cac67e8f9be945c6dfe01a2766ed1",
+      "code": "gst",
+      "name": "Gemstone",
+      "external_id": {
+        "coingecko": "gemstone"
       }
     },
     {
@@ -22576,6 +22733,15 @@
       }
     },
     {
+      "id": "bep20|0xc342774492b54ce5f8ac662113ed702fc1b34972",
+      "code": "geo",
+      "name": "GeoDB",
+      "external_id": {
+        "coingecko": "geodb",
+        "cryptocompare": "GEODB"
+      }
+    },
+    {
       "id": "erc20|0xde5ea375ffbdc8b25a80fe13d631e8ba0ab4bb02",
       "code": "gera",
       "name": "Gera Coin",
@@ -22634,6 +22800,14 @@
       "external_id": {
         "coingecko": "geysercoin",
         "cryptocompare": "GSR"
+      }
+    },
+    {
+      "id": "bep20|0x94babbe728d9411612ee41b20241a6fa251b26ce",
+      "code": "gfce",
+      "name": "GFORCE",
+      "external_id": {
+        "coingecko": "gforce"
       }
     },
     {
@@ -23400,6 +23574,14 @@
       }
     },
     {
+      "id": "bep20|0x6b8227a0e18bd35a10849601db194b24aab2c8ea",
+      "code": "gofi",
+      "name": "GoSwapp",
+      "external_id": {
+        "coingecko": "goswapp"
+      }
+    },
+    {
       "id": "erc20|0x1051a014e4b3f2bd08e5a7e52522f0f71628162b",
       "code": "ogods",
       "name": "GOTOGODS",
@@ -23469,7 +23651,7 @@
       }
     },
     {
-      "id": "erc20|0xcbd49182346421d3b410b04aeb1789346da6ce43",
+      "id": "erc20|0x30634241d3a7fbcea55f0ba7df42dfd8cdd8b2cd",
       "code": "gbt",
       "name": "Grabity",
       "external_id": {
@@ -23540,6 +23722,14 @@
       "name": "Grap Finance",
       "external_id": {
         "coingecko": "grap-finance"
+      }
+    },
+    {
+      "id": "erc20|0x9f9c8ec3534c3ce16f928381372bfbfbfb9f4d24",
+      "code": "glq",
+      "name": "GraphLinq Protocol",
+      "external_id": {
+        "coingecko": "graphlinq-protocol"
       }
     },
     {
@@ -23734,7 +23924,8 @@
       "code": "grumpy",
       "name": "Grumpy Cat",
       "external_id": {
-        "coingecko": "grumpy-cat"
+        "coingecko": "grumpy-cat",
+        "cryptocompare": "GRUMPY"
       }
     },
     {
@@ -23760,7 +23951,8 @@
       "code": "gspi",
       "name": "GSPI",
       "external_id": {
-        "coingecko": "gspi"
+        "coingecko": "gspi",
+        "cryptocompare": "GSPI"
       }
     },
     {
@@ -23908,6 +24100,14 @@
       }
     },
     {
+      "id": "erc20|0x0ace32f6e87ac1457a5385f8eb0208f37263b415",
+      "code": "hbt",
+      "name": "Habitat",
+      "external_id": {
+        "coingecko": "habitat"
+      }
+    },
+    {
       "id": "unsupported|hackenai",
       "code": "hai",
       "name": "Hacken Token",
@@ -23999,7 +24199,8 @@
       "code": "hapi",
       "name": "HAPI",
       "external_id": {
-        "coingecko": "hapi"
+        "coingecko": "hapi",
+        "cryptocompare": "HAPI"
       }
     },
     {
@@ -24368,6 +24569,14 @@
       "external_id": {
         "coingecko": "hedget",
         "cryptocompare": "HGET"
+      }
+    },
+    {
+      "id": "erc20|0xbff89386d062c6040ed1955e180c87dd00bb71af",
+      "code": "htg",
+      "name": "Hedge Tech Governance",
+      "external_id": {
+        "coingecko": "hedge-tech-governance"
       }
     },
     {
@@ -24853,7 +25062,8 @@
       "code": "hoge",
       "name": "Hoge Finance",
       "external_id": {
-        "coingecko": "hoge-finance"
+        "coingecko": "hoge-finance",
+        "cryptocompare": "HOGE"
       }
     },
     {
@@ -24903,8 +25113,7 @@
       "code": "hot",
       "name": "Holo",
       "external_id": {
-        "coingecko": "holotoken",
-        "cryptocompare": "HOLO"
+        "coingecko": "holotoken"
       }
     },
     {
@@ -25557,6 +25766,14 @@
       }
     },
     {
+      "id": "bep20|0xf6565a97dc832d93dc83b75ee9aa5c7e8ecb0f9d",
+      "code": "hyve",
+      "name": "Hyve",
+      "external_id": {
+        "coingecko": "hyve"
+      }
+    },
+    {
       "id": "unsupported|i0coin",
       "code": "i0c",
       "name": "I0Coin",
@@ -25645,14 +25862,6 @@
       "name": "iCEX",
       "external_id": {
         "coingecko": "icex"
-      }
-    },
-    {
-      "id": "unsupported|icherry-finance",
-      "code": "ich",
-      "name": "iCherry Finance",
-      "external_id": {
-        "coingecko": "icherry-finance"
       }
     },
     {
@@ -25923,6 +26132,14 @@
       }
     },
     {
+      "id": "erc20|0x1571ed0bed4d987fe2b498ddbae7dfa19519f651",
+      "code": "ifarm",
+      "name": "iFARM",
+      "external_id": {
+        "coingecko": "ifarm"
+      }
+    },
+    {
       "id": "erc20|0x2731d151cbdf84a8a4c6d9d0bae74012db51e428",
       "code": "ift",
       "name": "IFToken",
@@ -26059,15 +26276,6 @@
       }
     },
     {
-      "id": "erc20|0x25cef4fb106e76080e88135a0e4059276fa9be87",
-      "code": "units",
-      "name": "Imperial",
-      "external_id": {
-        "coingecko": "imperial",
-        "cryptocompare": "UNITS"
-      }
-    },
-    {
       "id": "unsupported|impleum",
       "code": "impl",
       "name": "Impleum",
@@ -26090,6 +26298,15 @@
       "external_id": {
         "coingecko": "impulse-by-fdr",
         "cryptocompare": "IMPULSE"
+      }
+    },
+    {
+      "id": "erc20|0xe14e06671702f0db50055388c29adc66821d933b",
+      "code": "ven",
+      "name": "ImpulseVen",
+      "external_id": {
+        "coingecko": "impulseven",
+        "cryptocompare": "VEN"
       }
     },
     {
@@ -26270,7 +26487,8 @@
       "code": "inf",
       "name": "Infinium",
       "external_id": {
-        "coingecko": "infinium"
+        "coingecko": "infinium",
+        "cryptocompare": "INF"
       }
     },
     {
@@ -26411,6 +26629,15 @@
       "external_id": {
         "coingecko": "inrtoken",
         "cryptocompare": "INRT"
+      }
+    },
+    {
+      "id": "unsupported|ins3-finance-coin",
+      "code": "itf",
+      "name": "Ins3.Finance Coin",
+      "external_id": {
+        "coingecko": "ins3-finance-coin",
+        "cryptocompare": "ITF"
       }
     },
     {
@@ -26635,6 +26862,14 @@
       "name": "International CryptoX",
       "external_id": {
         "coingecko": "international-cryptox"
+      }
+    },
+    {
+      "id": "unsupported|internet-computer",
+      "code": "icp",
+      "name": "Internet Computer",
+      "external_id": {
+        "coingecko": "internet-computer"
       }
     },
     {
@@ -27205,14 +27440,6 @@
       }
     },
     {
-      "id": "erc20|0x7420b4b9a0110cdc71fb720908340c03f9bc03ec",
-      "code": "jasmy",
-      "name": "JasmyCoin",
-      "external_id": {
-        "coingecko": "jasmycoin"
-      }
-    },
-    {
       "id": "unsupported|jasper-coin",
       "code": "jac",
       "name": "Jasper Coin",
@@ -27312,6 +27539,14 @@
       "external_id": {
         "coingecko": "jibrel",
         "cryptocompare": "JNT"
+      }
+    },
+    {
+      "id": "bep20|0x82d49d4c442219fdda7857fc1102e7ce6e6e5612",
+      "code": "jigg",
+      "name": "Jiggly Finance",
+      "external_id": {
+        "coingecko": "jiggly-finance"
       }
     },
     {
@@ -27509,6 +27744,15 @@
       }
     },
     {
+      "id": "bep20|0xc13b7a43223bb9bf4b69bd68ab20ca1b79d81c75",
+      "code": "jgn",
+      "name": "Juggernaut",
+      "external_id": {
+        "coingecko": "juggernaut",
+        "cryptocompare": "JGN"
+      }
+    },
+    {
       "id": "erc20|0x2cae31d2ca104a951654456f46168bc9f88fdc65",
       "code": "jui",
       "name": "JUIICE",
@@ -27596,6 +27840,14 @@
       }
     },
     {
+      "id": "bep20|0x9510b145010f0eac5a3aefd9a5a07a0a14b2241d",
+      "code": "dino",
+      "name": "Jurassic Farm",
+      "external_id": {
+        "coingecko": "jurassic-farm"
+      }
+    },
+    {
       "id": "unsupported|just",
       "code": "jst",
       "name": "JUST",
@@ -27617,7 +27869,8 @@
       "code": "julb",
       "name": "JustLiquidity Binance",
       "external_id": {
-        "coingecko": "justliquidity-binance"
+        "coingecko": "justliquidity-binance",
+        "cryptocompare": "JULB"
       }
     },
     {
@@ -27644,6 +27897,14 @@
       "external_id": {
         "coingecko": "juventus-fan-token",
         "cryptocompare": "JUV"
+      }
+    },
+    {
+      "id": "erc20|0xb9d99c33ea2d86ec5ec6b8a4dd816ebba64404af",
+      "code": "k21",
+      "name": "K21",
+      "external_id": {
+        "coingecko": "k21"
       }
     },
     {
@@ -28108,7 +28369,8 @@
       "code": "kine",
       "name": "Kine Protocol",
       "external_id": {
-        "coingecko": "kine-protocol"
+        "coingecko": "kine-protocol",
+        "cryptocompare": "KINE"
       }
     },
     {
@@ -28179,6 +28441,15 @@
       }
     },
     {
+      "id": "bep20|0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e",
+      "code": "kex",
+      "name": "KIRA Network",
+      "external_id": {
+        "coingecko": "kira-network",
+        "cryptocompare": "KEX"
+      }
+    },
+    {
       "id": "erc20|0xb1191f691a355b43542bea9b8847bc73e7abb137",
       "code": "kiro",
       "name": "Kirobo",
@@ -28212,11 +28483,20 @@
       }
     },
     {
+      "id": "bep20|0x5d3afba1924ad748776e4ca62213bf7acf39d773",
+      "code": "kgo",
+      "name": "Kiwigo",
+      "external_id": {
+        "coingecko": "kiwigo"
+      }
+    },
+    {
       "id": "erc20|0x2bf91c18cd4ae9c2f2858ef9fe518180f7b5096d",
       "code": "kiwi",
       "name": "KIWI Token",
       "external_id": {
-        "coingecko": "kiwi-token"
+        "coingecko": "kiwi-token",
+        "cryptocompare": "KIWI"
       }
     },
     {
@@ -28300,10 +28580,18 @@
     {
       "id": "erc20|0xb97d5cf2864fb0d08b34a484ff48d5492b2324a0",
       "code": "klon",
-      "name": "Klondike Finance",
+      "name": "Klondike Finance v1",
       "external_id": {
         "coingecko": "klondike-finance",
         "cryptocompare": "KLON"
+      }
+    },
+    {
+      "id": "erc20|0xbf15797bb5e47f6fb094a4abdb2cfc43f77179ef",
+      "code": "klonx",
+      "name": "Klondike Finance v2",
+      "external_id": {
+        "coingecko": "klondike-finance-v2"
       }
     },
     {
@@ -28422,6 +28710,14 @@
       "external_id": {
         "coingecko": "kompass",
         "cryptocompare": "KOMP"
+      }
+    },
+    {
+      "id": "erc20|0x7c3cf2d43b50e78e27a81293a43fcac45796fb54",
+      "code": "kong",
+      "name": "Kong Defi",
+      "external_id": {
+        "coingecko": "kong-defi"
       }
     },
     {
@@ -29069,6 +29365,15 @@
       }
     },
     {
+      "id": "erc20|0xdef1da03061ddd2a5ef6c59220c135dec623116d",
+      "code": "l3p",
+      "name": "Lepricon",
+      "external_id": {
+        "coingecko": "lepricon",
+        "cryptocompare": "L3P"
+      }
+    },
+    {
       "id": "unsupported|letitride",
       "code": "lir",
       "name": "LetItRide",
@@ -29517,6 +29822,14 @@
       }
     },
     {
+      "id": "erc20|0x88665a7556e1b3c939d6661248116886845249a8",
+      "code": "lf",
+      "name": "Linkflow",
+      "external_id": {
+        "coingecko": "linkflow"
+      }
+    },
+    {
       "id": "erc20|0xe2e6d4be086c6938b53b22144855eef674281639",
       "code": "lnk",
       "name": "Link Platform",
@@ -29766,14 +30079,6 @@
       }
     },
     {
-      "id": "unsupported|litenero",
-      "code": "ltnx",
-      "name": "Litenero",
-      "external_id": {
-        "coingecko": "litenero"
-      }
-    },
-    {
       "id": "erc20|0xb59490ab09a0f526cc7305822ac65f2ab12f9723",
       "code": "lit",
       "name": "Litentry",
@@ -29941,7 +30246,7 @@
       "name": "LockTrip",
       "external_id": {
         "coingecko": "lockchain",
-        "cryptocompare": "LOCK"
+        "cryptocompare": "LOC"
       }
     },
     {
@@ -30487,6 +30792,14 @@
       }
     },
     {
+      "id": "bep20|0xc603b1fba6a5b502be4f1ab27591bf4e75a3460c",
+      "code": "magi",
+      "name": "Magikarp Finance",
+      "external_id": {
+        "coingecko": "magikarp-finance"
+      }
+    },
+    {
       "id": "erc20|0xa6eb54102f20095679882db4c84e72e65ab782a4",
       "code": "mgc",
       "name": "Magnachain",
@@ -30921,15 +31234,6 @@
       }
     },
     {
-      "id": "erc20|0x6ef77d991eb5306e9f235abc0cc65925da398ad0",
-      "code": "mmt",
-      "name": "Master MIX Token",
-      "external_id": {
-        "coingecko": "master-mix-token",
-        "cryptocompare": "MMT"
-      }
-    },
-    {
       "id": "erc20|0xa0d440c6da37892dc06ee7930b2eede0634fd681",
       "code": "mash",
       "name": "Masternet",
@@ -31142,7 +31446,7 @@
     {
       "id": "erc20|0x7cda79830faf07ed696fe220566116951ced36a7",
       "code": "mayp",
-      "name": "Maya Preferred.",
+      "name": "Maya Preferred",
       "external_id": {
         "coingecko": "maya-preferred-223"
       }
@@ -31557,6 +31861,14 @@
       }
     },
     {
+      "id": "erc20|0xe1b583dc66e0a24fd9af2dc665f6f5e48978e106",
+      "code": "mee",
+      "name": "Mercurity Finance",
+      "external_id": {
+        "coingecko": "mercurity-finance"
+      }
+    },
+    {
       "id": "unsupported|mercury",
       "code": "mer",
       "name": "Mercury",
@@ -31603,7 +31915,8 @@
       "code": "lock",
       "name": "Meridian Network",
       "external_id": {
-        "coingecko": "meridian-network"
+        "coingecko": "meridian-network",
+        "cryptocompare": "LOCK"
       }
     },
     {
@@ -32787,14 +33100,6 @@
       }
     },
     {
-      "id": "erc20|0x3e6941521c85c7233632bf76e3adb05db8e2f1db",
-      "code": "mfck",
-      "name": "MoFlux - Clash of Kings",
-      "external_id": {
-        "coingecko": "moflux-clash-of-kings"
-      }
-    },
-    {
       "id": "erc20|0xbdec45952b5e234eddc2981b43eed360826d5087",
       "code": "mogx",
       "name": "Mogu",
@@ -33081,6 +33386,15 @@
       }
     },
     {
+      "id": "bep20|0xbddd7d426274fc5f370817c80c06b86d651963e4",
+      "code": "mla",
+      "name": "Moola",
+      "external_id": {
+        "coingecko": "moola",
+        "cryptocompare": "MLA"
+      }
+    },
+    {
       "id": "unsupported|moon",
       "code": "moon",
       "name": "r/CryptoCurrency Moons",
@@ -33129,6 +33443,14 @@
       "external_id": {
         "coingecko": "moonday-finance",
         "cryptocompare": "MOONDAY"
+      }
+    },
+    {
+      "id": "erc20|0xcb696c86917175dfb4f0037ddc4f2e877a9f081a",
+      "code": "md+",
+      "name": "MoonDayPlus",
+      "external_id": {
+        "coingecko": "moon-day-plus"
       }
     },
     {
@@ -33302,14 +33624,6 @@
       }
     },
     {
-      "id": "erc20|0x621e3b71d07b51242bcca167928e184235a4bb87",
-      "code": "mavc",
-      "name": "Mountains and Valleys ETH/BTC Set",
-      "external_id": {
-        "coingecko": "mountains-and-valleys-ethbtc-set"
-      }
-    },
-    {
       "id": "unsupported|mouse",
       "code": "mouse",
       "name": "MouseMN",
@@ -33433,6 +33747,15 @@
       "external_id": {
         "coingecko": "muay-thai-pass",
         "cryptocompare": "MTC"
+      }
+    },
+    {
+      "id": "erc20|0x9ea1ae46c15a4164b74463bc26f8aa3b0eea2e6e",
+      "code": "dank",
+      "name": "Mu Dank",
+      "external_id": {
+        "coingecko": "mu-dank",
+        "cryptocompare": "DANK"
       }
     },
     {
@@ -33655,7 +33978,8 @@
       "code": "alice",
       "name": "My Neighbor Alice",
       "external_id": {
-        "coingecko": "my-neighbor-alice"
+        "coingecko": "my-neighbor-alice",
+        "cryptocompare": "ALICE"
       }
     },
     {
@@ -33663,7 +33987,8 @@
       "code": "alice",
       "name": "My Neighbor Alice",
       "external_id": {
-        "coingecko": "my-neighbor-alice"
+        "coingecko": "my-neighbor-alice",
+        "cryptocompare": "ALICE"
       }
     },
     {
@@ -34081,14 +34406,6 @@
       "external_id": {
         "coingecko": "nectar-token",
         "cryptocompare": "NEC"
-      }
-    },
-    {
-      "id": "erc20|0xd8446236fa95b9b5f9fd0f8e7df1a944823c683d",
-      "code": "neeo",
-      "name": "NEEO Token",
-      "external_id": {
-        "coingecko": "neeo-token"
       }
     },
     {
@@ -34606,7 +34923,8 @@
       "code": "nftl",
       "name": "NFTL Token",
       "external_id": {
-        "coingecko": "nftl-token"
+        "coingecko": "nftl-token",
+        "cryptocompare": "NFTL"
       }
     },
     {
@@ -34614,7 +34932,8 @@
       "code": "nft",
       "name": "NFT Protocol",
       "external_id": {
-        "coingecko": "nft-protocol"
+        "coingecko": "nft-protocol",
+        "cryptocompare": "NFT"
       }
     },
     {
@@ -34622,7 +34941,16 @@
       "code": "rehab",
       "name": "NFT Rehab",
       "external_id": {
-        "coingecko": "nft-rehab"
+        "coingecko": "nft-rehab",
+        "cryptocompare": "REHAB"
+      }
+    },
+    {
+      "id": "erc20|0x4d75d9e37667a2d4677ec3d74bdd9049326ad8d6",
+      "code": "war",
+      "name": "NFT Wars",
+      "external_id": {
+        "coingecko": "nft-wars"
       }
     },
     {
@@ -34925,11 +35253,21 @@
       }
     },
     {
+      "id": "bep20|0xd32d01a43c869edcd1117c640fbdcfcfd97d9d65",
+      "code": "nmx",
+      "name": "Nominex",
+      "external_id": {
+        "coingecko": "nominex",
+        "cryptocompare": "NMX"
+      }
+    },
+    {
       "id": "erc20|0x1cbb83ebcd552d5ebf8131ef8c9cd9d9bab342bc",
       "code": "nfy",
       "name": "Non-Fungible Yearn",
       "external_id": {
-        "coingecko": "non-fungible-yearn"
+        "coingecko": "non-fungible-yearn",
+        "cryptocompare": "NFY"
       }
     },
     {
@@ -35249,7 +35587,7 @@
     {
       "id": "erc20|0xc1215988f2e555ac324d1e2d2a6164f1010ff29f",
       "code": "nyante",
-      "name": "Nyantereum Int",
+      "name": "Nyantereum International",
       "external_id": {
         "coingecko": "nyantereum"
       }
@@ -35475,6 +35813,14 @@
       }
     },
     {
+      "id": "erc20|0xcd2828fc4d8e8a0ede91bb38cf64b1a81de65bf6",
+      "code": "oddz",
+      "name": "Oddz",
+      "external_id": {
+        "coingecko": "oddz"
+      }
+    },
+    {
       "id": "erc20|0xbf52f2ab39e26e0951d2a02b49b7702abe30406a",
       "code": "ode",
       "name": "ODEM",
@@ -35653,6 +35999,14 @@
       "external_id": {
         "coingecko": "olxa",
         "cryptocompare": "OLXA"
+      }
+    },
+    {
+      "id": "erc20|0x383518188c0c6d7730d91b2c03a03c837814a899",
+      "code": "ohm",
+      "name": "Olympus",
+      "external_id": {
+        "coingecko": "olympus"
       }
     },
     {
@@ -35979,14 +36333,6 @@
       }
     },
     {
-      "id": "unsupported|openbit",
-      "code": "opn",
-      "name": "Openbit",
-      "external_id": {
-        "coingecko": "openbit"
-      }
-    },
-    {
       "id": "erc20|0x69e8b9528cabda89fe846c67675b5d73d463a916",
       "code": "open",
       "name": "OPEN Governance Token",
@@ -36164,6 +36510,14 @@
       "external_id": {
         "coingecko": "orchid-protocol",
         "cryptocompare": "OXT"
+      }
+    },
+    {
+      "id": "bep20|0x93d5a19a993d195cfc75acdd736a994428290a59",
+      "code": "ore",
+      "name": "Oreo Defi Finance",
+      "external_id": {
+        "coingecko": "oreo"
       }
     },
     {
@@ -36532,7 +36886,8 @@
       "code": "paint",
       "name": "MurAll",
       "external_id": {
-        "coingecko": "paint"
+        "coingecko": "paint",
+        "cryptocompare": "PAINT"
       }
     },
     {
@@ -37375,6 +37730,14 @@
       }
     },
     {
+      "id": "bep20|0x0f9e4d49f25de22c2202af916b681fbb3790497b",
+      "code": "perl",
+      "name": "Perlin",
+      "external_id": {
+        "coingecko": "perlin"
+      }
+    },
+    {
       "id": "unsupported|permission-coin",
       "code": "ask",
       "name": "Permission Coin",
@@ -37567,6 +37930,14 @@
       }
     },
     {
+      "id": "bep20|0xc25d94fc3f8d7bd1d88f89802fe075338f71dec7",
+      "code": "pnix",
+      "name": "PhoenixDefi.Finance",
+      "external_id": {
+        "coingecko": "phoenixdefi-finance"
+      }
+    },
+    {
       "id": "unsupported|phoneum",
       "code": "pht",
       "name": "Phoneum",
@@ -37712,14 +38083,6 @@
       }
     },
     {
-      "id": "unsupported|piegon-gold",
-      "code": "piegon",
-      "name": "PIEGON GOLD",
-      "external_id": {
-        "coingecko": "piegon-gold"
-      }
-    },
-    {
       "id": "unsupported|pigeoncoin",
       "code": "pgn",
       "name": "Pigeoncoin",
@@ -37745,6 +38108,14 @@
       }
     },
     {
+      "id": "erc20|0xe09fb60e8d6e7e1cebbe821bd5c3fc67a40f86bf",
+      "code": "pikachu",
+      "name": "Pikachu",
+      "external_id": {
+        "coingecko": "pikachu"
+      }
+    },
+    {
       "id": "erc20|0x6a532b08c654a1a86069b74c560d8fa0ff842218",
       "code": "pkp",
       "name": "Pikto Group",
@@ -37767,6 +38138,14 @@
       "name": "Pilnette",
       "external_id": {
         "coingecko": "pilnette"
+      }
+    },
+    {
+      "id": "unsupported|pilot",
+      "code": "ptd",
+      "name": "Pilot",
+      "external_id": {
+        "coingecko": "pilot"
       }
     },
     {
@@ -37983,7 +38362,8 @@
       "code": "pcnt",
       "name": "Playcent",
       "external_id": {
-        "coingecko": "playcent"
+        "coingecko": "playcent",
+        "cryptocompare": "PCNT"
       }
     },
     {
@@ -38323,7 +38703,7 @@
       }
     },
     {
-      "id": "erc20|0x0d6ae2a429df13e44a07cd2969e085e4833f64a0",
+      "id": "erc20|0x298d492e8c1d909d3f63bc4a36c66c64acb3d695",
       "code": "pbr",
       "name": "PolkaBridge",
       "external_id": {
@@ -38334,7 +38714,7 @@
     {
       "id": "erc20|0xaa8330fb2b4d5d07abfe7a72262752a8505c6b37",
       "code": "polc",
-      "name": "Polka City",
+      "name": "Polkacity",
       "external_id": {
         "coingecko": "polka-city",
         "cryptocompare": "POLC"
@@ -38356,6 +38736,15 @@
       "external_id": {
         "coingecko": "polkadot",
         "cryptocompare": "DOT"
+      }
+    },
+    {
+      "id": "erc20|0x8b39b70e39aa811b69365398e0aace9bee238aeb",
+      "code": "pkf",
+      "name": "PolkaFoundry",
+      "external_id": {
+        "coingecko": "polkafoundry",
+        "cryptocompare": "PKF"
       }
     },
     {
@@ -39413,6 +39802,14 @@
       }
     },
     {
+      "id": "erc20|0x5247c0db4044fb6f97f32c7e1b48758019a5a912",
+      "code": "pxgold-mar2022",
+      "name": "pxGOLD Synthetic Gold Expiring 31 Mar 2022",
+      "external_id": {
+        "coingecko": "pxgold-synthetic-gold-expiring-31-mar-2022"
+      }
+    },
+    {
       "id": "erc20|0xdaff85b6f5787b2d9ee11ccdf5e852816063326a",
       "code": "pxusd-oct2020",
       "name": "pxUSD Synthetic USD Expiring 1 November 2020",
@@ -39426,6 +39823,14 @@
       "name": "pxUSD Synthetic USD Expiring 1 April 2021",
       "external_id": {
         "coingecko": "pxusd-synthetic-usd-expiring-1-april-2021"
+      }
+    },
+    {
+      "id": "erc20|0x4b606e9eb2228c70f44453afe5a73e1fea258ce1",
+      "code": "pxusd-mar2022",
+      "name": "pxUSD Synthetic USD Expiring 31 Mar 2022",
+      "external_id": {
+        "coingecko": "pxusd-synthetic-usd-expiring-31-mar-2022"
       }
     },
     {
@@ -39557,6 +39962,14 @@
       }
     },
     {
+      "id": "bep20|0x2bf5b0df27f31388d5b825b39bd752bed6c7f7e9",
+      "code": "qdao",
+      "name": "Q DAO Governance token v1.0",
+      "external_id": {
+        "coingecko": "q-dao-governance-token-v1-0"
+      }
+    },
+    {
       "id": "erc20|0xfee4dbe2751bf8d1b1b861aaf9664961f19ce91a",
       "code": "qdefi",
       "name": "Q DeFi Rating & Governance Token v2.0",
@@ -39675,14 +40088,6 @@
       }
     },
     {
-      "id": "erc20|0xb64c90fe1d053bc59fb0db09d5061a8c1f0fbe30",
-      "code": "qt",
-      "name": "QT",
-      "external_id": {
-        "coingecko": "qt"
-      }
-    },
-    {
       "id": "unsupported|qtum",
       "code": "qtum",
       "name": "Qtum",
@@ -39722,6 +40127,15 @@
       "name": "Quality Tracing Chain",
       "external_id": {
         "coingecko": "quality-tracing-chain"
+      }
+    },
+    {
+      "id": "bep20|0x1ade17b4b38b472b5259bbc938618226df7b5ca8",
+      "code": "quam",
+      "name": "Quam Network",
+      "external_id": {
+        "coingecko": "quam-network",
+        "cryptocompare": "QUAM"
       }
     },
     {
@@ -40004,7 +40418,8 @@
       "code": "rad",
       "name": "Radicle",
       "external_id": {
-        "coingecko": "radicle"
+        "coingecko": "radicle",
+        "cryptocompare": "RAD"
       }
     },
     {
@@ -40056,6 +40471,14 @@
       "external_id": {
         "coingecko": "raiden-network",
         "cryptocompare": "RDN"
+      }
+    },
+    {
+      "id": "erc20|0xeb953eda0dc65e3246f43dc8fa13f35623bdd5ed",
+      "code": "raini",
+      "name": "Rainicorn",
+      "external_id": {
+        "coingecko": "rainicorn"
       }
     },
     {
@@ -40218,14 +40641,6 @@
       "name": "Rari Stable Pool Token",
       "external_id": {
         "coingecko": "rari-stable-pool-token"
-      }
-    },
-    {
-      "id": "unsupported|ratcoin",
-      "code": "rat",
-      "name": "RatCoin",
-      "external_id": {
-        "coingecko": "ratcoin"
       }
     },
     {
@@ -40430,14 +40845,6 @@
       "name": "RealToken 25097 Andover Dr Dearborn MI",
       "external_id": {
         "coingecko": "realtoken-25097-andover-dr-dearborn-mi"
-      }
-    },
-    {
-      "id": "erc20|0x43688910273f199b8ae2ca018c13918fb3d37b58",
-      "code": "REALTOKEN-5942-AUDUBON-RD-DETROIT-MI",
-      "name": "RealToken 5942 Audubon Road Detroit MI",
-      "external_id": {
-        "coingecko": "realtoken-5942-audubon-rd-detroit-mi"
       }
     },
     {
@@ -40906,6 +41313,14 @@
       }
     },
     {
+      "id": "erc20|0x9559aaa82d9649c7a7b220e7c461d2e74c9a3593",
+      "code": "reth",
+      "name": "rETH",
+      "external_id": {
+        "coingecko": "reth"
+      }
+    },
+    {
       "id": "erc20|0x2ef52ed7de8c5ce03a4ef0efbe9b7450f2d7edc9",
       "code": "rev",
       "name": "Revain",
@@ -40963,6 +41378,14 @@
       "name": "RFbtc",
       "external_id": {
         "coingecko": "rfbtc"
+      }
+    },
+    {
+      "id": "erc20|0xc82eb6dea0c93edb8b697b89ad1b13d19469d635",
+      "code": "rfis",
+      "name": "rFIS",
+      "external_id": {
+        "coingecko": "rfis"
       }
     },
     {
@@ -41178,14 +41601,6 @@
       }
     },
     {
-      "id": "erc20|0x7dab77cba1af8f02858b8f07861d85e677a593a8",
-      "code": "rm",
-      "name": "RiverMount",
-      "external_id": {
-        "coingecko": "rivermount"
-      }
-    },
-    {
       "id": "erc20|0x3d1ba9be9f66b8ee101911bc36d3fb562eac2244",
       "code": "rvt",
       "name": "Rivetz",
@@ -41312,7 +41727,8 @@
       "code": "bunny",
       "name": "Rocket Bunny",
       "external_id": {
-        "coingecko": "rocket-bunny"
+        "coingecko": "rocket-bunny",
+        "cryptocompare": "BUNNY"
       }
     },
     {
@@ -41695,6 +42111,14 @@
       }
     },
     {
+      "id": "bep20|0xc6d736123fa8e8a5d85803b5c22799e394245fab",
+      "code": "ryiu",
+      "name": "RYI Unity",
+      "external_id": {
+        "coingecko": "ryi-unity"
+      }
+    },
+    {
       "id": "unsupported|ryo",
       "code": "ryo",
       "name": "Ryo Currency",
@@ -41733,7 +42157,8 @@
       "code": "scat",
       "name": "Sad Cat Token",
       "external_id": {
-        "coingecko": "sad-cat-token"
+        "coingecko": "sad-cat-token",
+        "cryptocompare": "SCAT"
       }
     },
     {
@@ -41806,11 +42231,20 @@
       }
     },
     {
+      "id": "bep20|0x3ad9594151886ce8538c1ff615efa2385a8c3a88",
+      "code": "safemars",
+      "name": "Safemars",
+      "external_id": {
+        "coingecko": "safemars"
+      }
+    },
+    {
       "id": "bep20|0x8076c74c5e3f5852037f31ff0093eeb8c8add8d3",
       "code": "safemoon",
       "name": "SafeMoon",
       "external_id": {
-        "coingecko": "safemoon"
+        "coingecko": "safemoon",
+        "cryptocompare": "SAFEMOON"
       }
     },
     {
@@ -42810,6 +43244,22 @@
       }
     },
     {
+      "id": "bep20|0x3a66d3d2edb25182430d01b991bc6eac73ad5aa8",
+      "code": "sfm",
+      "name": "SFMoney",
+      "external_id": {
+        "coingecko": "sfmoney"
+      }
+    },
+    {
+      "id": "erc20|0x91a7769afcf796a3c8fff879ed80b10dd76d3ccd",
+      "code": "sg20",
+      "name": "SG20",
+      "external_id": {
+        "coingecko": "sg20"
+      }
+    },
+    {
       "id": "erc20|0xcb4e8cafeda995da5cedfda5205bd5664a12b848",
       "code": "kobe",
       "name": "Shabu Shabu",
@@ -42883,6 +43333,14 @@
       "name": "Shardus",
       "external_id": {
         "coingecko": "shardus"
+      }
+    },
+    {
+      "id": "unsupported|share-2",
+      "code": "share",
+      "name": "Share",
+      "external_id": {
+        "coingecko": "share-2"
       }
     },
     {
@@ -43594,7 +44052,8 @@
       "code": "slme",
       "name": "Slime Finance",
       "external_id": {
-        "coingecko": "slime-finance"
+        "coingecko": "slime-finance",
+        "cryptocompare": "SLME"
       }
     },
     {
@@ -44250,6 +44709,14 @@
       }
     },
     {
+      "id": "bep20|0x0742b62efb5f2eabbc14567dfc0860ce0565bcf4",
+      "code": "sota",
+      "name": "SOTA Finance",
+      "external_id": {
+        "coingecko": "sota-finance"
+      }
+    },
+    {
       "id": "bep20|0x541e619858737031a1244a5d0cd47e5ef480342c",
       "code": "wsote",
       "name": "Soteria",
@@ -44451,6 +44918,15 @@
     },
     {
       "id": "erc20|0x167e2a574669b0eeb552aaf3da47c728cb348a41",
+      "code": "300",
+      "name": "Spartan",
+      "external_id": {
+        "coingecko": "spartan",
+        "cryptocompare": "300"
+      }
+    },
+    {
+      "id": "bep20|0x3c462e6fe7043f076af33640c5e24388e2ee9ebc",
       "code": "300",
       "name": "Spartan",
       "external_id": {
@@ -44667,15 +45143,6 @@
       }
     },
     {
-      "id": "unsupported|spin-token",
-      "code": "spin",
-      "name": "SPIN Token",
-      "external_id": {
-        "coingecko": "spin-token",
-        "cryptocompare": "SPIN"
-      }
-    },
-    {
       "id": "unsupported|spock",
       "code": "spok",
       "name": "Spock",
@@ -44713,7 +45180,15 @@
       "code": "spore",
       "name": "Spore Engineering",
       "external_id": {
-        "coingecko": "spore-engineering",
+        "coingecko": "spore-engineering"
+      }
+    },
+    {
+      "id": "unsupported|spore-finance-2",
+      "code": "spore",
+      "name": "Spore Finance",
+      "external_id": {
+        "coingecko": "spore-finance-2",
         "cryptocompare": "SPORE"
       }
     },
@@ -44724,14 +45199,6 @@
       "external_id": {
         "coingecko": "sport-and-leisure",
         "cryptocompare": "SNL"
-      }
-    },
-    {
-      "id": "erc20|0x6372504efc58151644d5b69210c7bbead43918b0",
-      "code": "spx",
-      "name": "SPORTSPLEX",
-      "external_id": {
-        "coingecko": "sportsplex"
       }
     },
     {
@@ -44964,6 +45431,14 @@
       }
     },
     {
+      "id": "erc20|0x31b595e7cfdb624d10a3e7a562ed98c3567e3865",
+      "code": "stzen",
+      "name": "StakedZEN",
+      "external_id": {
+        "coingecko": "stakedzen"
+      }
+    },
+    {
       "id": "erc20|0x160b1e5aabfd70b2fc40af815014925d71ceed7e",
       "code": "stfiro",
       "name": "StakedFIRO",
@@ -45141,6 +45616,15 @@
       "external_id": {
         "coingecko": "stasis-eurs",
         "cryptocompare": "EURS"
+      }
+    },
+    {
+      "id": "erc20|0x84bb947fcedba6b9c7dcead42df07e113bb03007",
+      "code": "str",
+      "name": "Stater",
+      "external_id": {
+        "coingecko": "stater",
+        "cryptocompare": "STR"
       }
     },
     {
@@ -45581,15 +46065,6 @@
       "name": "sTSLA",
       "external_id": {
         "coingecko": "stsla"
-      }
-    },
-    {
-      "id": "unsupported|student-coin",
-      "code": "stc",
-      "name": "Student Coin",
-      "external_id": {
-        "coingecko": "student-coin",
-        "cryptocompare": "STUDENT"
       }
     },
     {
@@ -46134,6 +46609,14 @@
       }
     },
     {
+      "id": "bep20|0x52d86850bc8207b520340b7e39cdaf22561b9e56",
+      "code": "swirl",
+      "name": "Swirl Cash",
+      "external_id": {
+        "coingecko": "swirl-cash"
+      }
+    },
+    {
       "id": "erc20|0xba9d4199fab4f26efe3551d490e3821486f135ba",
       "code": "chsb",
       "name": "SwissBorg",
@@ -46275,6 +46758,15 @@
       }
     },
     {
+      "id": "unsupported|symbol",
+      "code": "xym",
+      "name": "Symbol",
+      "external_id": {
+        "coingecko": "symbol",
+        "cryptocompare": "XYM"
+      }
+    },
+    {
       "id": "erc20|0x2fd61567c29e7adb4ca17e60e1f4a3fcfe68acb8",
       "code": "sym",
       "name": "SymVerse",
@@ -46369,6 +46861,14 @@
       "name": "Tacos",
       "external_id": {
         "coingecko": "tacos"
+      }
+    },
+    {
+      "id": "erc20|0x41c028a4c1f461ebfc3af91619b240004ebad216",
+      "code": "taco",
+      "name": "TacoToken",
+      "external_id": {
+        "coingecko": "tacotoken"
       }
     },
     {
@@ -46527,6 +47027,15 @@
       }
     },
     {
+      "id": "erc20|0xf001937650bb4f62b57521824b2c20f5b91bea05",
+      "code": "tara",
+      "name": "Taraxa",
+      "external_id": {
+        "coingecko": "taraxa",
+        "cryptocompare": "TARA"
+      }
+    },
+    {
       "id": "bep20|0x92a42db88ed0f02c71d439e55962ca7cab0168b5",
       "code": "trdg",
       "name": "Tardigrades Finance",
@@ -46590,7 +47099,8 @@
       "code": "tbcc",
       "name": "TBCC Wallet",
       "external_id": {
-        "coingecko": "tbcc-wallet"
+        "coingecko": "tbcc-wallet",
+        "cryptocompare": "TBCC"
       }
     },
     {
@@ -46668,6 +47178,14 @@
       }
     },
     {
+      "id": "erc20|0x5dced3c2fab61e21b25177c6050d3f166f696110",
+      "code": "tea",
+      "name": "Tea Token",
+      "external_id": {
+        "coingecko": "tea-token"
+      }
+    },
+    {
       "id": "erc20|0x07de533cbc72395c32eb8981ddccd2cc6a6e1c4e",
       "code": "tip",
       "name": "Technology Innovation Project",
@@ -46729,7 +47247,7 @@
       }
     },
     {
-      "id": "erc20|0x0ba45a8b5d5575935b8158a88c631e9f9c95a2e5",
+      "id": "erc20|0x88df592f8eb5d7bd38bfef7deb0fbc02cf3778a0",
       "code": "trb",
       "name": "Tellor",
       "external_id": {
@@ -47200,7 +47718,7 @@
       }
     },
     {
-      "id": "erc20|0x8ab0565dfe65bf9be754d7b0dadbb42c4ecaec01",
+      "id": "bep20|0xb5791d504367dee4ba3a379fb3d3d5a6b955cb2e",
       "code": "tlb",
       "name": "The Luxury Coin",
       "external_id": {
@@ -47742,6 +48260,14 @@
       }
     },
     {
+      "id": "bep20|0x1ffd0b47127fdd4097e54521c9e2c7f0d66aafc5",
+      "code": "txl",
+      "name": "Tixl",
+      "external_id": {
+        "coingecko": "tixl-new"
+      }
+    },
+    {
       "id": "erc20|0xbce7bd79558dda90b261506768f265c5543a9f90",
       "code": "tknt",
       "name": "TKN Token",
@@ -48099,7 +48625,8 @@
       "code": "tools",
       "name": "TOOLS",
       "external_id": {
-        "coingecko": "tools"
+        "coingecko": "tools",
+        "cryptocompare": "TOOLS"
       }
     },
     {
@@ -48527,6 +49054,14 @@
       }
     },
     {
+      "id": "bep20|0xac0c7d9b063ed2c0946982ddb378e03886c064e6",
+      "code": "treat",
+      "name": "TreatDAO",
+      "external_id": {
+        "coingecko": "treatdao"
+      }
+    },
+    {
       "id": "erc20|0x0a9d68886a0d7db83a30ec00d62512483e5ad437",
       "code": "trcl",
       "name": "Treecle",
@@ -48907,14 +49442,6 @@
       }
     },
     {
-      "id": "erc20|0xdf534e810e1782414a5048a0b61d4630f92f4d90",
-      "code": "trrxte",
-      "name": "TRRXITTE Int",
-      "external_id": {
-        "coingecko": "trrxitte"
-      }
-    },
-    {
       "id": "unsupported|truckcoin",
       "code": "trk",
       "name": "Truckcoin",
@@ -49275,6 +49802,15 @@
       }
     },
     {
+      "id": "bep20|0x2d69c55baecefc6ec815239da0a985747b50db6e",
+      "code": "tff",
+      "name": "Tutti Frutti",
+      "external_id": {
+        "coingecko": "tutti-frutti-finance",
+        "cryptocompare": "TFF"
+      }
+    },
+    {
       "id": "unsupported|tuxcoin",
       "code": "tux",
       "name": "Tuxcoin",
@@ -49288,6 +49824,15 @@
       "name": "TVT",
       "external_id": {
         "coingecko": "tvt"
+      }
+    },
+    {
+      "id": "erc20|0x2b6ff53fc2493ccd5202d80a6c439741414c5ff2",
+      "code": "twee",
+      "name": "Tweebaa",
+      "external_id": {
+        "coingecko": "tweebaa",
+        "cryptocompare": "TWEE"
       }
     },
     {
@@ -49523,6 +50068,14 @@
       }
     },
     {
+      "id": "erc20|0xa6b9d7e3d76cf23549293fb22c488e0ea591a44e",
+      "code": "ugas-jun21",
+      "name": "uGAS-JUN21 Token Expiring 30 Jun 2021",
+      "external_id": {
+        "coingecko": "ugas-jun21"
+      }
+    },
+    {
       "id": "erc20|0xf485c5e679238f9304d986bb2fc28fe3379200e5",
       "code": "ugc",
       "name": "ugChain",
@@ -49532,11 +50085,12 @@
       }
     },
     {
-      "id": "erc20|0xbdf46502dd5001ed841ad741c8aac4b4e322b320",
-      "code": "uki",
-      "name": "UK Investments",
+      "id": "erc20|0xd487892bb4c57edbe7ab401d9fe801c8fe6473f5",
+      "code": "hve2",
+      "name": "Uhive",
       "external_id": {
-        "coingecko": "uk-investments"
+        "coingecko": "uhive",
+        "cryptocompare": "HVE"
       }
     },
     {
@@ -49896,7 +50450,8 @@
       "code": "ifund",
       "name": "Unifund",
       "external_id": {
-        "coingecko": "unifund"
+        "coingecko": "unifund",
+        "cryptocompare": "IFUND"
       }
     },
     {
@@ -50026,7 +50581,8 @@
       "code": "foto",
       "name": "Unique Photo",
       "external_id": {
-        "coingecko": "unique-photo"
+        "coingecko": "unique-photo",
+        "cryptocompare": "FOTO"
       }
     },
     {
@@ -50493,6 +51049,15 @@
       }
     },
     {
+      "id": "erc20|0x05462671c05adc39a6521fa60d5e9443e9e9d2b9",
+      "code": "usdf",
+      "name": "USDf",
+      "external_id": {
+        "coingecko": "usdf",
+        "cryptocompare": "USDF"
+      }
+    },
+    {
       "id": "erc20|0x2b4200a8d373d484993c37d63ee14aee0096cd12",
       "code": "usdfl",
       "name": "USDFreeLiquidity",
@@ -50553,14 +51118,6 @@
       }
     },
     {
-      "id": "unsupported|usdx-wallet",
-      "code": "usdx",
-      "name": "USDX Cash",
-      "external_id": {
-        "coingecko": "usdx-wallet"
-      }
-    },
-    {
       "id": "erc20|0xd9485499499d66b175cf5ed54c0a19f1a6bcb61a",
       "code": "use",
       "name": "Usechain",
@@ -50592,6 +51149,14 @@
       "external_id": {
         "coingecko": "usgold",
         "cryptocompare": "USG"
+      }
+    },
+    {
+      "id": "erc20|0xec58d3aefc9aaa2e0036fa65f70d569f49d9d1ed",
+      "code": "ustonks-apr21",
+      "name": "uSTONKS Index Token April 2021",
+      "external_id": {
+        "coingecko": "ustonks-apr21"
       }
     },
     {
@@ -50787,7 +51352,8 @@
       "code": "vsd",
       "name": "Value Set Dollar",
       "external_id": {
-        "coingecko": "value-set-dollar"
+        "coingecko": "value-set-dollar",
+        "cryptocompare": "VSD"
       }
     },
     {
@@ -51276,7 +51842,8 @@
       "code": "vrap",
       "name": "VeraSwap",
       "external_id": {
-        "coingecko": "veraswap"
+        "coingecko": "veraswap",
+        "cryptocompare": "VRAP"
       }
     },
     {
@@ -51357,6 +51924,15 @@
       "external_id": {
         "coingecko": "verox",
         "cryptocompare": "VRX"
+      }
+    },
+    {
+      "id": "unsupported|versacoin",
+      "code": "vcn",
+      "name": "VersaCoin",
+      "external_id": {
+        "coingecko": "versacoin",
+        "cryptocompare": "VCN"
       }
     },
     {
@@ -51748,7 +52324,8 @@
       "code": "visr",
       "name": "Visor",
       "external_id": {
-        "coingecko": "visor"
+        "coingecko": "visor",
+        "cryptocompare": "VISR"
       }
     },
     {
@@ -51818,14 +52395,6 @@
       "external_id": {
         "coingecko": "vndc",
         "cryptocompare": "VNDC"
-      }
-    },
-    {
-      "id": "erc20|0x44001a5656baafa5a3359ced8fa38e150a71eea2",
-      "code": "vfi",
-      "name": "VN.Finance",
-      "external_id": {
-        "coingecko": "vn-finance"
       }
     },
     {
@@ -51971,6 +52540,14 @@
       "name": "Voucher Coin",
       "external_id": {
         "coingecko": "voucher-coin"
+      }
+    },
+    {
+      "id": "erc20|0xc3d088842dcf02c13699f936bb83dfbbc6f721ab",
+      "code": "veth",
+      "name": "Voucher ETH",
+      "external_id": {
+        "coingecko": "voucher-eth"
       }
     },
     {
@@ -52220,7 +52797,7 @@
     {
       "id": "bep20|0xf9661bf16f7521102eaf412a29e68cfd791a2ca3",
       "code": "wtr",
-      "name": "Water Token",
+      "name": "Liquid Finance",
       "external_id": {
         "coingecko": "water-token-2"
       }
@@ -52449,6 +53026,14 @@
       }
     },
     {
+      "id": "erc20|0xc014186cf1ba36032aaec7f96088f09eb3934347",
+      "code": "wcx",
+      "name": "WeCoOwn",
+      "external_id": {
+        "coingecko": "wecoown"
+      }
+    },
+    {
       "id": "unsupported|weedcash",
       "code": "weed",
       "name": "WeedCash",
@@ -52593,7 +53178,8 @@
       "code": "whirl",
       "name": "Whirl Finance",
       "external_id": {
-        "coingecko": "whirl-finance"
+        "coingecko": "whirl-finance",
+        "cryptocompare": "WHIRL"
       }
     },
     {
@@ -52801,14 +53387,6 @@
       }
     },
     {
-      "id": "erc20|0x4cac2515716ab2531402ca8f992e235189f29c5a",
-      "code": "win",
-      "name": "Winstex",
-      "external_id": {
-        "coingecko": "winstex"
-      }
-    },
-    {
       "id": "unsupported|wire",
       "code": "wire",
       "name": "AirWire",
@@ -52952,6 +53530,14 @@
       }
     },
     {
+      "id": "bep20|0x8b303d5bbfbbf46f1a4d9741e491e06986894e18",
+      "code": "woop",
+      "name": "Woonkly Power",
+      "external_id": {
+        "coingecko": "woonkly-power"
+      }
+    },
+    {
       "id": "erc20|0x5cc00cca0692b9b34af816e5439cdb47d3b63691",
       "code": "xwo",
       "name": "WooshCoin",
@@ -52966,6 +53552,15 @@
       "external_id": {
         "coingecko": "wootrade-network",
         "cryptocompare": "WOO"
+      }
+    },
+    {
+      "id": "unsupported|wordlex",
+      "code": "wdx",
+      "name": "Wordlex",
+      "external_id": {
+        "coingecko": "wordlex",
+        "cryptocompare": "WDX"
       }
     },
     {
@@ -53203,7 +53798,8 @@
       "code": "mcat20",
       "name": "Wrapped Moon Cats",
       "external_id": {
-        "coingecko": "wrapped-moon-cats"
+        "coingecko": "wrapped-moon-cats",
+        "cryptocompare": "MCAT20"
       }
     },
     {
@@ -53375,6 +53971,14 @@
       }
     },
     {
+      "id": "erc20|0x5de7cc4bcbca31c473f6d2f27825cfb09cc0bb16",
+      "code": "xbe",
+      "name": "XBE Token",
+      "external_id": {
+        "coingecko": "xbe-token"
+      }
+    },
+    {
       "id": "erc20|0x53f0c9f1b6e283a59bcd672e80e2222b97e534cb",
       "code": "ix",
       "name": "X-Block",
@@ -53488,12 +54092,29 @@
       }
     },
     {
+      "id": "erc20|0x000000000000d0151e748d25b766e77efe2a6c83",
+      "code": "xdex",
+      "name": "XDEFI Governance Token",
+      "external_id": {
+        "coingecko": "xdefi-governance-token"
+      }
+    },
+    {
       "id": "unsupported|xdna",
       "code": "xdna",
       "name": "XDNA",
       "external_id": {
         "coingecko": "xdna",
         "cryptocompare": "XDNA"
+      }
+    },
+    {
+      "id": "erc20|0xe4cfe9eaa8cdb0942a80b7bc68fd8ab0f6d44903",
+      "code": "xend",
+      "name": "Xend Finance",
+      "external_id": {
+        "coingecko": "xend-finance",
+        "cryptocompare": "XEND"
       }
     },
     {
@@ -54067,11 +54688,27 @@
       }
     },
     {
+      "id": "erc20|0x4b7fb448df91c8ed973494f8c8c4f12daf3a8521",
+      "code": "yd-btc-jun21",
+      "name": "YD-BTC-JUN21",
+      "external_id": {
+        "coingecko": "yd-btc-jun21"
+      }
+    },
+    {
       "id": "erc20|0x002f0b1a71c5730cf2f4da1970a889207bdb6d0d",
       "code": "yd-btc-mar21",
       "name": "YD-BTC-MAR21",
       "external_id": {
         "coingecko": "yd-btc-mar21"
+      }
+    },
+    {
+      "id": "erc20|0xcbe430927370e95b4b10cfc702c6017ec7abefc3",
+      "code": "yd-eth-jun21",
+      "name": "YD-ETH-JUN21",
+      "external_id": {
+        "coingecko": "yd-eth-jun21"
       }
     },
     {
@@ -54140,7 +54777,7 @@
       }
     },
     {
-      "id": "erc20|0xf0a0f3a6fa6bed75345171a5ea18abcadf6453ba",
+      "id": "bep20|0x9042ec50b33c41c748264e4730e7cfbdf4787782",
       "code": "yfbt",
       "name": "Yearn Finance Bit",
       "external_id": {
@@ -54266,6 +54903,14 @@
       "name": "Yearn Land",
       "external_id": {
         "coingecko": "yearn-land"
+      }
+    },
+    {
+      "id": "erc20|0x9ba60ba98413a60db4c651d4afe5c937bbd8044b",
+      "code": "YLA",
+      "name": "Yearn Lazy Ape",
+      "external_id": {
+        "coingecko": "yearn-lazy-ape"
       }
     },
     {
@@ -54493,14 +55138,6 @@
       "name": "YFI Business",
       "external_id": {
         "coingecko": "yfi-business"
-      }
-    },
-    {
-      "id": "erc20|0x6c8aad3100e3fa45aac799c0c302400900b60302",
-      "code": "yfic",
-      "name": "Yfi Credits",
-      "external_id": {
-        "coingecko": "yfi-credits"
       }
     },
     {
@@ -54770,6 +55407,14 @@
       }
     },
     {
+      "id": "bep20|0xa8da060ebd32a753005c6ee476a0d79177c6ea8b",
+      "code": "ybear",
+      "name": "Yield Bear",
+      "external_id": {
+        "coingecko": "yield-bear"
+      }
+    },
+    {
       "id": "erc20|0x11f4c6b3e8f50c50935c7889edc56c96f41b5399",
       "code": "ybree",
       "name": "Yield Breeder DAO",
@@ -54840,7 +55485,8 @@
       "code": "yield",
       "name": "Yield Protocol",
       "external_id": {
-        "coingecko": "yield-protocol"
+        "coingecko": "yield-protocol",
+        "cryptocompare": "YIELD"
       }
     },
     {
@@ -54856,7 +55502,8 @@
       "code": "watch",
       "name": "Yieldwatch",
       "external_id": {
-        "coingecko": "yieldwatch"
+        "coingecko": "yieldwatch",
+        "cryptocompare": "WATCH"
       }
     },
     {
@@ -55062,14 +55709,6 @@
       }
     },
     {
-      "id": "erc20|0x012ba3ae1074ae43a34a14bca5c4ed0af01b6e53",
-      "code": "trump",
-      "name": "YUGE",
-      "external_id": {
-        "coingecko": "yuge"
-      }
-    },
-    {
       "id": "erc20|0x4c10bd19688b906665fbd53415f279f34b44ece7",
       "code": "yui",
       "name": "YUI Finance",
@@ -55108,14 +55747,6 @@
       "external_id": {
         "coingecko": "yup",
         "cryptocompare": "YUP"
-      }
-    },
-    {
-      "id": "erc20|0x81ab848898b5ffd3354dbbefb333d5d183eedcb5",
-      "code": "yUSD-SEP20",
-      "name": "yUSD Synthetic Token Expiring 1 September 2020",
-      "external_id": {
-        "coingecko": "yusd-synthetic-token-expiring-1-september-2020"
       }
     },
     {
@@ -55538,7 +56169,8 @@
       "code": "zero",
       "name": "Zero Exchange",
       "external_id": {
-        "coingecko": "zero-exchange"
+        "coingecko": "zero-exchange",
+        "cryptocompare": "ZERO"
       }
     },
     {
@@ -55957,6 +56589,14 @@
       "name": "ZUSD",
       "external_id": {
         "coingecko": "zusd"
+      }
+    },
+    {
+      "id": "erc20|0x202f1877e1db1120ca3e9a98c5d505e7f035c249",
+      "code": "zuz",
+      "name": "ZUZ Protocol",
+      "external_id": {
+        "coingecko": "zuz-protocol"
       }
     },
     {

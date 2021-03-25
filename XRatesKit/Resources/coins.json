@@ -1,5 +1,5 @@
 {
-    "version": 6,
+    "version": 11,
     "categories": [
         {
             "id": "blockchain",
@@ -518,9 +518,7 @@
             },
             "rating": "",
             "id": "erc20|0x68a118ef45063051eac49c7e647ce5ace48a68a5",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "1INCH",
@@ -843,8 +841,7 @@
         {
             "code": "AUC",
             "name": "Auctus",
-            "categories": [
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -869,9 +866,7 @@
                 }
             ],
             "id": "erc20|0xc12d099be31567add4e4e4d0d45691c3f58f5663",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "BAC",
@@ -896,16 +891,15 @@
                 "telegram": ""
             },
             "id": "erc20|0x3449fc1cd036255ba1eb19d65ff4ba2b8903a69a",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "BADGER",
             "name": "Badger DAO",
             "categories": [
                 "algo_stablecoins",
-                "governance"
+                "governance",
+                "yield_aggregators"
             ],
             "active": true,
             "platform": {
@@ -1015,8 +1009,7 @@
         {
             "code": "BASE",
             "name": "Base Protocol",
-            "categories": [
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -1033,9 +1026,7 @@
             },
             "id": "erc20|0x07150e919b4de5fd6a63de1f9384828396f25fdc",
             "description": "BASE aims to function as a synthetic asset which represents speculation on the total market cap of all cryptocurrencies (cmc). This is made possible through an elastic supply characteristic and programmatic rebasing protocol which incentivize market actors to drive BASE price to its target (peg) price. Early on, qualitative factors like new adoption and speculation may disrupt that peg. But as the network grows, the peg stabilizes. In its early stages, BASE is a speculative asset that seeks to peg to cmc. In its final state, BASE is a synthetic asset that is stably pegged to cmc.",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "BID",
@@ -1061,9 +1052,7 @@
             },
             "rating": "",
             "id": "erc20|0x25e1474170c4c0aa64fa98123bdc8db49d7802fa",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "BNT",
@@ -1174,9 +1163,7 @@
             "rating": "",
             "id": "erc20|0xd2dda223b2617cb616c1580db421e4cfae6a8a85",
             "description": "BONDProtect (BProtect) is a smart contract-based marketplace payment platform designed to make the buying and selling of any good or service easy and protected. It offers a set of capabilities that include escrow, recurring payments, and payment protection. It can be used as an individual merchant to sell digital products using the BProtect GUI or integrated into any online marketplace as a payment method comparable to other services like Paypal and Stripe. The core capability of BProtect focuses on the purchase, sale and transfer of digital assets including cryptocurrencies, non-fungible tokens (NFT) and more.",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "BUSD",
@@ -1202,9 +1189,7 @@
             },
             "rating": "",
             "id": "erc20|0x4fabb145d64652a948d72533023f6e7a623c7c53",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "BZRX",
@@ -1249,7 +1234,7 @@
                     "url": "https://github.com/mattdf/audits/blob/master/bZx/bzx-audit.pdf"
                 }
             ],
-            "id": "erc20|0xb72b31907c1c95f3650b64b2469e08edacee5e8f",
+            "id": "erc20|0x56d811088235f11c8920698a204a5010a788f4b3",
             "funds": [
                 "hashed"
             ]
@@ -1277,9 +1262,7 @@
                 "telegram": ""
             },
             "id": "erc20|0x17ac188e09a7890a1844e5e65471fe8b0ccfadf3",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "CEL",
@@ -1364,9 +1347,7 @@
             },
             "rating": "",
             "id": "erc20|0xc4c2614e694cf534d407ee49f8e44d125e4681c4",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "CHSB",
@@ -1392,9 +1373,7 @@
             },
             "rating": "",
             "id": "erc20|0xba9d4199fab4f26efe3551d490e3821486f135ba",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "CHZ",
@@ -1447,9 +1426,7 @@
             },
             "rating": "",
             "id": "erc20|0xe61fdaf474fac07063f2234fb9e60c1163cfa850",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "COMP",
@@ -1531,9 +1508,7 @@
             },
             "rating": "",
             "id": "erc20|0x4688a8b1f292fdab17e9a90c8bc379dc1dbd8713",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "CREAM",
@@ -1558,9 +1533,7 @@
             },
             "rating": "",
             "id": "erc20|0x2ba592f78db6436527729929aaf6c908497cb200",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "CRO",
@@ -1586,9 +1559,7 @@
             },
             "rating": "",
             "id": "erc20|0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "CRPT",
@@ -1613,9 +1584,7 @@
             },
             "rating": "",
             "id": "erc20|0x08389495d7456e1951ddf7c3a1314a4bfb646d8b",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "CRV",
@@ -1648,9 +1617,7 @@
                 }
             ],
             "id": "erc20|0xd533a949740bb3306d119cc777fa900ba034cd52",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "CVC",
@@ -1733,9 +1700,7 @@
             },
             "rating": "",
             "id": "erc20|0xfbeea1c75e4c4465cb2fccc9c6d6afe984558e20",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DEFI5",
@@ -1760,15 +1725,12 @@
                 "telegram": "https://t.me/ndxfi"
             },
             "id": "erc20|0xfa6de2697d59e88ed7fc4dfe5a33dac43565ea41",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DEFO",
             "name": "DefHold",
-            "categories": [
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -1785,9 +1747,7 @@
             },
             "rating": "",
             "id": "erc20|0xe481f2311c774564d517d015e678c2736a25ddd3",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DEGO",
@@ -1814,9 +1774,7 @@
             },
             "rating": "",
             "id": "erc20|0x88ef27e69108b2633f8e1c184cc37940a075cc02",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DEUS",
@@ -1840,9 +1798,7 @@
                 "telegram": "https://t.me/deusfinance"
             },
             "id": "erc20|0x3b62f3820e0b035cc4ad602dece6d796bc325325",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DF",
@@ -1868,15 +1824,12 @@
             },
             "rating": "",
             "id": "erc20|0x431ad2ff6a9c365805ebad47ee021148d6f7dbe0",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DGX",
             "name": "Digix Gold",
-            "categories": [
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -1895,9 +1848,7 @@
             },
             "rating": "",
             "id": "erc20|0x4f3afec4e5a3f2a6a1a411def7d7dfe50ee057bf",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DHT",
@@ -1957,9 +1908,7 @@
             },
             "rating": "",
             "id": "erc20|0x84ca8bc7997272c7cfb4d0cd3d55cd942b3c9419",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DIP",
@@ -2013,9 +1962,7 @@
             },
             "rating": "",
             "id": "erc20|0x0abdace70d3790235af448c88547603b945604ea",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DODO",
@@ -2085,16 +2032,12 @@
                 "telegram": ""
             },
             "id": "erc20|0x1494ca1f11d487c2bbe4543e90080aeba4ba3c2b",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DSD",
             "name": "Dynamic Set Dollar",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -2112,15 +2055,12 @@
             },
             "rating": "",
             "id": "erc20|0xbd2f0cd039e0bfcf88901c98c0bfac5ab27566e3",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DUSD",
             "name": "DefiDollar",
-            "categories": [
-            ],
+            "categories": [],
             "platform": {
                 "name": "ethereum",
                 "address": "0x5bc25f649fc4e26069ddf4cf4010f9f706c23831",
@@ -2146,28 +2086,25 @@
         {
             "code": "DYP",
             "name": "DeFi Yield Protocol",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
-                "address": "0x50d1c9771902476076ecfc8b2a83ad6b9355a4c9",
+                "address": "0x961c8c0b1aad0c0b10a51fef6a867e3091bcef17",
                 "type": "ERC20"
             },
-            "description": "FTX is a cryptocurrency derivatives exchange built by traders, for traders. It strives to build a platform powerful enough for professional trading firms and intuitive enough for first-time users.FTX Token (FTT) is the backbone of the FTX ecosystem. It has been carefully designed with incentive schemes to increase network effects and demand for FTT, and to decrease its circulating supply.",
+            "description": "The DeFi Yield Protocol is developing a unique platform that allows anyone to provide liquidity and to be rewarded for the first time with Ethereum. At the same time, the platform maintains both token price stability as well as secure and simplified DeFi for end users by integrating a DYP anti-manipulation feature.",
             "links": {
-                "website": "https://ftx.com",
+                "website": "https://dyp.finance/#/home",
                 "whitepaper": "",
                 "guide": "",
-                "twitter": "https://twitter.com/FTX_official",
+                "twitter": "https://twitter.com/dypfinance",
                 "reddit": "",
-                "telegram": "https://t.me/FTX_Official"
+                "github": "https://github.com/dypfinance",
+                "telegram": "https://t.me/dypfinance"
             },
-            "id": "erc20|0x50d1c9771902476076ecfc8b2a83ad6b9355a4c9",
-            "funds": [
-
-            ]
+            "id": "erc20|0x961c8c0b1aad0c0b10a51fef6a867e3091bcef17",
+            "funds": []
         },
         {
             "code": "ENJ",
@@ -2193,16 +2130,12 @@
             },
             "rating": "",
             "id": "erc20|0xf629cbd94d3791c9250152bd8dfbdf380e2a3b9c",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ESD",
             "name": "Empty Set Dollar",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -2228,9 +2161,7 @@
         {
             "code": "ETHYS",
             "name": "Ethereum Stake",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -2247,16 +2178,12 @@
                 "telegram": "https://t.me/ethereumstakefarm"
             },
             "id": "erc20|0xd0d3ebcad6a20ce69bc3bc0e1ec964075425e533",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "EURS",
             "name": "STATIS EURO",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -2275,9 +2202,7 @@
             },
             "rating": "",
             "id": "erc20|0xdb25f211ab05b1c97d595516f45794528a807ad8",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "FARM",
@@ -2313,9 +2238,7 @@
                 }
             ],
             "id": "erc20|0xa0246c9032bc3a600820415ae600c6388619a14d",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "FIN",
@@ -2350,16 +2273,12 @@
                 }
             ],
             "id": "erc20|0x054f76beed60ab6dbeb23502178c52d6c5debe40",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "FLUX",
             "name": "Flux",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -2377,15 +2296,12 @@
             },
             "rating": "",
             "id": "erc20|0x469eda64aed3a3ad6f868c44564291aa415cb1d9",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "FNK",
             "name": "Finiko",
-            "categories": [
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -2403,9 +2319,7 @@
             },
             "rating": "",
             "id": "erc20|0xb5fe099475d3030dde498c3bb6f3854f762a48ad",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "FOR",
@@ -2470,9 +2384,7 @@
             },
             "rating": "",
             "id": "erc20|0x853d955acef822db058eb8505911ed77f175b99e",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "FTT",
@@ -2526,9 +2438,7 @@
             },
             "rating": "",
             "id": "erc20|0x419d0d8bdd9af5e606ae2232ed285aff190e711b",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "FYZ",
@@ -2553,16 +2463,12 @@
             },
             "rating": "",
             "id": "erc20|0x6bff2fe249601ed0db3a87424a2e923118bb0312",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "GEN",
             "name": "DAOstack",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -2657,15 +2563,12 @@
                 }
             ],
             "id": "erc20|0x6810e776880c02933d47db1b9fc05908e5386b96",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "GRID",
             "name": "GridPlus",
-            "categories": [
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -2684,9 +2587,7 @@
             },
             "rating": "",
             "id": "erc20|0x12b19d3e2ccc14da04fae33e63652ce469b3f2fd",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "GRT",
@@ -2747,9 +2648,7 @@
                 "telegram": ""
             },
             "id": "erc20|0xe66747a101bff2dba3697199dcce5b743b454759",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "GUSD",
@@ -2775,9 +2674,7 @@
             },
             "rating": "",
             "id": "erc20|0x056fd409e1d7a124bd7017459dfea2f387b6d5cd",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "HBTC",
@@ -2801,16 +2698,12 @@
             },
             "rating": "",
             "id": "erc20|0x0316eb71485b0ab14103307bf65a021042c6d380",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "HEDG",
             "name": "HedgeTrade",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -2829,9 +2722,7 @@
             },
             "rating": "",
             "id": "erc20|0xf1290473e210b2108a85237fbcd7b6eb42cc654f",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "HEGIC",
@@ -2863,15 +2754,12 @@
                 }
             ],
             "id": "erc20|0x584bc13c7d411c00c01a62e8019472de68768430",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "HLAND",
             "name": "Hland Token",
-            "categories": [
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -2889,15 +2777,12 @@
             },
             "rating": "",
             "id": "erc20|0xba7b2c094c1a4757f9534a37d296a3bed7f544dc",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "HOLY",
             "name": "Holyheld",
-            "categories": [
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -2915,9 +2800,7 @@
             },
             "rating": "",
             "id": "erc20|0x39eae99e685906ff1c11a962a743440d0a1a6e09",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "HOT",
@@ -2970,9 +2853,7 @@
             },
             "rating": "",
             "id": "erc20|0x6f259637dcd74c767781e37bc6133cd6a68aa161",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "IDEX",
@@ -2998,9 +2879,7 @@
             },
             "rating": "",
             "id": "erc20|0xb705268213d593b8fd88d3fdeff93aff5cbdcfae",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "IDLE",
@@ -3042,8 +2921,7 @@
         {
             "code": "IMBTC",
             "name": "The tokenized_bitcoin",
-            "categories": [
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -3060,9 +2938,7 @@
             },
             "rating": "",
             "id": "erc20|0x3212b29e33587a00fb1c83346f5dbfa69a458923",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "INJ",
@@ -3227,9 +3103,7 @@
             },
             "rating": "",
             "id": "erc20|0x1ceb5cb57c4d4e2b2433641b95dd330a33185a44",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "LDO",
@@ -3263,9 +3137,7 @@
         {
             "code": "LGCY",
             "name": "LGCY Network",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -3283,9 +3155,7 @@
             },
             "rating": "",
             "id": "erc20|0xae697f994fc5ebc000f8e22ebffee04612f98a0d",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "LINK",
@@ -3339,9 +3209,7 @@
             },
             "rating": "",
             "id": "erc20|0x0000000000095413afc295d19edeb1ad7b71c952",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "LOOM",
@@ -3367,9 +3235,7 @@
             },
             "rating": "",
             "id": "erc20|0xa4e8c3ec456107ea67d3075bf9e3df3a75823db0",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "LPT",
@@ -3441,7 +3307,7 @@
                 "address": "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
                 "type": "ERC20"
             },
-            "description": "Matic provides scalable, secure and instant transactions using sidechains based on an adapted implementation of Plasma framework for asset security and a decentralized network of Proof-of-Stake (PoS) validators. In short, it allows anyone to create scalable DApps while ensuring a superior user experience in a secure and decentralized manner. It has a working implementation for Ethereum on Ropsten Testnet. Matic intends to support other blockchains in the future which will enable it to provide interoperability features alongside offering scalability to existing public blockchains.Matic Network is expanding tech scope and mission and becoming Polygon — Ethereum’s Internet of Blockchains.Existing Matic solutions remain functional and high priority. All the existing Matic solutions and implementations, primarily Matic PoS Chain and Matic Plasma Chains, remain fully functional and will continue to be developed and grown as very important components of the Polygon ecosystem. These implementations will not be impacted or changed in any way, and no action is required from developers or end-users. The $MATIC token will continue to exist and will play an increasingly important role, securing the system and enabling governance. See the official announcement.Polygon is a easy-to-use platform for Ethereum scaling and infrastructure development. Its core component is Polygon SDK, a modular, flexible framework that supports building and connecting two major types of solutions:Secured chains (aka Layer 2 chains): Scaling solutions that rely on Ethereum for security instead of establishing their own validator pool. Stand-alone chains (aka Sidechains): Sovereign Ethereum sidechains, normally fully in charge of their own security, i.e. with their own validator pool.",
+            "description": "Polygon (previously Matic Network) is the first well-structured, easy-to-use platform for Ethereum scaling and infrastructure development. Using Polygon, one can create optimistic rollup chains, ZK rollup chains, stand alone chains or any other kind of infra required by the developer. MATIC, the native tokens of Polygon, is an ERC-20 token running on the Ethereum blockchain. The tokens are used for payment services on Polygon and as a settlement currency between users who operate within the Polygon ecosystem. The transaction fees on Polygon sidechains are also paid in MATIC tokens.",
             "links": {
                 "website": "https://matic.network",
                 "whitepaper": "",
@@ -3497,9 +3363,7 @@
                 }
             ],
             "id": "erc20|0x4e352cf164e64adcbad318c3a1e222e9eba4ce42",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "MEME",
@@ -3524,9 +3388,7 @@
             },
             "rating": "",
             "id": "erc20|0xd5525d397898e5502075ea5e830d8914f6f0affe",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "MFT",
@@ -3651,7 +3513,7 @@
         },
         {
             "code": "MLN",
-            "name": "Melon",
+            "name": "Enzyme",
             "categories": [
                 "risk_management"
             ],
@@ -3700,9 +3562,7 @@
                 "telegram": "https://t.me/join_88mphapp"
             },
             "id": "erc20|0x8888801af4d980682e47f1a9036e589479e835c5",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "MUSD",
@@ -3738,9 +3598,7 @@
                 }
             ],
             "id": "erc20|0xe2f2a5c287993345a840db3b0845fbc70f5935a5",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "MX",
@@ -3764,9 +3622,7 @@
                 "telegram": "https://t.me/MXCEnglish"
             },
             "id": "erc20|0x11eef04c884e24d9b7b4760e7476d06ddf797f36",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "NEST",
@@ -3792,9 +3648,7 @@
             },
             "rating": "",
             "id": "erc20|0x04abeda201850ac0124161f037efd70c74ddc74c",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "NEXO",
@@ -3874,9 +3728,7 @@
             },
             "rating": "",
             "id": "erc20|0x20945ca1df56d237fd40036d47e866c7dccd2114",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "NXM",
@@ -3938,22 +3790,15 @@
             },
             "rating": "",
             "id": "erc20|0x7240ac91f01233baaf8b064248e80feaa5912ba3",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ONT",
             "name": "Ontology",
             "categories": [
-                "blockchains"
+                "blockchain"
             ],
             "active": true,
-            "platform": {
-                "name": "",
-                "address": "",
-                "type": ""
-            },
             "description": "",
             "links": {
                 "website": "",
@@ -3967,22 +3812,19 @@
             "rating": "",
             "id": "unsupported|ontology",
             "funds": [
-
+                "8_decimal_capital",
+                "hashed",
+                "sequoia_capital"
             ]
         },
         {
             "code": "DCR",
             "name": "Decred",
             "categories": [
-                "blockchains",
+                "blockchain",
                 "governance"
             ],
             "active": true,
-            "platform": {
-                "name": "",
-                "address": "",
-                "type": ""
-            },
             "description": "",
             "links": {
                 "website": "",
@@ -3996,21 +3838,17 @@
             "rating": "",
             "id": "unsupported|decred",
             "funds": [
-
+                "blockchain_capital",
+                "blue_yard"
             ]
         },
         {
             "code": "IOST",
             "name": "IOST",
             "categories": [
-                "blockchains"
+                "blockchain"
             ],
             "active": true,
-            "platform": {
-                "name": "",
-                "address": "",
-                "type": ""
-            },
             "description": "",
             "links": {
                 "website": "",
@@ -4024,7 +3862,7 @@
             "rating": "",
             "id": "unsupported|iostoken",
             "funds": [
-
+                "sequoia_capital"
             ]
         },
         {
@@ -4052,7 +3890,7 @@
             "rating": "",
             "id": "erc20|0x27054b13b1b798b345b591a4d22e6562d47ea75a",
             "funds": [
-
+                "kenetic"
             ]
         },
         {
@@ -4080,7 +3918,8 @@
             "rating": "",
             "id": "erc20|0x91af0fbb28aba7e31403cb457106ce79397fd4e6",
             "funds": [
-
+                "arrington_xrp_capital",
+                "sequoia_capital"
             ]
         },
         {
@@ -4090,11 +3929,6 @@
                 "dexes"
             ],
             "active": true,
-            "platform": {
-                "name": "",
-                "address": "",
-                "type": ""
-            },
             "description": "",
             "links": {
                 "website": "",
@@ -4107,9 +3941,7 @@
             },
             "rating": "",
             "id": "unsupported|pangolin",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "EROWAN",
@@ -4136,7 +3968,8 @@
             "rating": "",
             "id": "erc20|0x07bac35846e5ed502aa91adf6a9e7aa210f2dcbe",
             "funds": [
-
+                "alameda_research_",
+                "ngc_ventures"
             ]
         },
         {
@@ -4163,9 +3996,7 @@
             },
             "rating": "",
             "id": "erc20|0x77777feddddffc19ff86db637967013e6c6a116c",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ZKS",
@@ -4192,9 +4023,7 @@
             },
             "rating": "",
             "id": "erc20|0xe4815ae53b124e7263f08dcdbbb757d41ed658c6",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "NU",
@@ -4222,7 +4051,14 @@
             "rating": "",
             "id": "erc20|0x4fe83213d56308330ec302a8bd641f1d0113a4cc",
             "funds": [
-
+                "polychain_capital",
+                "arrington_xrp_capital",
+                "digital_finance_group",
+                "1kx",
+                "coinfund",
+                "kenetic",
+                "galaxy_digital_lp",
+                "hashed"
             ]
         },
         {
@@ -4232,11 +4068,6 @@
                 "privacy"
             ],
             "active": true,
-            "platform": {
-                "name": "",
-                "address": "",
-                "type": ""
-            },
             "description": "",
             "links": {
                 "website": "",
@@ -4249,9 +4080,7 @@
             },
             "rating": "",
             "id": "unsupported|secret",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "XHV",
@@ -4260,11 +4089,6 @@
                 "privacy"
             ],
             "active": true,
-            "platform": {
-                "name": "",
-                "address": "",
-                "type": ""
-            },
             "description": "",
             "links": {
                 "website": "",
@@ -4277,9 +4101,7 @@
             },
             "rating": "",
             "id": "unsupported|haven",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "HOPR",
@@ -4307,7 +4129,8 @@
             "rating": "",
             "id": "erc20|0xf5581dfefd8fb0e4aec526be659cfab1f8c781da",
             "funds": [
-
+                "spark_digital_capital",
+                "binance_labs"
             ]
         },
         {
@@ -4335,7 +4158,7 @@
             "rating": "",
             "id": "erc20|0xa44e5137293e855b1b7bc7e2c6f8cd796ffcb037",
             "funds": [
-
+                "woodstock"
             ]
         },
         {
@@ -4363,7 +4186,7 @@
             "rating": "",
             "id": "erc20|0xaec7e1f531bb09115103c53ba76829910ec48966",
             "funds": [
-
+                "woodstock"
             ]
         },
         {
@@ -4391,7 +4214,7 @@
             "rating": "",
             "id": "erc20|0x940a2db1b7008b6c776d4faaca729d6d4a4aa551",
             "funds": [
-
+                "maven_11_capital"
             ]
         },
         {
@@ -4401,11 +4224,6 @@
                 "privacy"
             ],
             "active": true,
-            "platform": {
-                "name": "",
-                "address": "",
-                "type": ""
-            },
             "description": "",
             "links": {
                 "website": "",
@@ -4418,9 +4236,7 @@
             },
             "rating": "",
             "id": "unsupported|zencash",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "XVG",
@@ -4429,11 +4245,6 @@
                 "privacy"
             ],
             "active": true,
-            "platform": {
-                "name": "",
-                "address": "",
-                "type": ""
-            },
             "description": "",
             "links": {
                 "website": "",
@@ -4446,9 +4257,7 @@
             },
             "rating": "",
             "id": "unsupported|verge",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ROSE",
@@ -4457,11 +4266,6 @@
                 "privacy"
             ],
             "active": true,
-            "platform": {
-                "name": "",
-                "address": "",
-                "type": ""
-            },
             "description": "",
             "links": {
                 "website": "",
@@ -4475,7 +4279,9 @@
             "rating": "",
             "id": "unsupported|oasis-network",
             "funds": [
-
+                "polychain_capital",
+                "ausum_ventures",
+                "pantera_capital"
             ]
         },
         {
@@ -4484,14 +4290,8 @@
             "categories": [
                 "scaling",
                 "cross_chain"
-
             ],
             "active": true,
-            "platform": {
-                "name": "",
-                "address": "",
-                "type": ""
-            },
             "description": "",
             "links": {
                 "website": "",
@@ -4505,7 +4305,7 @@
             "rating": "",
             "id": "unsupported|harmony",
             "funds": [
-
+                "lemniscap"
             ]
         },
         {
@@ -4533,14 +4333,17 @@
             "rating": "",
             "id": "erc20|0x4e15361fd6b4bb609fa63c81a2be19d873717870",
             "funds": [
-
+                "8_decimal_capital",
+                "blocktower_capital",
+                "arrington_xrp_capital"
             ]
         },
         {
             "code": "RAZOR",
             "name": "RAZOR Network",
             "categories": [
-                "scaling"
+                "scaling",
+                "oracles"
             ],
             "active": true,
             "platform": {
@@ -4561,7 +4364,8 @@
             "rating": "",
             "id": "erc20|0x50de6856358cc35f3a9a57eaaa34bd4cb707d2cd",
             "funds": [
-
+                "alameda_research_",
+                "ngc_ventures"
             ]
         },
         {
@@ -4588,9 +4392,7 @@
             },
             "rating": "",
             "id": "erc20|0x67b6d479c7bb412c54e03dca8e1bc6740ce6b99c",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "BRY",
@@ -4616,16 +4418,14 @@
             },
             "rating": "",
             "id": "bep20|0xf859bf77cbe8699013d6dbc7c2b926aaf307f830",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ROOM",
             "name": "OptionRoom",
             "categories": [
                 "oracles",
-                "prediction"
+                "prediction_markets"
             ],
             "active": true,
             "platform": {
@@ -4646,7 +4446,7 @@
             "rating": "",
             "id": "erc20|0xad4f86a25bbc20ffb751f2fac312a0b4d8f88c64",
             "funds": [
-
+                "cms"
             ]
         },
         {
@@ -4673,15 +4473,13 @@
             },
             "rating": "",
             "id": "erc20|0x6fc13eace26590b80cccab1ba5d51890577d83b2",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "POLK",
             "name": "Polkamarkets",
             "categories": [
-                "prediction"
+                "prediction_markets"
             ],
             "active": true,
             "platform": {
@@ -4701,9 +4499,7 @@
             },
             "rating": "",
             "id": "erc20|0xd478161c952357f05f0292b56012cd8457f1cfbf",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "VSP",
@@ -4730,7 +4526,7 @@
             "rating": "",
             "id": "erc20|0x1b40183efb4dd766f11bda7a7c3ad8982e998421",
             "funds": [
-
+                "kenetic"
             ]
         },
         {
@@ -4757,9 +4553,7 @@
             },
             "rating": "",
             "id": "erc20|0xa91ac63d040deb1b7a5e4d4134ad23eb0ba07e14",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "AUTO",
@@ -4785,9 +4579,7 @@
             },
             "rating": "",
             "id": "bep20|0xa184088a740c695e156f91f5cc086a06bb78b827",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "SHROOM",
@@ -4814,9 +4606,7 @@
             },
             "rating": "",
             "id": "erc20|0xed0439eacf4c4965ae4613d77a5c2efe10e5f183",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "MBTC",
@@ -4842,9 +4632,7 @@
             },
             "rating": "",
             "id": "erc20|0x945facb997494cc2570096c74b5f66a3507330a1",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "LEO",
@@ -4870,9 +4658,7 @@
             },
             "rating": "",
             "id": "erc20|0x2af5d2ad76741191d15dfe7bf6ac92d4bd912ca3",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ROOK",
@@ -4899,35 +4685,8 @@
             "rating": "",
             "id": "erc20|0xfa5047c9c78b8877af97bdcb85db743fd7313d4a",
             "funds": [
-
-            ]
-        },
-        {
-            "code": "MLN",
-            "name": "Enzyme",
-            "categories": [
-                "risk_management"
-            ],
-            "active": true,
-            "platform": {
-                "name": "",
-                "address": "",
-                "type": ""
-            },
-            "description": "",
-            "links": {
-                "website": "",
-                "whitepaper": "",
-                "guide": "",
-                "twitter": "",
-                "github": "",
-                "reddit": "",
-                "telegram": ""
-            },
-            "rating": "",
-            "id": "erc20|0xec67005c4e498ec7f55e092bd1d35cbc47c91892",
-            "funds": [
-
+                "polychain_capital",
+                "three_arrows_capital"
             ]
         },
         {
@@ -4957,7 +4716,7 @@
             "rating": "",
             "id": "unsupported|stafi",
             "funds": [
-
+                "woodstock"
             ]
         },
         {
@@ -4986,7 +4745,9 @@
             "rating": "",
             "id": "erc20|0x965697b4ef02f0de01384d0d4f9f782b1670c163",
             "funds": [
-
+                "cms",
+                "alameda_research_",
+                "multicoin_capital"
             ]
         },
         {
@@ -5014,7 +4775,8 @@
             "rating": "",
             "id": "erc20|0x7968bc6a03017ea2de509aaa816f163db0f35148",
             "funds": [
-
+                "alameda_research_",
+                "ngc_ventures"
             ]
         },
         {
@@ -5042,7 +4804,8 @@
             "rating": "",
             "id": "erc20|0x1337def16f9b486faed0293eb623dc8395dfe46a",
             "funds": [
-
+                "alameda_research_",
+                "1kx"
             ]
         },
         {
@@ -5070,7 +4833,9 @@
             "rating": "",
             "id": "erc20|0x08d967bb0134f2d07f7cfb6e246680c53927dd30",
             "funds": [
-
+                "alameda_research_",
+                "multicoin_capital",
+                "binance_labs"
             ]
         },
         {
@@ -5098,7 +4863,7 @@
             "rating": "",
             "id": "bep20|0xd41fdb03ba84762dd66a0af1a6c8540ff1ba5dfb",
             "funds": [
-
+                "binance_labs"
             ]
         },
         {
@@ -5127,7 +4892,7 @@
             "rating": "",
             "id": "unsupported|lisk",
             "funds": [
-
+                "iosg_ventures"
             ]
         },
         {
@@ -5157,7 +4922,7 @@
             "rating": "",
             "id": "unsupported|wanchain",
             "funds": [
-
+                "8_decimal_capital"
             ]
         },
         {
@@ -5184,9 +4949,7 @@
             },
             "rating": "",
             "id": "erc20|0x054d64b73d3d8a21af3d764efd76bcaa774f3bb2",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "INDEX",
@@ -5212,9 +4975,7 @@
             },
             "rating": "",
             "id": "erc20|0x0954906da0bf32d5479e25f46056d22f08464cab",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "NFTX",
@@ -5241,7 +5002,7 @@
             "rating": "",
             "id": "erc20|0x87d73e916d7057945c9bcd8cdd94e42a6f47f776",
             "funds": [
-
+                "robot_ventures"
             ]
         },
         {
@@ -5268,9 +5029,7 @@
             },
             "rating": "",
             "id": "erc20|0x126c121f99e1e211df2e5f8de2d96fa36647c855",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "SDEFI",
@@ -5296,9 +5055,7 @@
             },
             "rating": "",
             "id": "erc20|0xe1afe1fd76fd88f78cbf599ea1846231b8ba3b6b",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DEFI+L",
@@ -5324,9 +5081,7 @@
             },
             "rating": "",
             "id": "erc20|0x78f225869c08d478c34e5f645d07a87d3fe8eb78",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ERN",
@@ -5353,7 +5108,7 @@
             "rating": "",
             "id": "erc20|0xbbc2ae13b23d715c30720f079fcd9b4a74093505",
             "funds": [
-
+                "woodstock"
             ]
         },
         {
@@ -5381,7 +5136,9 @@
             "rating": "",
             "id": "erc20|0xd084b83c305dafd76ae3e1b4e1f1fe2ecccb3988",
             "funds": [
-
+                "woodstock",
+                "ngc_ventures",
+                "hashed"
             ]
         },
         {
@@ -5409,7 +5166,9 @@
             "rating": "",
             "id": "unsupported|flow",
             "funds": [
-
+                "blocktower_capital",
+                "svangel",
+                "coinbase_ventures"
             ]
         },
         {
@@ -5436,9 +5195,7 @@
             },
             "rating": "",
             "id": "erc20|0x9355372396e3f6daf13359b7b607a3374cc638e0",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "WAXP",
@@ -5465,7 +5222,7 @@
             "rating": "",
             "id": "unsupported|wax",
             "funds": [
-
+                "pantera_capital"
             ]
         },
         {
@@ -5492,9 +5249,7 @@
             },
             "rating": "",
             "id": "erc20|0xb6ca7399b4f9ca56fc27cbff44f4d2e4eef1fc81",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DAO",
@@ -5520,9 +5275,7 @@
             },
             "rating": "",
             "id": "erc20|0x0f51bb10119727a7e5ea3538074fb341f56b09ad",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "AXS",
@@ -5549,7 +5302,7 @@
             "rating": "",
             "id": "erc20|0xf5d669627376ebd411e34b98f19c868c8aba5ada",
             "funds": [
-
+                "hashed"
             ]
         },
         {
@@ -5576,9 +5329,7 @@
             },
             "rating": "",
             "id": "erc20|0xee06a81a695750e71a662b51066f2c74cf4478a0",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "GHST",
@@ -5604,9 +5355,7 @@
             },
             "rating": "",
             "id": "erc20|0x3f382dbd960e3a9bbceae22651e88158d2791550",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "REVV",
@@ -5632,9 +5381,7 @@
             },
             "rating": "",
             "id": "erc20|0x557b933a7c2c45672b610f8954a3deb39a51a8ca",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "GALA",
@@ -5660,9 +5407,7 @@
             },
             "rating": "",
             "id": "erc20|0x15d4c048f83bd7e37d49ea4c83a07267ec4203da",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "CWS",
@@ -5688,9 +5433,7 @@
             },
             "rating": "",
             "id": "erc20|0xac0104cca91d167873b8601d2e71eb3d4d8c33e0",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ORN",
@@ -5717,9 +5460,7 @@
             },
             "rating": "",
             "id": "erc20|0x0258f474786ddfd37abce6df6bbb1dd5dfc4434a",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "CRE",
@@ -5746,7 +5487,7 @@
             "rating": "",
             "id": "erc20|0x115ec79f1de567ec68b7ae7eda501b406626478e",
             "funds": [
-
+                "kenetic"
             ]
         },
         {
@@ -5774,7 +5515,9 @@
             "rating": "",
             "id": "erc20|0x5732046a883704404f284ce41ffadd5b007fd668",
             "funds": [
-
+                "8_decimal_capital",
+                "kenetic",
+                "ngc_ventures"
             ]
         },
         {
@@ -5802,7 +5545,10 @@
             "rating": "",
             "id": "unsupported|kusama",
             "funds": [
-
+                "kr1",
+                "fenbushi_capital",
+                "iosg_ventures",
+                "ngc_ventures"
             ]
         },
         {
@@ -5830,7 +5576,13 @@
             "rating": "",
             "id": "unsupported|filecoin",
             "funds": [
-
+                "placeholder",
+                "blockchain_capital",
+                "ausum_ventures",
+                "pantera_capital",
+                "iosg_ventures",
+                "andreessen_horowitz",
+                "blue_yard"
             ]
         },
         {
@@ -5858,7 +5610,13 @@
             "rating": "",
             "id": "unsupported|arweave",
             "funds": [
-
+                "maven_11_capital",
+                "multicoin_capital",
+                "1kx",
+                "greenfield_one",
+                "andreessen_horowitz",
+                "version_one_ventures",
+                "coinbase_ventures"
             ]
         },
         {
@@ -5886,7 +5644,7 @@
             "rating": "",
             "id": "unsupported|fio-protocol",
             "funds": [
-
+                "binance_labs"
             ]
         },
         {
@@ -5914,7 +5672,7 @@
             "rating": "",
             "id": "bep2|COS-2E4",
             "funds": [
-
+                "binance_labs"
             ]
         },
         {
@@ -5941,9 +5699,7 @@
             },
             "rating": "",
             "id": "erc20|0x8b39b70e39aa811b69365398e0aace9bee238aeb",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "META",
@@ -5970,7 +5726,12 @@
             "rating": "",
             "id": "erc20|0xde2f7766c8bf14ca67193128535e5c7454f8387c",
             "funds": [
-
+                "fbg_capital",
+                "arrington_xrp_capital",
+                "collider_ventures",
+                "1kx",
+                "divergence_ventures",
+                "hashed"
             ]
         },
         {
@@ -5997,9 +5758,7 @@
             },
             "rating": "",
             "id": "erc20|0x86772b1409b61c639eaac9ba0acfbb6e238e5f83",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "SUPER",
@@ -6026,7 +5785,7 @@
             "rating": "",
             "id": "erc20|0xe53ec727dbdeb9e2d5456c3be40cff031ab40a55",
             "funds": [
-
+                "woodstock"
             ]
         },
         {
@@ -6054,7 +5813,8 @@
             "rating": "",
             "id": "unsupported|switcheo",
             "funds": [
-
+                "three_arrows_capital",
+                "ngc_ventures"
             ]
         },
         {
@@ -6082,7 +5842,7 @@
             "rating": "",
             "id": "erc20|0x850aab69f0e0171a9a49db8be3e71351c8247df4",
             "funds": [
-
+                "cms"
             ]
         },
         {
@@ -6110,7 +5870,11 @@
             "rating": "",
             "id": "erc20|0x3e9bc21c9b189c09df3ef1b824798658d5011937",
             "funds": [
-
+                "cms",
+                "alameda_research_",
+                "kenetic",
+                "ngc_ventures",
+                "hashed"
             ]
         },
         {
@@ -6137,9 +5901,7 @@
             },
             "rating": "",
             "id": "erc20|0xe95a203b1a91a908f9b9ce46459d101078c2c3cb",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "STETH",
@@ -6165,9 +5927,7 @@
             },
             "rating": "",
             "id": "erc20|0xdfe66b14d37c77f4e9b180ceb433d1b164f0281d",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DIGG",
@@ -6193,9 +5953,7 @@
             },
             "rating": "",
             "id": "erc20|0x798d1be841a82a273720ce31c822c61a67a601c3",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "MARK",
@@ -6221,9 +5979,7 @@
             },
             "rating": "",
             "id": "erc20|0x67c597624b17b16fb77959217360b7cd18284253",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DITTO",
@@ -6249,9 +6005,7 @@
             },
             "rating": "",
             "id": "bep20|0x233d91a0713155003fc4dce0afa871b508b3b715",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "COIL",
@@ -6277,9 +6031,7 @@
             },
             "rating": "",
             "id": "erc20|0x3936ad01cf109a36489d93cabda11cf062fd3d48",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "OGN",
@@ -6348,9 +6100,7 @@
         {
             "code": "OPIUM",
             "name": "Opium",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -6407,9 +6157,7 @@
             },
             "rating": "",
             "id": "erc20|0x4c11249814f11b9346808179cf06e71ac328c1b5",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ORBS",
@@ -6435,9 +6183,7 @@
             },
             "rating": "",
             "id": "erc20|0xff56cc6b1e6ded347aa0b7676c85ab0b3d08b0fa",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "OXT",
@@ -6494,9 +6240,7 @@
             },
             "rating": "",
             "id": "erc20|0x967da4048cd07ab37855c090aaf366e4ce1b9f48",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "PAR",
@@ -6521,9 +6265,7 @@
             },
             "rating": "",
             "id": "erc20|0x1beef31946fbbb40b877a72e4ae04a8d1a5cee06",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "PAX",
@@ -6549,15 +6291,12 @@
             },
             "rating": "",
             "id": "erc20|0x8e870d67f660d95d5be530380d0ec0bd388289e1",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "PAXG",
             "name": "Pax Gold",
-            "categories": [
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -6576,9 +6315,7 @@
             },
             "rating": "",
             "id": "erc20|0x45804880de22913dafe09f4980848ece6ecbaf78",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "PBTC",
@@ -6603,16 +6340,12 @@
             },
             "rating": "",
             "id": "erc20|0x5228a22e72ccc52d415ecfd199f99d0665e7733b",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "PERL",
             "name": "Perlin",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -6704,9 +6437,7 @@
                 }
             ],
             "id": "erc20|0x429881672b9ae42b8eba0e26cd9c73711b891ca5",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "PIPT",
@@ -6729,9 +6460,7 @@
                 "telegram": "https://t.me/powerpoolcvp"
             },
             "id": "erc20|0x26607ac599266b21d13c7acf7942c7701a8b699c",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "PLOT",
@@ -6783,9 +6512,7 @@
                 "telegram": "https://t.me/kleros"
             },
             "id": "erc20|0x93ed3fbe21207ec2e8f2d3c3de6e058cb73bc04d",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "POLS",
@@ -6838,9 +6565,7 @@
             },
             "rating": "",
             "id": "erc20|0x9992ec3cf6a55b00978cddf2b27bc6882d88d1ec",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "QNT",
@@ -6866,9 +6591,7 @@
             },
             "rating": "",
             "id": "erc20|0x4a220e6096b25eadb88358cb44068a3248254675",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "QSP",
@@ -6954,9 +6677,7 @@
             },
             "rating": "",
             "id": "erc20|0xeb4c2781e4eba804ce9a9803c67d0893436bb27d",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "RFUEL",
@@ -6981,9 +6702,7 @@
             },
             "rating": "",
             "id": "erc20|0xaf9f549774ecedbd0966c52f250acc548d3f36e5",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "RGT",
@@ -7038,9 +6757,7 @@
             },
             "rating": "",
             "id": "erc20|0x9469d013805bffb7d3debe5e7839237e535ec483",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "RLC",
@@ -7065,9 +6782,7 @@
                 "telegram": ""
             },
             "id": "erc20|0x607f4c5bb672230e8672085532f7e901544a7375",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "RPL",
@@ -7122,7 +6837,7 @@
             "rating": "",
             "id": "erc20|0x8762db106b2c2a0bccb3a80d1ed41273552616e8",
             "funds": [
-                ""
+                "blocktower_capital"
             ]
         },
         {
@@ -7190,22 +6905,20 @@
             "active": true,
             "platform": {
                 "name": "ethereum",
-                "address": "0x50d1c9771902476076ecfc8b2a83ad6b9355a4c9",
+                "address": "0xfe18be6b3bd88a2d2a7f928d00292e7a9963cfc6",
                 "type": "ERC20"
             },
-            "description": "FTX is a cryptocurrency derivatives exchange built by traders, for traders. It strives to build a platform powerful enough for professional trading firms and intuitive enough for first-time users.FTX Token (FTT) is the backbone of the FTX ecosystem. It has been carefully designed with incentive schemes to increase network effects and demand for FTT, and to decrease its circulating supply.",
+            "description": "sBTC or synthetic BTC is a synthetic asset launched by Synthetix Exchange. sBTC mirrors and tracks the price of Bitcoin provided by an oracle - Chainlink.",
             "links": {
-                "website": "https://ftx.com",
+                "website": "https://www.synthetix.io",
                 "whitepaper": "",
                 "guide": "",
-                "twitter": "https://twitter.com/FTX_official",
+                "twitter": "https://twitter.com/synthetix_io",
                 "reddit": "",
-                "telegram": "https://t.me/FTX_Official"
+                "telegram": ""
             },
-            "id": "erc20|0x50d1c9771902476076ecfc8b2a83ad6b9355a4c9",
-            "funds": [
-
-            ]
+            "id": "erc20|0xfe18be6b3bd88a2d2a7f928d00292e7a9963cfc6",
+            "funds": []
         },
         {
             "code": "SFI",
@@ -7230,15 +6943,12 @@
                 "telegram": "https://t.me/saffronfinance"
             },
             "id": "erc20|0xb753428af26e81097e7fd17f40c88aaa3e04902c",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "SHARE",
             "name": "Seigniorage",
-            "categories": [
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -7257,9 +6967,7 @@
             },
             "rating": "",
             "id": "erc20|0x39795344cbcc76cc3fb94b9d1b15c23c2070c66d",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "SNT",
@@ -7285,9 +6993,7 @@
             },
             "rating": "",
             "id": "erc20|0x744d70fdbe2ba4cf95131626614a1763df805b9e",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "SNX",
@@ -7373,9 +7079,7 @@
             },
             "rating": "",
             "id": "erc20|0xbcd4b7de6fde81025f74426d43165a5b0d790fdd",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "SRM",
@@ -7449,9 +7153,7 @@
                 }
             ],
             "id": "erc20|0x0ae055097c6d159879521c384f1d2123d1f195e6",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "STORJ",
@@ -7477,9 +7179,7 @@
             },
             "rating": "",
             "id": "erc20|0xb64ef51c888972c908cfacf59b47c1afbc0ab8ac",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "SUSD",
@@ -7506,9 +7206,7 @@
             },
             "rating": "",
             "id": "erc20|0x57ab1ec28d129707052df4df418d58a2d46d5f51",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "SUSHI",
@@ -7544,9 +7242,7 @@
                 }
             ],
             "id": "erc20|0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "SWAP",
@@ -7570,15 +7266,12 @@
                 "telegram": "https://t.me/TrustSwap"
             },
             "id": "erc20|0xcc4304a31d09258b0029ea7fe63d032f52e44efe",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "SWFL",
             "name": "Swapfolio",
-            "categories": [
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -7596,15 +7289,12 @@
             },
             "rating": "",
             "id": "erc20|0xba21ef4c9f433ede00badefcc2754b8e74bd538a",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "SWISS",
             "name": "swiss.finance",
-            "categories": [
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -7622,9 +7312,7 @@
             },
             "rating": "",
             "id": "erc20|0x692eb773e0b5b7a79efac5a015c8b36a2577f65c",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "SWRV",
@@ -7656,9 +7344,7 @@
                 }
             ],
             "id": "erc20|0xb8baa0e4287890a5f79863ab62b7f175cecbd433",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "SXP",
@@ -7684,9 +7370,7 @@
             },
             "rating": "",
             "id": "erc20|0x8ce9137d39326ad0cd6491fb5cc0cba0e089b6a9",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "TBTC",
@@ -7740,16 +7424,12 @@
             },
             "rating": "",
             "id": "erc20|0xaaaf91d9b90df800df4f55c205fd6989c977e73a",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "TMTG",
             "name": "The Midas Touch Gold",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -7768,9 +7448,7 @@
             },
             "rating": "",
             "id": "erc20|0x10086399dd8c1e3de736724af52587a2044c9fa2",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "TRB",
@@ -7781,7 +7459,7 @@
             "active": true,
             "platform": {
                 "name": "ethereum",
-                "address": "0x0ba45a8b5d5575935b8158a88c631e9f9c95a2e5",
+                "address": "0x88df592f8eb5d7bd38bfef7deb0fbc02cf3778a0",
                 "type": "ERC20"
             },
             "description": "Tellor is a decentralized Oracle for bringing high-value off-chain data onto Ethereum. The system utilizes a network of staked miners that compete to solve a PoW challenge to submit the official value for requested data. Tokens are mined with every successful Tellor data point and the company takes a 10% dev share to support the development of the ecosystem.",
@@ -7795,7 +7473,7 @@
                 "telegram": "https://t.me/tellor"
             },
             "rating": "",
-            "id": "erc20|0x0ba45a8b5d5575935b8158a88c631e9f9c95a2e5",
+            "id": "erc20|0x88df592f8eb5d7bd38bfef7deb0fbc02cf3778a0",
             "funds": [
                 "binance_labs"
             ]
@@ -7829,9 +7507,7 @@
                 }
             ],
             "id": "erc20|0x4c19596f5aaff459fa38b0f7ed92f11ae6543784",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "TUSD",
@@ -7857,16 +7533,12 @@
             },
             "rating": "",
             "id": "erc20|0x0000000000085d4780b73119b644ae5ecd22b376",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "TXL",
             "name": "Tixl",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -7884,9 +7556,7 @@
             },
             "rating": "",
             "id": "erc20|0x8eef5a82e6aa222a60f009ac18c24ee12dbf4b41",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "UBT",
@@ -7911,9 +7581,7 @@
             },
             "rating": "",
             "id": "erc20|0x8400d94a5cb0fa0d041a3788e395285d61c9ee5e",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "UMA",
@@ -7972,9 +7640,7 @@
             },
             "rating": "",
             "id": "erc20|0x10be9a8dae441d276a5027936c3aaded2d82bc15",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "UNI",
@@ -8079,9 +7745,7 @@
             },
             "rating": "",
             "id": "erc20|0x674c6ad92fd080e4004b2312b45f796a192d27a0",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "USDX",
@@ -8090,31 +7754,22 @@
                 "fiat_stablecoins"
             ],
             "active": true,
-            "platform": {
-                "name": "ethereum",
-                "address": "0x50d1c9771902476076ecfc8b2a83ad6b9355a4c9",
-                "type": "ERC20"
-            },
-            "description": "FTX is a cryptocurrency derivatives exchange built by traders, for traders. It strives to build a platform powerful enough for professional trading firms and intuitive enough for first-time users.FTX Token (FTT) is the backbone of the FTX ecosystem. It has been carefully designed with incentive schemes to increase network effects and demand for FTT, and to decrease its circulating supply.",
+            "description": "USDX is the crypto-backed native stablecoin of the Kava DeFi hub.",
             "links": {
-                "website": "https://ftx.com",
+                "website": "https://www.kava.io/overview",
                 "whitepaper": "",
                 "guide": "",
-                "twitter": "https://twitter.com/FTX_official",
+                "twitter": "",
                 "reddit": "",
-                "telegram": "https://t.me/FTX_Official"
+                "telegram": ""
             },
-            "id": "erc20|0x50d1c9771902476076ecfc8b2a83ad6b9355a4c9",
-            "funds": [
-
-            ]
+            "id": "unsupported|usdx",
+            "funds": []
         },
         {
             "code": "VALUE",
             "name": "Value Liquidity",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -8166,9 +7821,7 @@
                 }
             ],
             "id": "erc20|0x49e833337ece7afe375e44f4e3e8481029218e5c",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "WBTC",
@@ -8194,9 +7847,7 @@
             },
             "rating": "",
             "id": "erc20|0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "WHITE",
@@ -8221,16 +7872,12 @@
             },
             "rating": "",
             "id": "erc20|0x5f0e628b693018f639d10e4a4f59bd4d8b2b6b44",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "WISE",
             "name": "Wise",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -8249,9 +7896,7 @@
             },
             "rating": "",
             "id": "erc20|0x66a0f676479cee1d7373f3dc2e2952778bff5bd6",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "XFT",
@@ -8277,16 +7922,12 @@
             },
             "rating": "",
             "id": "erc20|0xabe580e7ee158da464b51ee1a83ac0289622e6be",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "XIO",
             "name": "Blockzero Labs",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -8304,9 +7945,7 @@
             },
             "rating": "",
             "id": "erc20|0x0f7f961648ae6db43c75663ac7e5414eb79b5704",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "YAM",
@@ -8331,16 +7970,12 @@
                 "telegram": ""
             },
             "id": "erc20|0x0aacfbec6a24756c20d41914f2caba817c0d8521",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "YAX",
             "name": "yAxis",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -8357,16 +7992,12 @@
                 "telegram": "https://t.me/yaxisannouncem"
             },
             "id": "erc20|0xb1dc9124c395c1e97773ab855d66e879f053a289",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "YF-DAI",
             "name": "YfDAI.finance",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -8384,9 +8015,7 @@
             },
             "rating": "",
             "id": "erc20|0xf4cd3d3fda8d7fd6c5a500203e38640a70bf9577",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "YFI",
@@ -8397,19 +8026,20 @@
             "active": true,
             "platform": {
                 "name": "ethereum",
-                "address": "0x50d1c9771902476076ecfc8b2a83ad6b9355a4c9",
+                "address": "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e",
                 "type": "ERC20"
             },
-            "description": "FTX is a cryptocurrency derivatives exchange built by traders, for traders. It strives to build a platform powerful enough for professional trading firms and intuitive enough for first-time users.FTX Token (FTT) is the backbone of the FTX ecosystem. It has been carefully designed with incentive schemes to increase network effects and demand for FTT, and to decrease its circulating supply.",
+            "description": "Yearn Finance is a suite of products in Decentralized Finance (DeFi) that provides lending aggregation, yield generation, and insurance on the Ethereum blockchain. The protocol is maintained by various independent developers and is governed by YFI holders.\n YFI is the governance token for the Yearn Finance protocol. It can be used to vote and receive cash flows from the fees earned by the protocol.",
             "links": {
-                "website": "https://ftx.com",
+                "website": "https://yearn.finance",
                 "whitepaper": "",
                 "guide": "",
-                "twitter": "https://twitter.com/FTX_official",
-                "reddit": "",
-                "telegram": "https://t.me/FTX_Official"
+                "twitter": "https://twitter.com/iearnfinance",
+                "reddit": "https://www.reddit.com/r/yearn_finance/",
+                "github": "https://github.com/iearn-finance/ygov-finance",
+                "telegram": "https://t.me/yearnfinance"
             },
-            "id": "erc20|0x50d1c9771902476076ecfc8b2a83ad6b9355a4c9",
+            "id": "erc20|0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e",
             "funds": [
                 "blockchain_capital",
                 "infinite_capital",
@@ -8441,16 +8071,12 @@
                 "telegram": "https://t.me/yfiifinance"
             },
             "id": "erc20|0xa1d0e215a23d7030842fc67ce582a6afa3ccab83",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "YFIM",
             "name": "Yfi.mobi",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -8467,9 +8093,7 @@
             },
             "rating": "",
             "id": "erc20|0x2e2f3246b6c65ccc4239c9ee556ec143a7e5de2c",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ZAI",
@@ -8495,9 +8119,7 @@
             },
             "rating": "",
             "id": "erc20|0x9d1233cc46795e94029fda81aaadc1455d510f15",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ZCN",
@@ -8523,16 +8145,12 @@
             },
             "rating": "",
             "id": "erc20|0xb9ef770b6a5e12e45983c5d80545258aa38f3b78",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ZORA",
             "name": "Zoracles",
-            "categories": [
-
-            ],
+            "categories": [],
             "active": true,
             "platform": {
                 "name": "ethereum",
@@ -8549,9 +8167,7 @@
                 "telegram": "https://t.me/zoracles"
             },
             "id": "erc20|0xd8e3fb3b08eba982f2754988d70d57edc0055ae6",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ZRX",
@@ -8609,9 +8225,7 @@
             },
             "rating": "",
             "id": "unsupported|lto-network",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "BTC",
@@ -8632,9 +8246,7 @@
             },
             "rating": "",
             "id": "bitcoin",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ETH",
@@ -8677,9 +8289,7 @@
             },
             "rating": "",
             "id": "bitcoinCash",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DASH",
@@ -8701,9 +8311,7 @@
             },
             "rating": "",
             "id": "dash",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "LTC",
@@ -8724,9 +8332,7 @@
             },
             "rating": "",
             "id": "litecoin",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ZEC",
@@ -8772,9 +8378,7 @@
             },
             "rating": "",
             "id": "unsupported|cardano",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ALGO",
@@ -8783,11 +8387,6 @@
                 "blockchain"
             ],
             "active": true,
-            "platform": {
-                "name": "ethereum",
-                "address": "0xb5a5f22694352c15b00323844ad545abb2b11028",
-                "type": "ERC20"
-            },
             "description": "The Algorand platform is the first public, a permissionless pure proof-of-stake blockchain protocol that solves the “blockchain trilemma” of achieving scalability, security, and true decentralization all at once. Performance on the Algorand platform exceeds 1000 transactions per second (TPS) with a latency of fewer than 5 seconds, putting it on par with the throughput of major global payment networks without compromising security or decentralization.",
             "links": {
                 "website": "https://algorand.foundation/",
@@ -8896,9 +8495,7 @@
             },
             "rating": "",
             "id": "bep20|0xca3f508b8e4dd382ee878a314789373d80a5190a",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "BNB",
@@ -8918,9 +8515,7 @@
             },
             "rating": "",
             "id": "bep2|BNB",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "CAKE",
@@ -8941,9 +8536,7 @@
             },
             "rating": "",
             "id": "bep20|0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "CAS",
@@ -8969,9 +8562,7 @@
             },
             "rating": "",
             "id": "bep20|0x780207b8c0fdc32cf60e957415bfa1f2d4d9718c",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "CTK",
@@ -9022,9 +8613,7 @@
             },
             "rating": "",
             "id": "erc20|0x0a913bead80f321e7ac35285ee10d9d922659cb7",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "DOT",
@@ -9056,8 +8645,7 @@
         {
             "code": "EDC",
             "name": "EDC Blockchain",
-            "categories": [
-            ],
+            "categories": [],
             "active": true,
             "description": "EDC Blockchain is a multifunctional blockchain platform that is based on the DPoS (Delegated-Proof-of-Steak) consensus algorithm. EDC Blockchain it’s the tools platform for entrepreneurs based on blockchain. The goal is to create effective tools for the tokenization of private small and medium businesses and the global popularization of blockchain technology.",
             "links": {
@@ -9069,9 +8657,7 @@
             },
             "rating": "",
             "id": "unsupported|edc-blockchain",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "EGLD",
@@ -9113,9 +8699,7 @@
                 "telegram": ""
             },
             "id": "unsupported|eos",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "HEZ",
@@ -9135,9 +8719,7 @@
                 "telegram": "https://t.me/hermez_network"
             },
             "id": "erc20|0xeef9f339514298c6a857efcfc1a762af84438dee",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "ICX",
@@ -9146,11 +8728,6 @@
                 "blockchain"
             ],
             "active": true,
-            "platform": {
-                "name": "ethereum",
-                "address": "0xb5a5f22694352c15b00323844ad545abb2b11028",
-                "type": "ERC20"
-            },
             "description": "ICON Foundation is leading ICON project, one of the largest blockchain networks in the world, launched in 2017 with the vision of ‘Hyperconnect the World’. By using the high-performance blockchain engine, ‘loopchain’, ICON projects to connect various blockchain communities and build an environment where blockchain technology can be applied to real life. ICON supports not only private blockchain projects cooperating with various companies, but also DApp developments in public blockchain sector through strategic partnerships to expand ICON’s blockchain ecosystem.",
             "links": {
                 "website": "https://www.icon.foundation/en/",
@@ -9247,9 +8824,7 @@
                 }
             ],
             "id": "erc20|0xbbbbca6a901c926f240b89eacb641d8aec7aeafd",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "LUNA",
@@ -9329,9 +8904,7 @@
                 "telegram": ""
             },
             "id": "unsupported|neo",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "OKT",
@@ -9349,9 +8922,7 @@
                 "telegram": "https://t.me/OKExOfficial_English"
             },
             "id": "unsupported|okexchain",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "QTUM",
@@ -9410,7 +8981,7 @@
                 "address": "0x1985365e9f78359a9b6ad760e32412f4a445e862",
                 "type": "ERC20"
             },
-            "description": "This page represents Augur v2, which is a fork of the Augur prediction market protocol designed to improve efficiency. Prediction markets like Augur v2 are designed so users can place bets on a variety of different events. With this fork, Augur v2 rolled out a suite of improvements around dispute management, settlements, forking, and more. Prediction markets are widely considered the best forecasting tool. Augur is an open, global platform where anyone anywhere can create, monitor or trade in prediction markets about any topic. Think of it as an \"Early Warning System&#39;&#39; with the most accurate event forecasts, a potential \"Google Search\", \"Bloomberg Terminal\" or \"Reuters Terminal\" for crowdsourced event forecasts.The system plans to use the \"Wisdom of Crowds&#39;&#39; (\"collective intelligence&#39;&#39;) via market incentives, \"Long Tail&#39;&#39; dynamics and blockchain technology to securely generate a more accurate, robust and unfiltered array of dynamic event forecasts than any alternative can match.Augur is decentralized, self-regulating, pseudonymous and autonomous. It offers the promise of markets without exposure to counterparty risk, principal-agent problems or central points of control, failure or censorship. No person is ever in direct control of someone else’s funds or in a position to single-handedly threaten the system’s integrity.The software is comprised of smart contracts perpetually deployed on a blockchain network, which enables applications deployed to be immune to local outages while benefiting from the entire community&#39;s security. All interactions with markets are communicated as database transactions between unique accounts powered by immutable software instructions.Augur v2 Launches\"The Augur v2 protocol contracts have been successfully deployed to the Ethereum Mainnet. The contracts have been verified on Etherscan, and the deployers address can be found here.\" ​See more info on the Augur V2 deployment here.",
+            "description": "Augur is an Ethereum-based decentralized prediction market that leverages the wisdom of the crowds to create a search engine for the future that runs on its own token, REP. Augur allows users to create their markets for specific questions they may have and to profit from the trading buys while allowing users to buy positive or negative shares regarding the outcome of a future event. Augur REP is the gambling cryptocurrency. It’s the crypto token you can use to bet on sporting events, political outcomes, economies and just about everything else in the prediction markets.",
             "links": {
                 "website": "http://www.augur.net/",
                 "whitepaper": "",
@@ -9521,9 +9092,7 @@
             },
             "rating": "",
             "id": "unsupported|tron",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "TWT",
@@ -9541,10 +9110,8 @@
                 "telegram": ""
             },
             "rating": "",
-            "id": "unsupported|trust-wallet-token",
-            "funds": [
-
-            ]
+            "id": "bep2|TWT-8C2",
+            "funds": []
         },
         {
             "code": "UNFI",
@@ -9563,9 +9130,7 @@
                 "telegram": "https://t.me/unifi_protocol"
             },
             "id": "bep20|0x441761326490cacf7af299725b6292597ee822c2",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "USDT",
@@ -9585,9 +9150,7 @@
             },
             "rating": "",
             "id": "erc20|0xdac17f958d2ee523a2206206994597c13d831ec7",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "UTK",
@@ -9613,9 +9176,7 @@
             },
             "rating": "",
             "id": "erc20|0xdc9ac3c20d1ed0b540df9b1fedc10039df13f99c",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "WAVES",
@@ -9634,9 +9195,7 @@
             },
             "rating": "",
             "id": "erc20|0x1cf4592ebffd730c7dc92c1bdffdfc3b9efcf29a",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "WRX",
@@ -9657,9 +9216,7 @@
             },
             "rating": "",
             "id": "bep2|WRX-ED1",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "XEM",
@@ -9678,9 +9235,7 @@
             },
             "rating": "",
             "id": "unsupported|nem",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "XLM",
@@ -9698,9 +9253,7 @@
                 "telegram": ""
             },
             "id": "unsupported|stellar",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "XMR",
@@ -9720,9 +9273,7 @@
             },
             "rating": "",
             "id": "unsupported|monero",
-            "funds": [
-
-            ]
+            "funds": []
         },
         {
             "code": "XTZ",
@@ -9743,6 +9294,32 @@
             "funds": [
                 "draper_associates"
             ]
+        },
+        {
+            "code": "OVR",
+            "name": "Ovr",
+            "categories": [
+                "gaming"
+            ],
+            "active": true,
+            "platform": {
+                "name": "ethereum",
+                "address": "0x21bfbda47a0b4b5b1248c767ee49f7caa9b23697",
+                "type": "ERC20"
+            },
+            "description": "OVR is the decentralized infrastructure for the spatial web, merging physical and virtual world through Augmented Reality, creating a new dimension where everything is possible.",
+            "links": {
+                "website": "https://www.ovr.ai/",
+                "whitepaper": "",
+                "guide": "",
+                "twitter": "https://twitter.com/OVRtheReality",
+                "github": "",
+                "reddit": "",
+                "telegram": "https://t.me/OVRtheReality"
+            },
+            "rating": "",
+            "id": "erc20|0x21bfbda47a0b4b5b1248c767ee49f7caa9b23697",
+            "funds": []
         }
     ],
     "fund_categories": [
