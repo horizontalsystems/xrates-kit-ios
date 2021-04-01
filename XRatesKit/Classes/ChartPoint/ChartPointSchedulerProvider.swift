@@ -24,9 +24,9 @@ class ChartPointSchedulerProvider {
 
 }
 
-extension ChartPointSchedulerProvider: IChartPointSchedulerProvider {
+extension ChartPointSchedulerProvider: ISchedulerProvider {
 
-    var logKey: String {
+    var id: String {
         "\(key)"
     }
 
@@ -48,6 +48,10 @@ extension ChartPointSchedulerProvider: IChartPointSchedulerProvider {
                     }
                 })
                 .map { _ in () }
+    }
+
+    func notifyExpired() {
+        //todo: update if needed
     }
 
 }

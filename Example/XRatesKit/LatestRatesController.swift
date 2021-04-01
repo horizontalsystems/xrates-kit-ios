@@ -38,7 +38,7 @@ class LatestRatesController: UITableViewController {
 
         fillInitialData()
 
-        xRatesKit.latestRatesObservable(currencyCode: currencyCode)
+        xRatesKit.latestRatesObservable(coinTypes: coins.map { $0.type }, currencyCode: currencyCode)
                 .observeOn(MainScheduler.instance)
                 .subscribe(onNext: { [weak self] marketInfos in
                     self?.latestRates = marketInfos
@@ -48,7 +48,7 @@ class LatestRatesController: UITableViewController {
     }
 
     @objc func onTapRefresh() {
-        xRatesKit.refresh()
+        xRatesKit.refresh(currencyCode: currencyCode)
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

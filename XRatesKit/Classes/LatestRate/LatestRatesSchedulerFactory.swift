@@ -19,17 +19,18 @@ class LatestRatesSchedulerFactory {
         self.logger = logger
     }
 
-    func scheduler(coinTypes: [CoinType], currencyCode: String) -> LatestRatesScheduler {
+    func scheduler(currencyCode: String, coinTypeDataSource: ILatestRatesCoinTypeDataSource) -> IScheduler {
         let schedulerProvider = LatestRatesSchedulerProvider(
-                coinTypes: coinTypes,
-                currencyCode: currencyCode,
                 manager: manager,
                 provider: provider,
+                currencyCode: currencyCode,
                 expirationInterval: expirationInterval,
                 retryInterval: retryInterval
         )
 
-        return LatestRatesScheduler(provider: schedulerProvider, reachabilityManager: reachabilityManager, logger: logger)
+        schedulerProvider.dataSource = coinTypeDataSource
+
+        return Scheduler(provider: schedulerProvider, reachabilityManager: reachabilityManager, bufferInterval: 5, logger: logger)
     }
 
 }
