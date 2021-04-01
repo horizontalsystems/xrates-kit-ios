@@ -36,16 +36,8 @@ public class XRatesKit {
 
 extension XRatesKit {
 
-    public func refresh() {
-        latestRateSyncManager.refresh()
-    }
-
-    public func set(coinTypes: [CoinType]) {
-        latestRateSyncManager.set(coinTypes: coinTypes)
-    }
-
-    public func set(currencyCode: String) {
-        latestRateSyncManager.set(currencyCode: currencyCode)
+    public func refresh(currencyCode: String) {
+        latestRateSyncManager.refresh(currencyCode: currencyCode)
     }
 
     public func latestRate(coinType: CoinType, currencyCode: String) -> LatestRate? {
@@ -53,15 +45,11 @@ extension XRatesKit {
     }
 
     public func latestRateObservable(coinType: CoinType, currencyCode: String) -> Observable<LatestRate> {
-        if latestRateSyncManager.syncing(coinType: coinType) {
-            return latestRateSyncManager.latestRateObservable(key: PairKey(coinType: coinType, currencyCode: currencyCode))
-        } else {
-            return latestRateManager.latestRateSingle(key: PairKey(coinType: coinType, currencyCode: currencyCode)).asObservable()
-        }
+        latestRateSyncManager.latestRateObservable(key: PairKey(coinType: coinType, currencyCode: currencyCode))
     }
 
-    public func latestRatesObservable(currencyCode: String) -> Observable<[CoinType: LatestRate]> {
-        latestRateSyncManager.latestRatesObservable(currencyCode: currencyCode)
+    public func latestRatesObservable(coinTypes: [CoinType], currencyCode: String) -> Observable<[CoinType: LatestRate]> {
+        latestRateSyncManager.latestRatesObservable(coinTypes: coinTypes, currencyCode: currencyCode)
     }
 
     public func historicalRate(coinType: CoinType, currencyCode: String, timestamp: TimeInterval) -> Decimal? {
@@ -143,11 +131,11 @@ extension XRatesKit {
         let cryptoCompareProvider = CryptoCompareProvider(providerCoinsManager: providerCoinsManager, networkManager: networkManager, apiKey: cryptoCompareApiKey, timeoutInterval: 10, expirationInterval: marketInfoExpirationInterval, topMarketsCount: topMarketsCount, indicatorPointCount: indicatorPointCount)
         let coinGeckoManager = CoinGeckoManager(coinInfoManager: coinInfoManager, provider: coinGeckoProvider)
 
-        let latestRatesManager = LatestRatesManager(storage: storage, provider: coinGeckoProvider, expirationInterval: marketInfoExpirationInterval)
+        let latestRatesManager = LatestRatesManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
         let globalMarketInfoManager = GlobalMarketInfoManager(globalMarketInfoProvider: coinPaprikaProvider, defiMarketCapProvider: horsysProvider, fiatXRatesProvider: cryptoCompareProvider, storage: storage)
 
         let latestRatesSchedulerFactory = LatestRatesSchedulerFactory(manager: latestRatesManager, provider: coinGeckoProvider, reachabilityManager: reachabilityManager, expirationInterval: marketInfoExpirationInterval, retryInterval: retryInterval, logger: logger)
-        let latestRatesSyncManager = LatestRatesSyncManager(currencyCode: currencyCode, schedulerFactory: latestRatesSchedulerFactory)
+        let latestRatesSyncManager = LatestRatesSyncManager(schedulerFactory: latestRatesSchedulerFactory)
         latestRatesManager.delegate = latestRatesSyncManager
 
         let historicalRateManager = HistoricalRateManager(storage: storage, provider: coinGeckoProvider)

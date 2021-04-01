@@ -2,37 +2,39 @@ import RxSwift
 import CoinKit
 
 class LatestRatesSchedulerProvider {
-    private var coinTypes: [CoinType]
-
     private let currencyCode: String
+
     private let manager: ILatestRatesManager
     private let provider: ILatestRatesProvider
+
+    weak var dataSource: ILatestRatesCoinTypeDataSource?
 
     let expirationInterval: TimeInterval
     let retryInterval: TimeInterval
 
-    init(coinTypes: [CoinType], currencyCode: String, manager: ILatestRatesManager, provider: ILatestRatesProvider, expirationInterval: TimeInterval, retryInterval: TimeInterval) {
-        self.coinTypes = coinTypes
-        self.currencyCode = currencyCode
+    init(manager: ILatestRatesManager, provider: ILatestRatesProvider, currencyCode: String, expirationInterval: TimeInterval, retryInterval: TimeInterval) {
         self.manager = manager
         self.provider = provider
+        self.currencyCode = currencyCode
         self.expirationInterval = expirationInterval
         self.retryInterval = retryInterval
     }
 
-    private func handle(updatedRecords: [LatestRateRecord]) {
-        coinTypes.removeAll { coinType in
-            !updatedRecords.contains { record in
-                record.key.coinType == coinType
-            }
-        }
+    private var coinTypes: [CoinType] {
+        dataSource?.coinTypes(currencyCode: currencyCode) ?? []
+    }
 
+    private func handle(updatedRecords: [LatestRateRecord]) {
         manager.handleUpdated(records: updatedRecords, currencyCode: currencyCode)
     }
 
 }
 
-extension LatestRatesSchedulerProvider: ILatestRatesSchedulerProvider {
+extension LatestRatesSchedulerProvider: ISchedulerProvider {
+
+    var id: String {
+        "LatestRateProvider"
+    }
 
     var lastSyncTimestamp: TimeInterval? {
         manager.lastSyncTimestamp(coinTypes: coinTypes, currencyCode: currencyCode)

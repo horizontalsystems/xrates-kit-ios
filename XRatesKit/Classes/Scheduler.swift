@@ -1,10 +1,10 @@
 import RxSwift
 import HsToolKit
 
-class LatestRatesScheduler {
-    private let bufferInterval: TimeInterval = 5
+class Scheduler {
+    private let bufferInterval: TimeInterval
 
-    private let provider: ILatestRatesSchedulerProvider
+    private let provider: ISchedulerProvider
     private let reachabilityManager: IReachabilityManager
     private var logger: Logger?
 
@@ -14,19 +14,25 @@ class LatestRatesScheduler {
     private var syncInProgress = false
     private var expirationNotified = false
 
-    init(provider: ILatestRatesSchedulerProvider, reachabilityManager: IReachabilityManager, logger: Logger? = nil) {
+    init(provider: ISchedulerProvider, reachabilityManager: IReachabilityManager, bufferInterval: TimeInterval = 0, logger: Logger? = nil) {
         self.provider = provider
         self.reachabilityManager = reachabilityManager
+        self.bufferInterval = bufferInterval
         self.logger = logger
 
         reachabilityManager.reachabilityObservable
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .utility))
                 .subscribe(onNext: { [weak self] reachable in
                     if reachable {
+                        print("reachable")
                         self?.autoSchedule()
                     }
                 })
                 .disposed(by: disposeBag)
+    }
+
+    deinit {
+        logger?.debug("Deinit Scheduler: \(provider.id)")
     }
 
     private func sync() {
@@ -34,11 +40,11 @@ class LatestRatesScheduler {
 
         // check if sync process is already running
         guard !syncInProgress else {
-            logger?.debug("MARKET INFO: Sync already running")
+            logger?.debug("Scheduler \(provider.id): Sync already running")
             return
         }
 
-        logger?.debug("MARKET INFO: Sync started")
+        logger?.debug("Scheduler \(provider.id): Sync started")
 
         syncInProgress = true
 
@@ -52,7 +58,7 @@ class LatestRatesScheduler {
     }
 
     private func onSyncSuccess() {
-        logger?.debug("MARKET INFO: Sync success")
+        logger?.debug("Scheduler \(provider.id): Sync success")
 
         expirationNotified = false
 
@@ -61,7 +67,7 @@ class LatestRatesScheduler {
     }
 
     private func onSyncError(error: Error) {
-        logger?.error("MARKET INFO: Sync error: \(error)")
+        logger?.error("Scheduler \(provider.id): Sync error: \(error)")
 
         syncInProgress = false
         schedule(delay: provider.retryInterval)
@@ -70,7 +76,7 @@ class LatestRatesScheduler {
     private func schedule(delay: TimeInterval) {
         let intDelay = Int(delay.rounded(.up))
 
-        logger?.debug("MARKET INFO: Schedule: delay: \(intDelay) sec")
+        logger?.debug("Scheduler \(provider.id): schedule delay: \(intDelay) sec")
 
         // invalidate previous timer if exists
         timerDisposable?.dispose()
@@ -95,7 +101,7 @@ class LatestRatesScheduler {
             return
         }
 
-        logger?.debug("MARKET INFO: Notifying expiration")
+        logger?.debug("Scheduler \(provider.id): Notifying expiration")
 
         provider.notifyExpired()
         expirationNotified = true
@@ -115,10 +121,10 @@ class LatestRatesScheduler {
 
 }
 
-extension LatestRatesScheduler: ILatestRatesScheduler {
+extension Scheduler: IScheduler {
 
     func schedule() {
-        logger?.debug("MARKET INFO: Auto schedule")
+        logger?.debug("Scheduler \(provider.id): Auto schedule")
 
         DispatchQueue.global(qos: .utility).async {
             self.autoSchedule()
@@ -126,7 +132,7 @@ extension LatestRatesScheduler: ILatestRatesScheduler {
     }
 
     func forceSchedule() {
-        logger?.debug("MARKET INFO: Force schedule")
+        logger?.debug("Scheduler \(provider.id): Force schedule")
 
         DispatchQueue.global(qos: .userInitiated).async {
             self.schedule(delay: 0)

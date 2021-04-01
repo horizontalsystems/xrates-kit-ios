@@ -73,7 +73,7 @@ extension ChartInfoManager: IChartInfoManager {
     }
 
     func handleUpdated(chartPoints: [ChartPoint], key: ChartInfoKey) {
-        var records = chartPoints.map {
+        let records = chartPoints.map {
             ChartPointRecord(key: key, chartPoint: $0)
         }
 

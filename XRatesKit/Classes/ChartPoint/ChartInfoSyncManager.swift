@@ -6,7 +6,7 @@ class ChartInfoSyncManager {
     private let marketInfoSyncManager: ILatestRateSyncManager
 
     private var subjects = [ChartInfoKey: PublishSubject<ChartInfo>]()
-    private var schedulers = [ChartInfoKey: ChartPointScheduler]()
+    private var schedulers = [ChartInfoKey: IScheduler]()
 
     private var failedKeys = [ChartInfoKey]()
 
@@ -28,7 +28,7 @@ class ChartInfoSyncManager {
         return subject
     }
 
-    private func scheduler(key: ChartInfoKey) -> ChartPointScheduler {
+    private func scheduler(key: ChartInfoKey) -> IScheduler {
         if let scheduler = schedulers[key] {
             return scheduler
         }

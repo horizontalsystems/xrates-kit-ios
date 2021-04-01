@@ -1,23 +1,27 @@
 import RxSwift
 import CoinKit
+import Foundation
 
-// Market Info
+// Latest Rate
 
 protocol ILatestRatesManager {
     func lastSyncTimestamp(coinTypes: [CoinType], currencyCode: String) -> TimeInterval?
     func latestRate(key: PairKey) -> LatestRate?
-    func latestRateSingle(key: PairKey) -> Single<LatestRate>
     func handleUpdated(records: [LatestRateRecord], currencyCode: String)
     func notifyExpired(coinTypes: [CoinType], currencyCode: String)
 }
 
 protocol ILatestRatesManagerDelegate: AnyObject {
-    func didUpdate(latestRate: LatestRate, key: PairKey)
+    var coinTypes: [String: [CoinType]] { get }
     func didUpdate(latestRates: [CoinType: LatestRate], currencyCode: String)
 }
 
 protocol ILatestRatesProvider: class {
     func latestRateRecords(coinTypes: [CoinType], currencyCode: String) -> Single<[LatestRateRecord]>
+}
+
+protocol ILatestRatesCoinTypeDataSource: AnyObject {
+    func coinTypes(currencyCode: String) -> [CoinType]
 }
 
 protocol ILatestRatesStorage {
@@ -27,20 +31,18 @@ protocol ILatestRatesStorage {
 }
 
 protocol ILatestRateSyncManager {
-    func set(coinTypes: [CoinType])
-    func set(currencyCode: String)
-    func refresh()
+    func refresh(currencyCode: String)
     func latestRateObservable(key: PairKey) -> Observable<LatestRate>
-    func latestRatesObservable(currencyCode: String) -> Observable<[CoinType: LatestRate]>
-    func syncing(coinType: CoinType) -> Bool
+    func latestRatesObservable(coinTypes: [CoinType], currencyCode: String) -> Observable<[CoinType: LatestRate]>
 }
 
-protocol ILatestRatesScheduler {
+protocol IScheduler {
     func schedule()
     func forceSchedule()
 }
 
-protocol ILatestRatesSchedulerProvider {
+protocol ISchedulerProvider {
+    var id: String { get }
     var lastSyncTimestamp: TimeInterval? { get }
     var expirationInterval: TimeInterval { get }
     var retryInterval: TimeInterval { get }
