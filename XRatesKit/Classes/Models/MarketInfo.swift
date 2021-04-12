@@ -13,12 +13,14 @@ public struct MarketInfo {
     public let timestamp: TimeInterval
     public let liquidity: Decimal
     public let marketCap: Decimal
+    public let athChangePercentage: Decimal?
+    public let atlChangePercentage: Decimal?
 
     private let expirationInterval: TimeInterval
 
     init(coinType: CoinType, currencyCode: String, rate: Decimal, rateOpenDay: Decimal, rateDiff: Decimal,
          volume: Decimal, supply: Decimal, rateDiffPeriod: Decimal, timestamp: TimeInterval,
-         liquidity: Decimal, marketCap: Decimal, expirationInterval: TimeInterval) {
+         liquidity: Decimal, marketCap: Decimal, athChangePercentage: Decimal?, atlChangePercentage: Decimal?, expirationInterval: TimeInterval) {
         self.coinType = coinType
         self.currencyCode = currencyCode
         self.rate = rate
@@ -30,6 +32,8 @@ public struct MarketInfo {
         self.timestamp = timestamp
         self.liquidity = liquidity
         self.marketCap = marketCap
+        self.athChangePercentage = athChangePercentage
+        self.atlChangePercentage = atlChangePercentage
 
         self.expirationInterval = expirationInterval
     }

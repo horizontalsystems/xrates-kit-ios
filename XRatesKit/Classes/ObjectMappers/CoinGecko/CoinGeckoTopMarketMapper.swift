@@ -34,7 +34,9 @@ class CoinGeckoTopMarketMapper: IApiMapper {
             let supply = Decimal(convertibleValue: tokenData["circulating_supply"]) ?? 0
             let volume = Decimal(convertibleValue: tokenData["total_volume"]) ?? 0
             let marketCap = Decimal(convertibleValue: tokenData["market_cap"]) ?? 0
-            
+            let athChangePercentage = Decimal(convertibleValue: tokenData["ath_change_percentage"])
+            let atlChangePercentage = Decimal(convertibleValue: tokenData["atl_change_percentage"])
+
             let priceDiffFieldName: String
             switch fetchDiffPeriod {
                 case .hour1: priceDiffFieldName = "price_change_percentage_1h_in_currency"
@@ -61,6 +63,8 @@ class CoinGeckoTopMarketMapper: IApiMapper {
                     timestamp: timestamp,
                     liquidity: 0,
                     marketCap: marketCap,
+                    athChangePercentage: athChangePercentage,
+                    atlChangePercentage: atlChangePercentage,
                     expirationInterval: expirationInterval
             )
 
