@@ -39,7 +39,6 @@ class LatestRatesSyncManager {
         if let subject = subjects[key], subject.hasObservers {
             return
         }
-        print("cleanUp(key: Key)")
         subjects[key] = nil
 
         if subjects.filter({ (subjectKey, _) in subjectKey.currencyCode == key.currencyCode }).isEmpty {
@@ -48,7 +47,6 @@ class LatestRatesSyncManager {
     }
 
     private func onDisposed(key: LatestRateKey) {
-        print("onDisposed(key: Key)")
         queue.async {
             self.cleanUp(key: key)
         }
@@ -143,7 +141,7 @@ extension LatestRatesSyncManager: ILatestRateSyncManager {
                         if let latestRate = dictionary[key.coinType] {
                             return Observable.just(latestRate)
                         }
-                        return Observable.error(LatestRatesManager.RateError.noRateReceived)
+                        return Observable.never()
                     }
         }
     }
