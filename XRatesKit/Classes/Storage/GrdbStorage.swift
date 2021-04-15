@@ -251,6 +251,7 @@ class GrdbStorage {
 
                 t.primaryKey([
                     GlobalCoinMarketPoint.Columns.timePeriod.name,
+                    GlobalCoinMarketPoint.Columns.timestamp.name,
                     GlobalCoinMarketPoint.Columns.currencyCode.name,
                 ], onConflict: .replace)
             }

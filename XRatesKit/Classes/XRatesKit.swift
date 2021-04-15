@@ -96,6 +96,10 @@ extension XRatesKit {
         globalMarketInfoManager.globalMarketInfo(currencyCode: currencyCode, timePeriod: timePeriod)
     }
 
+    public func globalMarketInfoPointsSingle(currencyCode: String, timePeriod: TimePeriod) -> Single<[GlobalCoinMarketPoint]> {
+        globalMarketInfoManager.globalMarketInfoPoints(currencyCode: currencyCode, timePeriod: timePeriod)
+    }
+
     public func search(text: String) -> [CoinData] {
         providerCoinsManager.search(text: text)
     }

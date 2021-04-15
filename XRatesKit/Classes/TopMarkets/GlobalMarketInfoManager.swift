@@ -16,12 +16,20 @@ class GlobalMarketInfoManager {
 extension GlobalMarketInfoManager {
 
     func globalMarketInfo(currencyCode: String, timePeriod: TimePeriod) -> Single<GlobalCoinMarket> {
+        globalMarketInfoPoints(currencyCode: currencyCode, timePeriod: timePeriod).map {
+            GlobalCoinMarket(currencyCode: currencyCode, points: $0)
+        }
+    }
+
+    func globalMarketInfoPoints(currencyCode: String, timePeriod: TimePeriod) -> Single<[GlobalCoinMarketPoint]> {
         let currentTimestamp = Date().timeIntervalSince1970
 
         if let stored = storage.globalMarketPointInfo(currencyCode: currencyCode, timePeriod: timePeriod),
            (currentTimestamp - stored.timestamp) < dataLifetimeSeconds {
 
-            return Single.just(GlobalCoinMarket(currencyCode: currencyCode, points: stored.points))
+            return Single.just(stored.points)
+        } else {
+            storage.deleteGlobalMarketInfo(currencyCode: currencyCode, timePeriod: timePeriod)
         }
 
         return globalMarketInfoProvider
@@ -36,7 +44,7 @@ extension GlobalMarketInfoManager {
 
                 self?.storage.saveGlobalMarketInfo(info: globalMarketInfo)
 
-                return GlobalCoinMarket(currencyCode: currencyCode, points: points)
+                return points
             }
     }
 
