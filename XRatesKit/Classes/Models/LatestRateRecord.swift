@@ -1,6 +1,42 @@
 import GRDB
 import CoinKit
 
+import ObjectMapper
+
+struct ResponseMarketInfo: ImmutableMappable {
+    let timestamp: TimeInterval
+    let rate: Decimal
+    let openDay: Decimal
+    let diff: Decimal
+    let volume: Decimal
+    let marketCap: Decimal
+    let supply: Decimal
+    let liquidity: Decimal
+    let rateDiffPeriod: Decimal
+
+    init(map: Map) throws {
+        timestamp = try map.value("LASTUPDATE")
+        rate = try map.value("PRICE", using: ResponseMarketInfo.decimalTransform)
+        openDay = try map.value("OPENDAY", using: ResponseMarketInfo.decimalTransform)
+        diff = try map.value("CHANGEPCTDAY", using: ResponseMarketInfo.decimalTransform)
+        volume = try map.value("VOLUME24HOURTO", using: ResponseMarketInfo.decimalTransform)
+        marketCap = try map.value("MKTCAP", using: ResponseMarketInfo.decimalTransform)
+        supply = try map.value("SUPPLY", using: ResponseMarketInfo.decimalTransform)
+
+        liquidity = 0
+        rateDiffPeriod = 0
+    }
+
+    private static let decimalTransform: TransformOf<Decimal, Double> = TransformOf(fromJSON: { double -> Decimal? in
+        guard let double = double else {
+            return nil
+        }
+
+        return Decimal(string: "\(double)")
+    }, toJSON: { _ in nil })
+
+}
+
 class LatestRateRecord: Record {
     let coinType: CoinType
     let currencyCode: String

@@ -2,28 +2,46 @@ import RxSwift
 import HsToolKit
 import Alamofire
 
-fileprivate class HorsysDefiMarketCapMapper: IApiMapper {
+fileprivate class GlobalCoinMarketPointMapper: IApiMapper {
+    typealias T = [GlobalCoinMarketPoint]
 
-    func map(statusCode: Int, data: Any?) throws -> DefiMarketInfo {
-        guard let dictionary = data as? [String: Any] else {
+    private let timePeriod: TimePeriod
+
+    init(timePeriod: TimePeriod) {
+        self.timePeriod = timePeriod
+    }
+
+    func map(statusCode: Int, data: Any?) throws -> T {
+        guard let array = data as? [[String: Any]] else {
             throw NetworkManager.RequestError.invalidResponse(statusCode: statusCode, data: data)
         }
 
-        let defiMarketCap = Decimal(convertibleValue: dictionary["marketCap"]) ?? 0
-        let defiMarketCapDiff24h = Decimal(convertibleValue: dictionary["marketCapDiff24h"]) ?? 0
-        let defiTvl = Decimal(convertibleValue: dictionary["totalValueLocked"]) ?? 0
-        let defiTvlDiff24h = Decimal(convertibleValue: dictionary["totalValueLockedDiff24h"]) ?? 0
+        return array.compactMap { point in
+            guard let currencyCode = point["currency_code"] as? String,
+                  let timestamp = point["current_price"] as? Double else {
 
-        return DefiMarketInfo(
-                defiMarketCap: defiMarketCap,
-                defiMarketCapDiff24h: defiMarketCapDiff24h,
-                defiTvl: defiTvl,
-                defiTvlDiff24h: defiTvlDiff24h
-        )
+                return nil
+            }
+
+            let volume24h = Decimal(convertibleValue: point["current_price"]) ?? 0
+            let marketCap = Decimal(convertibleValue: point["current_price"]) ?? 0
+            let dominanceBtc = Decimal(convertibleValue: point["current_price"]) ?? 0
+            let marketCapDefi = Decimal(convertibleValue: point["current_price"]) ?? 0
+            let tvl = Decimal(convertibleValue: point["current_price"]) ?? 0
+
+            return GlobalCoinMarketPoint(
+                    currencyCode: currencyCode,
+                    timePeriod: timePeriod,
+                    timestamp: timestamp,
+                    volume24h: volume24h,
+                    marketCap: marketCap,
+                    dominanceBtc: dominanceBtc,
+                    marketCapDefi: marketCapDefi,
+                    tvl: tvl)
+        }
     }
 
 }
-
 
 class HorsysProvider {
 
@@ -34,15 +52,35 @@ class HorsysProvider {
         self.networkManager = networkManager
     }
 
+    private func isSupportedPeriod(timePeriod: TimePeriod) -> Bool {
+        switch timePeriod {
+        case .all, .dayStart,.year1, .day200: return false
+        default: return false
+        }
+    }
+
+}
+
+extension HorsysProvider: IGlobalCoinMarketProvider {
+
+    func globalCoinMarketPoints(currencyCode: String, timePeriod: TimePeriod) -> Single<[GlobalCoinMarketPoint]> {
+        guard isSupportedPeriod(timePeriod: timePeriod) else {
+            return Single.error(GlobalCoinMarketError.unsupportedPeriod)
+        }
+
+        let url = "\(provider.baseUrl)/markets/global/\(timePeriod.title)?currency_code=\(currencyCode)"
+        let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
+
+        let mapper = GlobalCoinMarketPointMapper(timePeriod: timePeriod)
+        return networkManager.single(request: request, mapper: mapper)
+    }
+
 }
 
 extension HorsysProvider {
 
-    func globalDefiMarketCap() -> Single<DefiMarketInfo> {
-        let url = "\(provider.baseUrl)/markets/global/defi"
-        let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
-
-        return networkManager.single(request: request, mapper: HorsysDefiMarketCapMapper())
+    enum GlobalCoinMarketError: Error {
+        case unsupportedPeriod
     }
 
 }

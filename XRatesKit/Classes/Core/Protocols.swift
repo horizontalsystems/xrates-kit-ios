@@ -69,8 +69,8 @@ protocol ITopMarketsManagerDelegate: AnyObject {
 
 // Global Info
 
-protocol IGlobalMarketInfoProvider {
-    func globalCoinMarketsInfo(currencyCode: String) -> Single<GlobalCoinMarket>
+protocol IGlobalCoinMarketProvider {
+    func globalCoinMarketPoints(currencyCode: String, timePeriod: TimePeriod) -> Single<[GlobalCoinMarketPoint]>
 }
 
 // Historical Rates
@@ -90,8 +90,8 @@ protocol IHistoricalRateStorage {
 }
 
 protocol IGlobalMarketInfoStorage {
-    func save(globalMarketInfo: GlobalCoinMarket)
-    func globalMarketInfo(currencyCode: String) -> GlobalCoinMarket?
+    func save(globalMarketInfo: GlobalCoinMarketPoint)
+    func globalMarketInfo(currencyCode: String) -> GlobalCoinMarketPoint?
 }
 
 // Chart Points
@@ -137,7 +137,7 @@ protocol IChartPointSchedulerProvider {
 // News Posts
 
 protocol INewsProvider {
-    func newsSingle(latestTimestamp: TimeInterval?) -> Single<CryptoCompareNewsResponse>
+    func newsSingle(latestTimestamp: TimeInterval?) -> Single<Int>
 }
 
 protocol INewsManager {
@@ -183,4 +183,10 @@ protocol IProviderCoinsStorage {
     func find(text: String) -> [CoinData]
     func clearPriorities()
     func set(priority: Int, forCoin: CoinType)
+}
+
+protocol IGlobalMarketPointInfoStorage {
+    func globalMarketPointInfo(currencyCode: String, timePeriod: TimePeriod) -> GlobalCoinMarketInfo?
+    func deleteGlobalMarketInfo(currencyCode: String, timePeriod: TimePeriod)
+    func saveGlobalMarketInfo(info: GlobalCoinMarketInfo)
 }

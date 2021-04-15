@@ -207,3 +207,12 @@ extension CoinGeckoProvider: IHistoricalRateProvider {
     }
 
 }
+
+extension CoinGeckoProvider {
+
+    enum RequestError: Error {
+        case rateLimitExceeded
+        case noDataForSymbol
+    }
+
+}

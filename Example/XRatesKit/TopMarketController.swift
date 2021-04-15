@@ -158,7 +158,7 @@ class TopMarketController: UIViewController {
     private func reloadGlobalMarketInfo() {
         globalMarketDisposable?.dispose()
 
-        globalMarketDisposable = xRatesKit.globalMarketInfoSingle(currencyCode: currencyCode)
+        globalMarketDisposable = xRatesKit.globalMarketInfoSingle(currencyCode: currencyCode, timePeriod: .hour24)
                 .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
                 .observeOn(MainScheduler.instance)
                 .subscribe(onSuccess: { [weak self] globalInfo in
