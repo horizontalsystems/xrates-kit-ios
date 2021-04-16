@@ -69,21 +69,21 @@ class GrdbStorage {
         }
 
         migrator.registerMigration("createGlobalMarketInfo") { db in
-            try db.create(table: GlobalCoinMarket.databaseTableName) { t in
-                t.column(GlobalCoinMarket.Columns.currencyCode.name, .text).notNull()
-                t.column(GlobalCoinMarket.Columns.volume24h.name, .text).notNull()
-                t.column(GlobalCoinMarket.Columns.volume24hDiff24h.name, .text).notNull()
-                t.column(GlobalCoinMarket.Columns.marketCap.name, .text).notNull()
-                t.column(GlobalCoinMarket.Columns.marketCapDiff24h.name, .text).notNull()
-                t.column(GlobalCoinMarket.Columns.btcDominance.name, .text).notNull()
-                t.column(GlobalCoinMarket.Columns.btcDominanceDiff24h.name, .text).notNull()
-                t.column(GlobalCoinMarket.Columns.defiMarketCap.name, .text).notNull()
-                t.column(GlobalCoinMarket.Columns.defiMarketCapDiff24h.name, .text).notNull()
-                t.column(GlobalCoinMarket.Columns.defiTvl.name, .text).notNull()
-                t.column(GlobalCoinMarket.Columns.defiTvlDiff24h.name, .text).notNull()
+            try db.create(table: GlobalCoinMarketRecord.databaseTableName) { t in
+                t.column(GlobalCoinMarketRecord.Columns.currencyCode.name, .text).notNull()
+                t.column(GlobalCoinMarketRecord.Columns.volume24h.name, .text).notNull()
+                t.column(GlobalCoinMarketRecord.Columns.volume24hDiff24h.name, .text).notNull()
+                t.column(GlobalCoinMarketRecord.Columns.marketCap.name, .text).notNull()
+                t.column(GlobalCoinMarketRecord.Columns.marketCapDiff24h.name, .text).notNull()
+                t.column(GlobalCoinMarketRecord.Columns.btcDominance.name, .text).notNull()
+                t.column(GlobalCoinMarketRecord.Columns.btcDominanceDiff24h.name, .text).notNull()
+                t.column(GlobalCoinMarketRecord.Columns.defiMarketCap.name, .text).notNull()
+                t.column(GlobalCoinMarketRecord.Columns.defiMarketCapDiff24h.name, .text).notNull()
+                t.column(GlobalCoinMarketRecord.Columns.defiTvl.name, .text).notNull()
+                t.column(GlobalCoinMarketRecord.Columns.defiTvlDiff24h.name, .text).notNull()
 
                 t.primaryKey([
-                    GlobalCoinMarket.Columns.currencyCode.name
+                    GlobalCoinMarketRecord.Columns.currencyCode.name
                 ], onConflict: .replace)
             }
         }
@@ -238,6 +238,38 @@ class GrdbStorage {
             }
         }
 
+        migrator.registerMigration("createGlobalCoinMarketPoints") { db in
+            try db.create(table: GlobalCoinMarketPoint.databaseTableName) { t in
+                t.column(GlobalCoinMarketPoint.Columns.currencyCode.name, .text).notNull()
+                t.column(GlobalCoinMarketPoint.Columns.timePeriod.name, .text).notNull()
+                t.column(GlobalCoinMarketPoint.Columns.timestamp.name, .double).notNull()
+                t.column(GlobalCoinMarketPoint.Columns.volume24h.name, .text).notNull()
+                t.column(GlobalCoinMarketPoint.Columns.marketCap.name, .text).notNull()
+                t.column(GlobalCoinMarketPoint.Columns.dominanceBtc.name, .text).notNull()
+                t.column(GlobalCoinMarketPoint.Columns.marketCapDefi.name, .text).notNull()
+                t.column(GlobalCoinMarketPoint.Columns.tvl.name, .text).notNull()
+
+                t.primaryKey([
+                    GlobalCoinMarketPoint.Columns.timePeriod.name,
+                    GlobalCoinMarketPoint.Columns.timestamp.name,
+                    GlobalCoinMarketPoint.Columns.currencyCode.name,
+                ], onConflict: .replace)
+            }
+        }
+
+        migrator.registerMigration("createGlobalCoinMarketInfos") { db in
+            try db.create(table: GlobalCoinMarketPointInfoRecord.databaseTableName) { t in
+                t.column(GlobalCoinMarketPointInfoRecord.Columns.currencyCode.name, .text).notNull()
+                t.column(GlobalCoinMarketPointInfoRecord.Columns.timePeriod.name, .text).notNull()
+                t.column(GlobalCoinMarketPointInfoRecord.Columns.timestamp.name, .double).notNull()
+
+                t.primaryKey([
+                    GlobalCoinMarketPointInfoRecord.Columns.timePeriod.name,
+                    GlobalCoinMarketPointInfoRecord.Columns.currencyCode.name,
+                ], onConflict: .replace)
+            }
+        }
+
         return migrator
     }
 
@@ -366,18 +398,19 @@ extension GrdbStorage: IChartPointStorage {
 
 extension GrdbStorage: IGlobalMarketInfoStorage {
 
-    func save(globalMarketInfo: GlobalCoinMarket) {
+    func save(globalMarketInfo: GlobalCoinMarketPoint) {
         _ = try! dbPool.write { db in
             try globalMarketInfo.insert(db)
         }
     }
 
-    func globalMarketInfo(currencyCode: String) -> GlobalCoinMarket? {
-        try! dbPool.read { db in
-            try GlobalCoinMarket
-                .filter(GlobalCoinMarket.Columns.currencyCode == currencyCode)
-                .fetchOne(db)
-        }
+    func globalMarketInfo(currencyCode: String) -> GlobalCoinMarketPoint? {
+        nil
+//        try! dbPool.read { db in
+//            try GlobalCoinMarketRecord
+//                .filter(GlobalCoinMarketRecord.Columns.currencyCode == currencyCode)
+//                .fetchOne(db)
+//        }
     }
 
 }
@@ -545,7 +578,6 @@ extension GrdbStorage: IProviderCoinsStorage {
 
             switch provider {
             case .CoinGecko: return record.coingeckoId.map { ProviderCoinData(providerId: $0, code: record.code, name: record.name) }
-            case .CryptoCompare: return record.cryptocompareId.map { ProviderCoinData(providerId: $0, code: record.code, name: record.name) }
             default: return nil
             }
         }
@@ -557,7 +589,6 @@ extension GrdbStorage: IProviderCoinsStorage {
 
             switch provider {
             case .CoinGecko: return record?.coingeckoId
-            case .CryptoCompare: return record?.cryptocompareId
             default: return nil
             }
         }
@@ -569,7 +600,6 @@ extension GrdbStorage: IProviderCoinsStorage {
 
             switch provider {
             case .CoinGecko: filter = ProviderCoinRecord.Columns.coingeckoId == providerId
-            case .CryptoCompare: filter = ProviderCoinRecord.Columns.cryptocompareId == providerId
             default: return []
             }
 
@@ -604,6 +634,55 @@ extension GrdbStorage: IProviderCoinsStorage {
                     sql: "UPDATE \(ProviderCoinRecord.databaseTableName) SET \(ProviderCoinRecord.Columns.priority.name) = :priority WHERE id = :id",
                     arguments: ["priority": priority, "id": coin.id]
             )
+        }
+    }
+
+}
+
+extension GrdbStorage: IGlobalMarketPointInfoStorage {
+
+    func globalMarketPointInfo(currencyCode: String, timePeriod: TimePeriod) -> GlobalCoinMarketInfo? {
+        try! dbPool.read { db in
+            guard let pointInfo = try GlobalCoinMarketPointInfoRecord
+                    .filter(GlobalCoinMarketPointInfoRecord.Columns.currencyCode == currencyCode && GlobalCoinMarketPointInfoRecord.Columns.timePeriod == timePeriod.title)
+                    .fetchOne(db) else {
+                return nil
+            }
+
+            let points = try GlobalCoinMarketPoint
+                .filter(GlobalCoinMarketPoint.Columns.currencyCode == currencyCode && GlobalCoinMarketPoint.Columns.timePeriod == timePeriod.title)
+                .fetchAll(db)
+
+            return GlobalCoinMarketInfo(currencyCode: currencyCode,
+                    timestamp: pointInfo.timestamp,
+                    timePeriod: timePeriod,
+                    points: points)
+        }
+    }
+
+    func deleteGlobalMarketInfo(currencyCode: String, timePeriod: TimePeriod) {
+        _ = try! dbPool.write { db in
+            try GlobalCoinMarketPointInfoRecord
+                    .filter(GlobalCoinMarketPointInfoRecord.Columns.currencyCode == currencyCode && GlobalCoinMarketPointInfoRecord.Columns.timePeriod == timePeriod.title)
+                    .deleteAll(db)
+
+            try GlobalCoinMarketPoint
+                    .filter(GlobalCoinMarketPoint.Columns.currencyCode == currencyCode && GlobalCoinMarketPoint.Columns.timePeriod == timePeriod.title)
+                    .deleteAll(db)
+        }
+    }
+
+    func saveGlobalMarketInfo(info: GlobalCoinMarketInfo) {
+        _ = try! dbPool.write { db in
+            try info.points.forEach { point in
+                try point.save(db)
+            }
+
+            try GlobalCoinMarketPointInfoRecord(
+                    currencyCode: info.currencyCode,
+                    timestamp: info.timestamp,
+                    timePeriod: info.timePeriod)
+                .save(db)
         }
     }
 

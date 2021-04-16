@@ -1,7 +1,7 @@
 import Foundation
 import GRDB
 
-public class GlobalCoinMarket: Record {
+public class GlobalCoinMarketRecord: Record {
     public let currencyCode: String
     public let volume24h: Decimal
     public let volume24hDiff24h: Decimal
@@ -70,7 +70,7 @@ public class GlobalCoinMarket: Record {
 
 }
 
-extension GlobalCoinMarket: CustomStringConvertible {
+extension GlobalCoinMarketPoint: CustomStringConvertible {
 
     public var description: String {
         "GlobalMarketInfo [currencyCode: \(currencyCode); volume24h: \(volume24h); marketCap: \(marketCap)]"
@@ -78,10 +78,10 @@ extension GlobalCoinMarket: CustomStringConvertible {
 
 }
 
-extension GlobalCoinMarket: Equatable {
+extension GlobalCoinMarketPoint: Equatable {
 
-    public static func ==(lhs: GlobalCoinMarket, rhs: GlobalCoinMarket) -> Bool {
-        lhs.currencyCode == rhs.currencyCode
+    public static func ==(lhs: GlobalCoinMarketPoint, rhs: GlobalCoinMarketPoint) -> Bool {
+        lhs.currencyCode == rhs.currencyCode && lhs.timestamp == rhs.timestamp
     }
 
 }

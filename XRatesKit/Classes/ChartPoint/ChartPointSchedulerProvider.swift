@@ -43,7 +43,7 @@ extension ChartPointSchedulerProvider: ISchedulerProvider {
                 .do(onSuccess: { [weak self] chartPoints in
                     self?.handleUpdated(chartPoints: chartPoints)
                 }, onError: { [weak self] error in
-                    if case CryptoCompareProvider.RequestError.noDataForSymbol = error {
+                    if case CoinGeckoProvider.RequestError.noDataForSymbol = error {
                         self?.handleNoChartPoints()
                     }
                 })
