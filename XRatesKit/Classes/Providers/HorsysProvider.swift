@@ -18,16 +18,16 @@ fileprivate class GlobalCoinMarketPointMapper: IApiMapper {
 
         return array.compactMap { point in
             guard let currencyCode = point["currency_code"] as? String,
-                  let timestamp = point["current_price"] as? Double else {
+                  let timestamp = point["timestamp"] as? Double else {
 
                 return nil
             }
 
-            let volume24h = Decimal(convertibleValue: point["current_price"]) ?? 0
-            let marketCap = Decimal(convertibleValue: point["current_price"]) ?? 0
-            let dominanceBtc = Decimal(convertibleValue: point["current_price"]) ?? 0
-            let marketCapDefi = Decimal(convertibleValue: point["current_price"]) ?? 0
-            let tvl = Decimal(convertibleValue: point["current_price"]) ?? 0
+            let volume24h = Decimal(convertibleValue: point["volume24h"]) ?? 0
+            let marketCap = Decimal(convertibleValue: point["market_cap"]) ?? 0
+            let dominanceBtc = Decimal(convertibleValue: point["dominance_btc"]) ?? 0
+            let marketCapDefi = Decimal(convertibleValue: point["market_cap_defi"]) ?? 0
+            let tvl = Decimal(convertibleValue: point["tvl"]) ?? 0
 
             return GlobalCoinMarketPoint(
                     currencyCode: currencyCode,
@@ -55,7 +55,7 @@ class HorsysProvider {
     private func isSupportedPeriod(timePeriod: TimePeriod) -> Bool {
         switch timePeriod {
         case .all, .dayStart,.year1, .day200: return false
-        default: return false
+        default: return true
         }
     }
 

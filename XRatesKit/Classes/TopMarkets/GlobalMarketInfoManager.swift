@@ -24,11 +24,11 @@ extension GlobalMarketInfoManager {
     func globalMarketInfoPoints(currencyCode: String, timePeriod: TimePeriod) -> Single<[GlobalCoinMarketPoint]> {
         let currentTimestamp = Date().timeIntervalSince1970
 
-        if let stored = storage.globalMarketPointInfo(currencyCode: currencyCode, timePeriod: timePeriod),
-           (currentTimestamp - stored.timestamp) < dataLifetimeSeconds {
+        if let stored = storage.globalMarketPointInfo(currencyCode: currencyCode, timePeriod: timePeriod) {
+            if (currentTimestamp - stored.timestamp) < dataLifetimeSeconds {
+                return Single.just(stored.points)
+            }
 
-            return Single.just(stored.points)
-        } else {
             storage.deleteGlobalMarketInfo(currencyCode: currencyCode, timePeriod: timePeriod)
         }
 
