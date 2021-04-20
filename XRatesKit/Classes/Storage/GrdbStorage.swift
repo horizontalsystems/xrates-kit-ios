@@ -577,7 +577,7 @@ extension GrdbStorage: IProviderCoinsStorage {
             }
 
             switch provider {
-            case .CoinGecko: return record.coingeckoId.map { ProviderCoinData(providerId: $0, code: record.code, name: record.name) }
+            case .coinGecko: return record.coingeckoId.map { ProviderCoinData(providerId: $0, code: record.code, name: record.name) }
             default: return nil
             }
         }
@@ -588,7 +588,7 @@ extension GrdbStorage: IProviderCoinsStorage {
             let record = try ProviderCoinRecord.filter(ProviderCoinRecord.Columns.id == id).fetchAll(db).first
 
             switch provider {
-            case .CoinGecko: return record?.coingeckoId
+            case .coinGecko: return record?.coingeckoId
             default: return nil
             }
         }
@@ -599,7 +599,7 @@ extension GrdbStorage: IProviderCoinsStorage {
             let filter: SQLExpressible
 
             switch provider {
-            case .CoinGecko: filter = ProviderCoinRecord.Columns.coingeckoId == providerId
+            case .coinGecko: filter = ProviderCoinRecord.Columns.coingeckoId == providerId
             default: return []
             }
 
