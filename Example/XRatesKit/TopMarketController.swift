@@ -24,7 +24,7 @@ class TopMarketController: UIViewController {
     private let defiMarketCapLabel = UILabel()
     private let defiTvl = UILabel()
 
-    private let segmentedView = UISegmentedControl(items: ["Overview", "Favorites"])
+    private let segmentedView = UISegmentedControl(items: ["Overview", "DeFi", "Favorites"])
     private let tableView = UITableView(frame: .zero, style: .plain)
     private let headerView = NewsHeaderView()
 
@@ -182,6 +182,7 @@ class TopMarketController: UIViewController {
 
         switch segmentedView.selectedSegmentIndex {
         case 0: single = xRatesKit.topMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: period, itemsCount: 50)
+        case 1: single = xRatesKit.topDefiMarkets(currencyCode: currencyCode, fetchDiffPeriod: period, itemsCount: 50)
         default: single = xRatesKit.favorites(currencyCode: currencyCode, fetchDiffPeriod: period, coinTypes: favoriteCoinTypes)
         }
 

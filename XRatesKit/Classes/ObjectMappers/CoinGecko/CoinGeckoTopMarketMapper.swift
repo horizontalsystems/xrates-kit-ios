@@ -25,7 +25,7 @@ class CoinGeckoTopMarketMapper: IApiMapper {
             guard let coinCode = tokenData["symbol"] as? String,
                   let coinTitle = tokenData["name"] as? String,
                   let externalId = tokenData["id"] as? String,
-                  let coinType = providerCoinManager.coinTypes(providerId: externalId, provider: .CoinGecko).first else {
+                  let coinType = providerCoinManager.coinTypes(providerId: externalId, provider: .coinGecko).first else {
                 
                 return nil
             }

@@ -6,7 +6,7 @@ import CoinKit
 
 class CoinGeckoProvider {
     private let disposeBag = DisposeBag()
-    private let provider = InfoProvider.CoinGecko
+    private let provider = InfoProvider.coinGecko
 
     private let providerCoinsManager: ProviderCoinsManager
     private let networkManager: ProviderNetworkManager
@@ -20,14 +20,20 @@ class CoinGeckoProvider {
         networkManager = ProviderNetworkManager(requestInterval: provider.requestInterval, logger: logger)
     }
 
-    private func marketsRequest(currencyCode: String, fetchDiffPeriod: TimePeriod, pageParams: String = "", coinIdsParams: String = "") -> DataRequest {
+    private func marketsRequest(currencyCode: String, fetchDiffPeriod: TimePeriod, category: String? = nil, pageParams: String = "", coinIdsParams: String = "") -> DataRequest {
         let priceChangePercentage: String
         switch fetchDiffPeriod {
         case .hour24, .dayStart: priceChangePercentage = ""
         default: priceChangePercentage = "&price_change_percentage=\(fetchDiffPeriod.title)"
         }
 
-        let url = "\(provider.baseUrl)/coins/markets?\(coinIdsParams)&vs_currency=\(currencyCode)\(priceChangePercentage)&order=market_cap_desc\(pageParams)"
+        var categoryParam = ""
+        if let category = category {
+            categoryParam = "&category=\(category)"
+        }
+
+        let url = "\(provider.baseUrl)/coins/markets?\(coinIdsParams)&vs_currency=\(currencyCode)\(priceChangePercentage)\(categoryParam)&order=market_cap_desc\(pageParams)"
+        print(url)
         return networkManager.session.request(url, method: .get, encoding: JSONEncoding())
     }
 
@@ -44,7 +50,7 @@ extension CoinGeckoProvider {
     }
 
     func coinMarketInfoSingle(coinType: CoinType, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinGeckoCoinMarketInfoMapper.CoinGeckoCoinInfoResponse> {
-        guard let externalId = providerCoinsManager.providerId(coinType: coinType, provider: .CoinGecko) else {
+        guard let externalId = providerCoinsManager.providerId(coinType: coinType, provider: .coinGecko) else {
             return Single.error(ProviderCoinsManager.ExternalIdError.noMatchingCoinId)
         }
 
@@ -55,12 +61,16 @@ extension CoinGeckoProvider {
         return networkManager.single(request: request, mapper: mapper)
     }
 
-    func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int, page: Int = 1) -> Single<[CoinMarket]> {
+    private func category(defiFilter: Bool) -> String? {
+        defiFilter ? "decentralized_finance_defi" : nil
+    }
+
+    func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int, page: Int = 1, defiFilter: Bool) -> Single<[CoinMarket]> {
         let expectedItemsCount = min(coinsPerPage, itemCount)
         let perPage = page > 1 ? coinsPerPage : min(coinsPerPage, itemCount)
         let pageParams = "&per_page=\(perPage)&page=\(page)"
 
-        let request = marketsRequest(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, pageParams: pageParams)
+        let request = marketsRequest(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, category: category(defiFilter: defiFilter), pageParams: pageParams)
         let mapper = CoinGeckoTopMarketMapper(providerCoinManager: providerCoinsManager, currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, expirationInterval: expirationInterval)
 
         return networkManager.single(request: request, mapper: mapper)
@@ -80,16 +90,16 @@ extension CoinGeckoProvider {
                     nextItemCount = nextItemCount - provider.coinsPerPage
 
                     return provider
-                            .topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: nextItemCount, page: page + 1)
+                            .topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: nextItemCount, page: page + 1, defiFilter: defiFilter)
                             .map { nextCoinMarkets -> [CoinMarket] in coinMarkets + nextCoinMarkets }
                 }
     }
 
-    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coinTypes: [CoinType]) -> Single<[CoinMarket]> {
-        let externalIds = coinTypes.compactMap { providerCoinsManager.providerId(coinType: $0, provider: .CoinGecko) }
+    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coinTypes: [CoinType], defiFilter: Bool) -> Single<[CoinMarket]> {
+        let externalIds = coinTypes.compactMap { providerCoinsManager.providerId(coinType: $0, provider: .coinGecko) }
         let coinIdParams = externalIds.isEmpty ? "" : "&ids=\(externalIds.joined(separator: ","))"
 
-        let request = marketsRequest(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, coinIdsParams: coinIdParams)
+        let request = marketsRequest(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, category: category(defiFilter: defiFilter), coinIdsParams: coinIdParams)
         let mapper = CoinGeckoTopMarketMapper(providerCoinManager: providerCoinsManager, currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, expirationInterval: expirationInterval)
 
         return networkManager.single(request: request, mapper: mapper)
@@ -100,7 +110,7 @@ extension CoinGeckoProvider {
 extension CoinGeckoProvider: IChartPointProvider {
 
     func chartPointsSingle(key: ChartInfoKey) -> Single<[ChartPoint]> {
-        guard let externalId = providerCoinsManager.providerId(coinType: key.coinType, provider: .CoinGecko) else {
+        guard let externalId = providerCoinsManager.providerId(coinType: key.coinType, provider: .coinGecko) else {
             return Single.error(ProviderCoinsManager.ExternalIdError.noMatchingCoinId)
         }
 
@@ -140,7 +150,7 @@ extension CoinGeckoProvider: ILatestRatesProvider {
     func latestRateRecords(coinTypes: [CoinType], currencyCode: String) -> Single<[LatestRateRecord]> {
         var coinTypesMap = [String: [CoinType]]()
         for coinType in coinTypes {
-            if let providerCoinId = providerCoinsManager.providerId(coinType: coinType, provider: .CoinGecko) {
+            if let providerCoinId = providerCoinsManager.providerId(coinType: coinType, provider: .coinGecko) {
                 if coinTypesMap[providerCoinId] == nil {
                     coinTypesMap[providerCoinId] = [coinType]
                 } else {
@@ -165,7 +175,7 @@ extension CoinGeckoProvider: ILatestRatesProvider {
 extension CoinGeckoProvider: IHistoricalRateProvider {
 
     func getHistoricalRate(coinType: CoinType, currencyCode: String, timestamp: TimeInterval) -> Single<Decimal> {
-        guard let externalId = providerCoinsManager.providerId(coinType: coinType, provider: .CoinGecko) else {
+        guard let externalId = providerCoinsManager.providerId(coinType: coinType, provider: .coinGecko) else {
             return Single.error(ProviderCoinsManager.ExternalIdError.noMatchingCoinId)
         }
 

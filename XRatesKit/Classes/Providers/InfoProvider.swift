@@ -5,20 +5,20 @@ protocol IInfoProvider {
 }
 
 enum InfoProvider: String {
-    case CoinGecko
-    case Horsys
+    case coinGecko
+    case horsys
 
     var baseUrl: String {
         switch self {
-        case .CoinGecko: return "https://api.coingecko.com/api/v3"
-        case .Horsys: return "https://markets.horizontalsystems.xyz/api/v1/"
+        case .coinGecko: return "https://api.coingecko.com/api/v3"
+        case .horsys: return "https://markets.horizontalsystems.xyz/api/v1/"
         }
     }
 
     var requestInterval: TimeInterval {
         switch self {
-        case .CoinGecko: return 0.6
-        case .Horsys: return 0.15
+        case .coinGecko: return 0.6
+        case .horsys: return 0.15
         }
     }
 

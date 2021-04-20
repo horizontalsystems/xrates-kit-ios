@@ -2,14 +2,14 @@ import Foundation
 import GRDB
 
 public class GlobalCoinMarketPoint: Record {
-    let currencyCode: String
-    let timePeriod: TimePeriod
-    let timestamp: TimeInterval
-    var volume24h: Decimal
-    var marketCap: Decimal
-    var dominanceBtc: Decimal = 0
-    var marketCapDefi: Decimal = 0
-    var tvl: Decimal = 0
+    public let currencyCode: String
+    public let timePeriod: TimePeriod
+    public let timestamp: TimeInterval
+    public var volume24h: Decimal
+    public var marketCap: Decimal
+    public var dominanceBtc: Decimal = 0
+    public var marketCapDefi: Decimal = 0
+    public var tvl: Decimal = 0
 
     init(currencyCode: String, timePeriod: TimePeriod, timestamp: TimeInterval, volume24h: Decimal, marketCap: Decimal, dominanceBtc: Decimal, marketCapDefi: Decimal = 0, tvl: Decimal = 0) {
         self.currencyCode = currencyCode

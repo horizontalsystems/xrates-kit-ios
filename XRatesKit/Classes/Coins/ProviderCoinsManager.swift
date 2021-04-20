@@ -100,7 +100,7 @@ extension ProviderCoinsManager {
             return
         }
 
-        provider?.topCoinMarketsSingle(currencyCode: "USD", fetchDiffPeriod: .hour24, itemCount: 400)
+        provider?.topCoinMarketsSingle(currencyCode: "USD", fetchDiffPeriod: .hour24, itemCount: 400, defiFilter: false)
                 .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
                 .subscribe(onSuccess: { [weak self] topCoins in
                     self?.updatePriorities(topCoins: topCoins)

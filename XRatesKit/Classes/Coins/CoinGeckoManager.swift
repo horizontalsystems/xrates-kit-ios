@@ -16,15 +16,16 @@ class CoinGeckoManager {
 
 extension CoinGeckoManager: ICoinMarketsManager {
 
-    func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int) -> Single<[CoinMarket]> {
-        provider.topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: itemCount)
+    func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int, defiFilter: Bool) -> Single<[CoinMarket]> {
+        provider.topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: itemCount, defiFilter: defiFilter)
     }
 
-    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coinTypes: [CoinType]) -> Single<[CoinMarket]> {
+    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coinTypes: [CoinType], defiFilter: Bool) -> Single<[CoinMarket]> {
         provider.coinMarketsSingle(
-                    currencyCode: currencyCode,
-                    fetchDiffPeriod: fetchDiffPeriod,
-                    coinTypes: coinTypes
+                currencyCode: currencyCode,
+                fetchDiffPeriod: fetchDiffPeriod,
+                coinTypes: coinTypes,
+                defiFilter: defiFilter
         )
     }
 

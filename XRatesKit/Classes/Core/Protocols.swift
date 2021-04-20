@@ -58,8 +58,8 @@ protocol ITopMarketsStorage {
 }
 
 protocol ICoinMarketsManager {
-    func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int) -> Single<[CoinMarket]>
-    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coinTypes: [CoinType]) -> Single<[CoinMarket]>
+    func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int, defiFilter: Bool) -> Single<[CoinMarket]>
+    func coinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, coinTypes: [CoinType], defiFilter: Bool) -> Single<[CoinMarket]>
     func coinMarketInfoSingle(coinType: CoinType, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinMarketInfo>
 }
 
@@ -71,6 +71,11 @@ protocol ITopMarketsManagerDelegate: AnyObject {
 
 protocol IGlobalCoinMarketProvider {
     func globalCoinMarketPoints(currencyCode: String, timePeriod: TimePeriod) -> Single<[GlobalCoinMarketPoint]>
+}
+
+
+protocol IDefiMarketsProvider {
+    func topDefiTvl(currencyCode: String, timePeriod: TimePeriod, itemCount: Int) -> Single<[DefiTvl]>
 }
 
 // Historical Rates
@@ -148,13 +153,6 @@ protocol INewsManager {
 protocol INewsState {
     func set(posts: [CryptoNewsPost])
     func nonExpiredPosts(timestamp: TimeInterval) -> [CryptoNewsPost]?
-}
-
-
-// Fiat Exchange Rates
-
-protocol IFiatXRatesProvider {
-    func latestFiatXRates(sourceCurrency: String, targetCurrency: String) -> Single<Decimal>
 }
 
 // Coins
