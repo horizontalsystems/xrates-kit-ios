@@ -33,7 +33,6 @@ class CoinGeckoProvider {
         }
 
         let url = "\(provider.baseUrl)/coins/markets?\(coinIdsParams)&vs_currency=\(currencyCode)\(priceChangePercentage)\(categoryParam)&order=market_cap_desc\(pageParams)"
-        print(url)
         return networkManager.session.request(url, method: .get, encoding: JSONEncoding())
     }
 

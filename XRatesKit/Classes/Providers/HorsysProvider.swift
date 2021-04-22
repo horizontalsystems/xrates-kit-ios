@@ -42,10 +42,12 @@ extension HorsysProvider: IGlobalCoinMarketProvider {
 extension HorsysProvider: IDefiMarketsProvider {
 
     func topDefiTvl(currencyCode: String, timePeriod: TimePeriod, itemCount: Int) -> Single<[DefiTvl]> {
-        let url = "\(provider.baseUrl)/markets/defi?currency_code=\(currencyCode)"
+        let period = (isSupportedPeriod(timePeriod: timePeriod) ? timePeriod : .hour24).title
+
+        let url = "\(provider.baseUrl)/markets/defi?currency_code=\(currencyCode)&diff_period=\(period)"
         let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
 
-        let mapper = DefiTvlMapper(providerCoinsManager: providerCoinsManager)
+        let mapper = DefiTvlMapper(providerCoinsManager: providerCoinsManager, period: period)
         return networkManager
                 .single(request: request, mapper: mapper)
                 .map { result in

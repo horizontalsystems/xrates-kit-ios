@@ -31,6 +31,7 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
         let circulatingSupply: Decimal?
         let volume24h: Decimal?
         let marketCap: Decimal?
+        let dilutedMarketCap: Decimal?
         let marketCapDiff24h: Decimal?
         let description: String
         let rateDiffs: [TimePeriod: [String: Decimal]]
@@ -92,11 +93,12 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
         let circulatingSupply = Decimal(convertibleValue: marketDataMap["circulating_supply"])
         let volume24h = fiatValueDecimal(marketData: marketDataMap, key: "total_volume")
         let marketCap = fiatValueDecimal(marketData: marketDataMap, key: "market_cap")
+        let dilutedMarketCap = fiatValueDecimal(marketData: marketDataMap, key: "fully_diluted_valuation")
         let marketCapDiff24h = Decimal(convertibleValue: marketDataMap["market_cap_change_percentage_24h"])
         
         var description: String = ""
         if let descriptionsMap = coinMap["description"] as? [String: String] {
-            description = descriptionsMap["en"] as? String ?? ""
+            description = descriptionsMap["en"] ?? ""
         }
         
         var links = [LinkType: String]()
@@ -198,6 +200,7 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
             circulatingSupply: circulatingSupply,
             volume24h: volume24h,
             marketCap: marketCap,
+            dilutedMarketCap: dilutedMarketCap,
             marketCapDiff24h: marketCapDiff24h,
             description: description,
             rateDiffs: rateDiffs,
