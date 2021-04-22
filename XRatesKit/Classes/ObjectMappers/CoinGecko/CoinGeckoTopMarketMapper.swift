@@ -34,6 +34,9 @@ class CoinGeckoTopMarketMapper: IApiMapper {
             let supply = Decimal(convertibleValue: tokenData["circulating_supply"]) ?? 0
             let volume = Decimal(convertibleValue: tokenData["total_volume"]) ?? 0
             let marketCap = Decimal(convertibleValue: tokenData["market_cap"]) ?? 0
+            let dilutedMarketCap = Decimal(convertibleValue: tokenData["fully_diluted_valuation"])
+            let totalSupply = Decimal(convertibleValue: tokenData["total_supply"])
+            let maxSupply = Decimal(convertibleValue: tokenData["max_supply"])
             let athChangePercentage = Decimal(convertibleValue: tokenData["ath_change_percentage"])
             let atlChangePercentage = Decimal(convertibleValue: tokenData["atl_change_percentage"])
 
@@ -63,6 +66,9 @@ class CoinGeckoTopMarketMapper: IApiMapper {
                     timestamp: timestamp,
                     liquidity: 0,
                     marketCap: marketCap,
+                    dilutedMarketCap: dilutedMarketCap,
+                    totalSupply: totalSupply,
+                    maxSupply: maxSupply,
                     athChangePercentage: athChangePercentage,
                     atlChangePercentage: atlChangePercentage,
                     expirationInterval: expirationInterval

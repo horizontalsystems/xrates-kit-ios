@@ -13,6 +13,9 @@ public struct MarketInfo {
     public let timestamp: TimeInterval
     public let liquidity: Decimal
     public let marketCap: Decimal
+    public let dilutedMarketCap: Decimal?
+    public let totalSupply: Decimal?
+    public let maxSupply: Decimal?
     public let athChangePercentage: Decimal?
     public let atlChangePercentage: Decimal?
 
@@ -20,7 +23,9 @@ public struct MarketInfo {
 
     init(coinType: CoinType, currencyCode: String, rate: Decimal, rateOpenDay: Decimal, rateDiff: Decimal,
          volume: Decimal, supply: Decimal, rateDiffPeriod: Decimal, timestamp: TimeInterval,
-         liquidity: Decimal, marketCap: Decimal, athChangePercentage: Decimal?, atlChangePercentage: Decimal?, expirationInterval: TimeInterval) {
+         liquidity: Decimal, marketCap: Decimal, dilutedMarketCap: Decimal?, totalSupply: Decimal?, maxSupply: Decimal?,
+         athChangePercentage: Decimal?, atlChangePercentage: Decimal?, expirationInterval: TimeInterval) {
+
         self.coinType = coinType
         self.currencyCode = currencyCode
         self.rate = rate
@@ -32,6 +37,9 @@ public struct MarketInfo {
         self.timestamp = timestamp
         self.liquidity = liquidity
         self.marketCap = marketCap
+        self.dilutedMarketCap = dilutedMarketCap
+        self.totalSupply = totalSupply
+        self.maxSupply = maxSupply
         self.athChangePercentage = athChangePercentage
         self.atlChangePercentage = atlChangePercentage
 

@@ -61,6 +61,7 @@ extension CoinGeckoManager: ICoinMarketsManager {
                             circulatingSupply: coinInfoResponse.circulatingSupply,
                             volume24h: coinInfoResponse.volume24h,
                             marketCap: coinInfoResponse.marketCap,
+                            dilutedMarketCap: coinInfoResponse.dilutedMarketCap,
                             marketCapDiff24h: coinInfoResponse.marketCapDiff24h,
                             rateDiffs: coinInfoResponse.rateDiffs,
                             tickers: coinInfoResponse.tickers
