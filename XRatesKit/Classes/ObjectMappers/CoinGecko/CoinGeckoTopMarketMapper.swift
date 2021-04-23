@@ -43,7 +43,7 @@ class CoinGeckoTopMarketMapper: IApiMapper {
             let priceDiffFieldName: String
             switch fetchDiffPeriod {
                 case .hour1: priceDiffFieldName = "price_change_percentage_1h_in_currency"
-                case .hour24: priceDiffFieldName = "price_change_percentage_24h_in_currency"
+                case .hour24: priceDiffFieldName = "price_change_percentage_24h"
                 case .day7: priceDiffFieldName = "price_change_percentage_7d_in_currency"
                 case .day14: priceDiffFieldName = "price_change_percentage_14d_in_currency"
                 case .day30: priceDiffFieldName = "price_change_percentage_30d_in_currency"
@@ -51,7 +51,7 @@ class CoinGeckoTopMarketMapper: IApiMapper {
                 case .year1: priceDiffFieldName = "price_change_percentage_1y_in_currency"
                 default: priceDiffFieldName = "price_change_percentage_24h"
             }
-            
+
             let rateDiffPeriod = Decimal(convertibleValue: tokenData[priceDiffFieldName])
             let rateDiff24h = Decimal(convertibleValue: tokenData["price_change_percentage_24h"]) ?? 0
             let timestamp = Date().timeIntervalSince1970
