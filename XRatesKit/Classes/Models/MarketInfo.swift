@@ -9,7 +9,7 @@ public struct MarketInfo {
     public let rateDiff: Decimal
     public let volume: Decimal
     public let supply: Decimal
-    public let rateDiffPeriod: Decimal
+    public let rateDiffPeriod: Decimal?
     public let timestamp: TimeInterval
     public let liquidity: Decimal
     public let marketCap: Decimal
@@ -22,7 +22,7 @@ public struct MarketInfo {
     private let expirationInterval: TimeInterval
 
     init(coinType: CoinType, currencyCode: String, rate: Decimal, rateOpenDay: Decimal, rateDiff: Decimal,
-         volume: Decimal, supply: Decimal, rateDiffPeriod: Decimal, timestamp: TimeInterval,
+         volume: Decimal, supply: Decimal, rateDiffPeriod: Decimal?, timestamp: TimeInterval,
          liquidity: Decimal, marketCap: Decimal, dilutedMarketCap: Decimal?, totalSupply: Decimal?, maxSupply: Decimal?,
          athChangePercentage: Decimal?, atlChangePercentage: Decimal?, expirationInterval: TimeInterval) {
 
