@@ -16,7 +16,7 @@ class DefiTvlPointsMapper: IApiMapper {
                 return nil
             }
 
-            return DefiTvlPoint(timestamp: timestamp, currencyCode: currencyCode, tvl: tvl)
+            return DefiTvlPoint(timestamp: TimeInterval(timestamp), currencyCode: currencyCode, tvl: tvl)
         }
     }
 
