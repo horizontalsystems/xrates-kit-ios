@@ -76,6 +76,8 @@ protocol IGlobalCoinMarketProvider {
 
 protocol IDefiMarketsProvider {
     func topDefiTvl(currencyCode: String, timePeriod: TimePeriod, itemCount: Int) -> Single<[DefiTvl]>
+    func defiTvl(coinType: CoinType, currencyCode: String) -> Single<DefiTvl>
+    func defiTvlPoints(coinType: CoinType, currencyCode: String, timePeriod: TimePeriod) -> Single<[DefiTvlPoint]>
 }
 
 // Historical Rates

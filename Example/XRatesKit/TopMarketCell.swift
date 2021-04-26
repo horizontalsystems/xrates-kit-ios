@@ -81,7 +81,7 @@ extension TopMarketCell {
         let volumeString = string(from: topMarket.marketInfo.volume / 1000, fractionDigits: 0) + "k"
         titleLabel.text = """
                           \(topMarket.coinData.name) : \(topMarket.coinData.code.uppercased()). Volume: \(volumeString)
-                          Rate: \(string(from: topMarket.marketInfo.rate, fractionDigits: 4)). RateDiff: \(string(from: topMarket.marketInfo.rateDiffPeriod, fractionDigits: 2)). 
+                          Rate: \(string(from: topMarket.marketInfo.rate, fractionDigits: 4)). RateDiff: \(string(from: topMarket.marketInfo.rateDiffPeriod ?? 0, fractionDigits: 2)). 
                           """
 
         dateLabel.text = TopMarketCell.dateFormatter.string(from: Date(timeIntervalSince1970: topMarket.marketInfo.timestamp))

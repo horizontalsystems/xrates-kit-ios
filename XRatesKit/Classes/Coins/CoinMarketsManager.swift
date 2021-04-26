@@ -1,20 +1,23 @@
 import RxSwift
 import CoinKit
 
-class CoinGeckoManager {
+class CoinMarketsManager {
     private let disposeBag = DisposeBag()
 
     private let provider: CoinGeckoProvider
+    private let defiMarketsProvider: IDefiMarketsProvider
     private let coinInfoManager: CoinInfoManager
 
-    init(coinInfoManager: CoinInfoManager, provider: CoinGeckoProvider) {
+    init(coinInfoManager: CoinInfoManager, provider: CoinGeckoProvider, defiMarketsProvider: IDefiMarketsProvider) {
         self.provider = provider
+        self.defiMarketsProvider = defiMarketsProvider
+
         self.coinInfoManager = coinInfoManager
     }
 
 }
 
-extension CoinGeckoManager: ICoinMarketsManager {
+extension CoinMarketsManager: ICoinMarketsManager {
 
     func topCoinMarketsSingle(currencyCode: String, fetchDiffPeriod: TimePeriod, itemCount: Int, defiFilter: Bool) -> Single<[CoinMarket]> {
         provider.topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: itemCount, defiFilter: defiFilter)
@@ -32,8 +35,12 @@ extension CoinGeckoManager: ICoinMarketsManager {
     func coinMarketInfoSingle(coinType: CoinType, currencyCode: String, rateDiffTimePeriods: [TimePeriod], rateDiffCoinCodes: [String]) -> Single<CoinMarketInfo> {
         let coin = coinInfoManager.coinInfo(coinType: coinType)
 
-        return provider.coinMarketInfoSingle(coinType: coinType, currencyCode: currencyCode, rateDiffTimePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes)
-                .map { coinInfoResponse in
+        return Single.zip(
+                provider.coinMarketInfoSingle(coinType: coinType, currencyCode: currencyCode, rateDiffTimePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes),
+                defiMarketsProvider.defiTvl(coinType: coinType, currencyCode: currencyCode)
+                        .catchErrorJustReturn(DefiTvl(data: CoinData(coinType: coinType, code: "", name: ""), tvl: 0, tvlDiff: 0))
+        )
+                .map { coinInfoResponse, defiTvl in
                     var links = [LinkType: String]()
 
                     for linkType in LinkType.allCases {
@@ -63,6 +70,7 @@ extension CoinGeckoManager: ICoinMarketsManager {
                             marketCap: coinInfoResponse.marketCap,
                             dilutedMarketCap: coinInfoResponse.dilutedMarketCap,
                             marketCapDiff24h: coinInfoResponse.marketCapDiff24h,
+                            defiTvl: defiTvl.tvl,
                             rateDiffs: coinInfoResponse.rateDiffs,
                             tickers: coinInfoResponse.tickers
                     )

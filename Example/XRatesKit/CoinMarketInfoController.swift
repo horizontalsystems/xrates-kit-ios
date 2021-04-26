@@ -74,6 +74,8 @@ class CoinMarketInfoController: UIViewController {
                   volume24h: \(marketInfo.volume24h ?? -1)
                   marketCap: \(marketInfo.marketCap ?? -1)
                   marketCapDiff24h: \(marketInfo.marketCapDiff24h ?? -1)
+                  dilutedMarketCap: \(marketInfo.dilutedMarketCap ?? -1)
+                  defiTvl: \(marketInfo.defiTvl ?? -1)
 
                   description: \(marketInfo.meta.description)
 
