@@ -1,6 +1,7 @@
 import Foundation
 
-struct DefiTvlPoint {
-    let timestamp: Int
-    let tvl: Decimal
+public struct DefiTvlPoint {
+    public let timestamp: Int
+    public let currencyCode: String
+    public let tvl: Decimal
 }

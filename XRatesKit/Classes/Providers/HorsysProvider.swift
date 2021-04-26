@@ -70,7 +70,16 @@ extension HorsysProvider: IDefiMarketsProvider {
     }
 
     func defiTvlPoints(coinType: CoinType, currencyCode: String, timePeriod: TimePeriod) -> Single<[DefiTvlPoint]> {
-        fatalError("defiTvlPoints(coinType:currencyCode:timePeriod:) has not been implemented")
+        guard let coinGeckoId = providerCoinsManager.providerId(coinType: coinType, provider: .coinGecko),
+              isSupportedPeriod(timePeriod: timePeriod) else {
+            return Single.error(ProviderCoinsManager.ExternalIdError.noMatchingCoinId)
+        }
+
+        let url = "\(provider.baseUrl)markets/defi/\(coinGeckoId)/\(timePeriod.title)?currency_code=\(currencyCode)"
+        let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
+        let mapper = DefiTvlPointsMapper()
+
+        return networkManager.single(request: request, mapper: mapper)
     }
 
 }

@@ -104,14 +104,21 @@ extension XRatesKit {
 
     public func topDefiMarkets(currencyCode: String, fetchDiffPeriod: TimePeriod = .hour24, itemsCount: Int = 200) -> Single<[CoinMarket]> {
         defiMarketsManager.topDefiMarkets(currency: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: itemsCount)
-}
+    }
 
     public func topDefiTvl(currencyCode: String, fetchDiffPeriod: TimePeriod = .hour24, itemsCount: Int = 200) -> Single<[DefiTvl]> {
         defiMarketsManager.topDefiTvl(currency: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: itemsCount)
     }
 
+    public func defiTvlPoints(coinType: CoinType, currencyCode: String, fetchDiffPeriod: TimePeriod = .hour24) -> Single<[DefiTvlPoint]> {
+        defiMarketsManager.defiTvlPoints(coinType: coinType, currencyCode: currencyCode, timePeriod: fetchDiffPeriod)
+    }
 
-public func search(text: String) -> [CoinData] {
+    public func defiTvl(coinType: CoinType, currencyCode: String) -> Single<DefiTvl> {
+        defiMarketsManager.defiTvl(coinType: coinType, currencyCode: currencyCode)
+    }
+
+    public func search(text: String) -> [CoinData] {
         providerCoinsManager.search(text: text)
     }
 
