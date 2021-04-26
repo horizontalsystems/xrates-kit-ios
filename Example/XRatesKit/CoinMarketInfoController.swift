@@ -9,6 +9,7 @@ class CoinMarketInfoController: UIViewController {
 
     private let wrapper = UIScrollView()
     private let coinMarketInfoLabel = UILabel()
+    private let pointsLabel = UILabel()
 
     private let xRatesKit: XRatesKit
     private let currencyCode: String
@@ -42,7 +43,7 @@ class CoinMarketInfoController: UIViewController {
 
         wrapper.addSubview(coinMarketInfoLabel)
         coinMarketInfoLabel.snp.makeConstraints { maker in
-            maker.edges.equalToSuperview()
+            maker.top.leading.trailing.equalToSuperview()
         }
         coinMarketInfoLabel.font = .systemFont(ofSize: 14)
         coinMarketInfoLabel.textColor = .black
@@ -50,16 +51,40 @@ class CoinMarketInfoController: UIViewController {
         coinMarketInfoLabel.preferredMaxLayoutWidth = UIScreen.main.bounds.width - 30
         coinMarketInfoLabel.lineBreakMode = .byWordWrapping
 
-        onTapRefresh()
-    }
+        wrapper.addSubview(pointsLabel)
+        pointsLabel.snp.makeConstraints { maker in
+            maker.top.equalTo(coinMarketInfoLabel.snp.bottom).offset(50)
+            maker.leading.trailing.bottom.equalToSuperview()
+        }
+        pointsLabel.font = .systemFont(ofSize: 14)
+        pointsLabel.textColor = .black
+        pointsLabel.numberOfLines = 0
+        pointsLabel.preferredMaxLayoutWidth = UIScreen.main.bounds.width - 30
+        pointsLabel.lineBreakMode = .byWordWrapping
 
-    @objc func onTapRefresh() {
         xRatesKit.coinMarketInfoSingle(coinType: coinType, currencyCode: currencyCode, rateDiffTimePeriods: timePeriods, rateDiffCoinCodes: coinCodes)
                 .observeOn(MainScheduler.instance)
                 .subscribe(onSuccess: { [weak self] marketInfo in
                     self?.bind(marketInfo: marketInfo)
                 })
                 .disposed(by: disposeBag)
+
+        xRatesKit.defiTvlPoints(coinType: coinType, currencyCode: currencyCode)
+                .observeOn(MainScheduler.instance)
+                .subscribe(onSuccess: { [weak self] points in
+                    self?.bind(points: points)
+                })
+                .disposed(by: disposeBag)
+    }
+
+    private func bind(points: [DefiTvlPoint]) {
+        pointsLabel.text = points.map { point in
+            """
+            currencyCode: \(point.currencyCode)
+            timestamp: \(point.timestamp)
+            tvl: \(point.tvl)
+            """
+        }.joined(separator: "\n\n")
     }
 
     private func bind(marketInfo: CoinMarketInfo) {
@@ -74,6 +99,8 @@ class CoinMarketInfoController: UIViewController {
                   volume24h: \(marketInfo.volume24h ?? -1)
                   marketCap: \(marketInfo.marketCap ?? -1)
                   marketCapDiff24h: \(marketInfo.marketCapDiff24h ?? -1)
+                  dilutedMarketCap: \(marketInfo.dilutedMarketCap ?? -1)
+                  defiTvl: \(marketInfo.defiTvl ?? -1)
 
                   description: \(marketInfo.meta.description)
 

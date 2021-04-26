@@ -47,7 +47,7 @@ extension HorsysProvider: IDefiMarketsProvider {
         let url = "\(provider.baseUrl)/markets/defi?currency_code=\(currencyCode)&diff_period=\(period)"
         let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
 
-        let mapper = DefiTvlMapper(providerCoinsManager: providerCoinsManager, period: period)
+        let mapper = DefiTvlArrayMapper(providerCoinsManager: providerCoinsManager, period: period)
         return networkManager
                 .single(request: request, mapper: mapper)
                 .map { result in
@@ -55,6 +55,31 @@ extension HorsysProvider: IDefiMarketsProvider {
                         $0.tvl < $1.tvl
                     }
                 }
+    }
+
+    func defiTvl(coinType: CoinType, currencyCode: String) -> Single<DefiTvl> {
+        guard let coinGeckoId = providerCoinsManager.providerId(coinType: coinType, provider: .coinGecko) else {
+            return Single.error(ProviderCoinsManager.ExternalIdError.noMatchingCoinId)
+        }
+
+        let url = "\(provider.baseUrl)markets/defi/\(coinGeckoId)/latest?currency_code=\(currencyCode)"
+        let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
+        let mapper = DefiTvlMapper(providerCoinsManager: providerCoinsManager, period: nil)
+
+        return networkManager.single(request: request, mapper: mapper)
+    }
+
+    func defiTvlPoints(coinType: CoinType, currencyCode: String, timePeriod: TimePeriod) -> Single<[DefiTvlPoint]> {
+        guard let coinGeckoId = providerCoinsManager.providerId(coinType: coinType, provider: .coinGecko),
+              isSupportedPeriod(timePeriod: timePeriod) else {
+            return Single.error(ProviderCoinsManager.ExternalIdError.noMatchingCoinId)
+        }
+
+        let url = "\(provider.baseUrl)markets/defi/\(coinGeckoId)/\(timePeriod.title)?currency_code=\(currencyCode)"
+        let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
+        let mapper = DefiTvlPointsMapper()
+
+        return networkManager.single(request: request, mapper: mapper)
     }
 
 }
