@@ -57,7 +57,7 @@ extension HorsysProvider: IDefiMarketsProvider {
                 }
     }
 
-    func defiTvl(coinType: CoinType, currencyCode: String) -> Single<DefiTvl> {
+    func defiTvl(coinType: CoinType, currencyCode: String) -> Single<DefiTvl?> {
         guard let coinGeckoId = providerCoinsManager.providerId(coinType: coinType, provider: .coinGecko) else {
             return Single.error(ProviderCoinsManager.ExternalIdError.noMatchingCoinId)
         }

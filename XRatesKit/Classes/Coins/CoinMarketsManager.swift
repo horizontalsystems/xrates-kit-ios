@@ -37,8 +37,7 @@ extension CoinMarketsManager: ICoinMarketsManager {
 
         return Single.zip(
                 provider.coinMarketInfoSingle(coinType: coinType, currencyCode: currencyCode, rateDiffTimePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes),
-                defiMarketsProvider.defiTvl(coinType: coinType, currencyCode: currencyCode)
-                        .catchErrorJustReturn(DefiTvl(data: CoinData(coinType: coinType, code: "", name: ""), tvl: 0, tvlDiff: 0))
+                defiMarketsProvider.defiTvl(coinType: coinType, currencyCode: currencyCode).catchErrorJustReturn(nil)
         )
                 .map { coinInfoResponse, defiTvl in
                     var links = [LinkType: String]()
@@ -70,7 +69,7 @@ extension CoinMarketsManager: ICoinMarketsManager {
                             marketCap: coinInfoResponse.marketCap,
                             dilutedMarketCap: coinInfoResponse.dilutedMarketCap,
                             marketCapDiff24h: coinInfoResponse.marketCapDiff24h,
-                            defiTvl: defiTvl.tvl,
+                            defiTvl: defiTvl?.tvl,
                             rateDiffs: coinInfoResponse.rateDiffs,
                             tickers: coinInfoResponse.tickers
                     )
