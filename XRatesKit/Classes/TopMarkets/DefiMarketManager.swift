@@ -22,7 +22,7 @@ extension DefiMarketManager {
         defiMarketsProvider.topDefiTvl(currencyCode: currency, timePeriod: fetchDiffPeriod, itemCount: itemCount)
     }
 
-    func defiTvl(coinType: CoinType, currencyCode: String) -> Single<DefiTvl> {
+    func defiTvl(coinType: CoinType, currencyCode: String) -> Single<DefiTvl?> {
         defiMarketsProvider.defiTvl(coinType: coinType, currencyCode: currencyCode)
     }
 

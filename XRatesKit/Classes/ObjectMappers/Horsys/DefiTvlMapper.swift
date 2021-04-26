@@ -1,7 +1,7 @@
 import HsToolKit
 
 class DefiTvlMapper: IApiMapper {
-    typealias T = DefiTvl
+    typealias T = DefiTvl?
 
     private let providerCoinsManager: ProviderCoinsManager
     private let period: String?
@@ -13,7 +13,7 @@ class DefiTvlMapper: IApiMapper {
 
     func map(statusCode: Int, data: Any?) throws -> T {
         guard let map = data as? [String: Any] else {
-            throw NetworkManager.RequestError.invalidResponse(statusCode: statusCode, data: data)
+            return nil
         }
 
         guard let coinGeckoId = map["coingecko_id"] as? String,
@@ -22,7 +22,7 @@ class DefiTvlMapper: IApiMapper {
               let tvl = Decimal(convertibleValue: map["tvl"]),
               let coinType = providerCoinsManager.coinTypes(providerId: coinGeckoId, provider: .coinGecko).first else {
 
-            throw NetworkManager.RequestError.invalidResponse(statusCode: statusCode, data: data)
+            return nil
         }
 
         let tvlDiff: Decimal
@@ -56,7 +56,7 @@ class DefiTvlArrayMapper: IApiMapper {
             throw NetworkManager.RequestError.invalidResponse(statusCode: statusCode, data: data)
         }
 
-        return try array.map { try mapper.map(statusCode: statusCode, data: $0) }
+        return try array.compactMap { try mapper.map(statusCode: statusCode, data: $0) }
     }
 
 }

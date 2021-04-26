@@ -114,7 +114,7 @@ extension XRatesKit {
         defiMarketsManager.defiTvlPoints(coinType: coinType, currencyCode: currencyCode, timePeriod: fetchDiffPeriod)
     }
 
-    public func defiTvl(coinType: CoinType, currencyCode: String) -> Single<DefiTvl> {
+    public func defiTvl(coinType: CoinType, currencyCode: String) -> Single<DefiTvl?> {
         defiMarketsManager.defiTvl(coinType: coinType, currencyCode: currencyCode)
     }
 
