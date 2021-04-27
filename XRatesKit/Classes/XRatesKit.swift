@@ -138,7 +138,7 @@ extension XRatesKit {
         let coinInfoManager = CoinInfoManager(storage: storage, parser: jsonParser)
 
         let networkManager = NetworkManager(logger: logger)
-        let coinGeckoProvider = CoinGeckoProvider(providerCoinsManager: providerCoinsManager, expirationInterval: marketInfoExpirationInterval, logger: logger)
+        let coinGeckoProvider = CoinGeckoProvider(providerCoinsManager: providerCoinsManager, expirationInterval: marketInfoExpirationInterval, parser: jsonParser, logger: logger)
         let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, apiKey: cryptoCompareApiKey)
 
         let horsysProvider = HorsysProvider(networkManager: networkManager, providerCoinsManager: providerCoinsManager)
