@@ -18,14 +18,13 @@ extension NewsManager: INewsManager {
     }
 
     func postsSingle(latestTimestamp: TimeInterval?) -> Single<[CryptoNewsPost]> {
-        Single.just([])
-//        provider.newsSingle(latestTimestamp: latestTimestamp)
-//                .map { [weak self] news in
-//                    let posts = news.posts.map { CryptoNewsPost($0) }
-//
-//                    self?.state.set(posts: posts)
-//                    return posts
-//                }
+        provider.newsSingle(latestTimestamp: latestTimestamp)
+                .map { [weak self] news in
+                    let posts = news.posts.map { CryptoNewsPost($0) }
+
+                    self?.state.set(posts: posts)
+                    return posts
+                }
     }
 
 
