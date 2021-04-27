@@ -396,25 +396,6 @@ extension GrdbStorage: IChartPointStorage {
 
 }
 
-extension GrdbStorage: IGlobalMarketInfoStorage {
-
-    func save(globalMarketInfo: GlobalCoinMarketPoint) {
-        _ = try! dbPool.write { db in
-            try globalMarketInfo.insert(db)
-        }
-    }
-
-    func globalMarketInfo(currencyCode: String) -> GlobalCoinMarketPoint? {
-        nil
-//        try! dbPool.read { db in
-//            try GlobalCoinMarketRecord
-//                .filter(GlobalCoinMarketRecord.Columns.currencyCode == currencyCode)
-//                .fetchOne(db)
-//        }
-    }
-
-}
-
 extension GrdbStorage: ICoinInfoStorage {
 
     var categorizedCoins: [CoinType] {

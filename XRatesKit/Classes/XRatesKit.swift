@@ -139,6 +139,7 @@ extension XRatesKit {
 
         let networkManager = NetworkManager(logger: logger)
         let coinGeckoProvider = CoinGeckoProvider(providerCoinsManager: providerCoinsManager, expirationInterval: marketInfoExpirationInterval, logger: logger)
+        let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, apiKey: cryptoCompareApiKey)
 
         let horsysProvider = HorsysProvider(networkManager: networkManager, providerCoinsManager: providerCoinsManager)
         let coinGeckoManager = CoinMarketsManager(coinInfoManager: coinInfoManager, provider: coinGeckoProvider, defiMarketsProvider: horsysProvider)
@@ -161,7 +162,7 @@ extension XRatesKit {
         chartInfoManager.delegate = chartInfoSyncManager
         providerCoinsManager.provider = coinGeckoProvider
 
-        let newsPostManager = NewsManager(provider: NewsProvider(), state: NewsState(expirationTime: 30 * 60))
+        let newsPostManager = NewsManager(provider: cryptoCompareProvider, state: NewsState(expirationTime: 30 * 60))
         let coinSyncer = CoinSyncer(providerCoinsManager: providerCoinsManager, coinInfoManager: coinInfoManager)
 
         let kit = XRatesKit(

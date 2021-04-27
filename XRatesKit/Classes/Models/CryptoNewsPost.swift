@@ -7,14 +7,14 @@ public class CryptoNewsPost {
     public let body: String
     public let categories: [String]
 
-    init(_ response: Int) {
-        self.id = response
-        timestamp = 0 // response.timestamp
-        imageUrl = nil // response.imageUrl
-        title = "" // response.title
-        url = "" // response.url
-        body = "" // response.body
-        categories = [] // response.categories.split(separator: "|").map { String($0) }
+    init(_ response: CryptoCompareChartNewsPostResponse) {
+        id = response.id
+        timestamp = response.timestamp
+        imageUrl = response.imageUrl
+        title = response.title
+        url = response.url
+        body = response.body
+        categories = response.categories.split(separator: "|").map { String($0) }
     }
 
 }

@@ -96,11 +96,6 @@ protocol IHistoricalRateStorage {
     func save(historicalRate: HistoricalRate)
 }
 
-protocol IGlobalMarketInfoStorage {
-    func save(globalMarketInfo: GlobalCoinMarketPoint)
-    func globalMarketInfo(currencyCode: String) -> GlobalCoinMarketPoint?
-}
-
 // Chart Points
 
 protocol IChartInfoManager {
@@ -144,7 +139,7 @@ protocol IChartPointSchedulerProvider {
 // News Posts
 
 protocol INewsProvider {
-    func newsSingle(latestTimestamp: TimeInterval?) -> Single<Int>
+    func newsSingle(latestTimestamp: TimeInterval?) -> Single<CryptoCompareNewsResponse>
 }
 
 protocol INewsManager {
