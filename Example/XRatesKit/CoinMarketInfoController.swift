@@ -114,7 +114,7 @@ class CoinMarketInfoController: UIViewController {
                   \(marketInfo.meta.platforms.map{ (key, value) in "\(key.rawValue): \(value)" }.joined(separator: "\n"))
 
                   == Markets ==
-                  \(marketInfo.tickers.map{ ticker in "\(ticker.marketName): \(ticker.base)/\(ticker.target) (rate: \(ticker.rate); volume: \(ticker.volume))" }.joined(separator: "\n"))
+                  \(marketInfo.tickers.map{ ticker in "\(ticker.marketName): \(ticker.base)/\(ticker.target) (rate: \(ticker.rate); volume: \(ticker.volume))\n\(ticker.marketImageUrl ?? "no image")" }.joined(separator: "\n\n"))
 
                   == Links ==
                   \(marketInfo.meta.links.map { (key, value) in "\(key.rawValue.uppercased()): \(value)" }.joined(separator: "\n"))

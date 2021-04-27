@@ -1,0 +1,15 @@
+{
+  "binance": "https://assets.coingecko.com/markets/images/52/small/binance.jpg?1519353250",
+  "gdax": "https://assets.coingecko.com/markets/images/23/small/fe290a14-ac8f-4c90-9aed-5e72abf271f0.jpeg?1527171545",
+  "kraken": "https://assets.coingecko.com/markets/images/29/small/kraken.jpg?1584251255",
+  "gate": "https://assets.coingecko.com/markets/images/60/small/gateio.jpg?1519793974",
+  "bitfinex": "https://assets.coingecko.com/markets/images/4/small/BItfinex.png?1615895883",
+  "binance_us": "https://assets.coingecko.com/markets/images/469/small/Binance.png?1568875842",
+  "crypto_com": "https://assets.coingecko.com/markets/images/589/small/crypto_com.jpg?1602499898",
+  "gemini": "https://assets.coingecko.com/markets/images/50/small/gemini.png?1605704107",
+  "huobi": "https://assets.coingecko.com/markets/images/25/small/1481589873352_.pic_hd.jpg?1589962155",
+  "okex": "https://assets.coingecko.com/markets/images/96/small/okEX.jpg?1519349636",
+  "kucoin": "https://assets.coingecko.com/markets/images/61/small/kucoin.jpg?1591610627",
+  "ftx_spot": "https://assets.coingecko.com/markets/images/451/small/F.png?1609051590",
+  "bitstamp": "https://assets.coingecko.com/markets/images/9/small/bitstamp.jpg?1519627979"
+}

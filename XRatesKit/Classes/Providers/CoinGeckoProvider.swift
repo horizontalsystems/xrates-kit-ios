@@ -13,11 +13,19 @@ class CoinGeckoProvider {
     private let expirationInterval: TimeInterval
     private let coinsPerPage = 250
 
-    init(providerCoinsManager: ProviderCoinsManager, expirationInterval: TimeInterval, logger: Logger) {
+    private let exchangeImages: [String: String]
+
+    init(providerCoinsManager: ProviderCoinsManager, expirationInterval: TimeInterval, parser: JsonFileParser, logger: Logger) {
         self.providerCoinsManager = providerCoinsManager
         self.expirationInterval = expirationInterval
 
         networkManager = ProviderNetworkManager(requestInterval: provider.requestInterval, logger: logger)
+
+        do {
+            exchangeImages = try parser.parse(filename: "exchange_images")
+        } catch {
+            exchangeImages = [:]
+        }
     }
 
     private func marketsRequest(currencyCode: String, fetchDiffPeriod: TimePeriod, category: String? = nil, pageParams: String = "", coinIdsParams: String = "") -> DataRequest {
@@ -56,7 +64,7 @@ extension CoinGeckoProvider {
         let url = "\(provider.baseUrl)/coins/\(externalId)?localization=false&tickers=true&developer_data=false&sparkline=false"
         let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
 
-        let mapper = CoinGeckoCoinMarketInfoMapper(coinType: coinType, currencyCode: currencyCode.lowercased(), timePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes.map { $0.lowercased() })
+        let mapper = CoinGeckoCoinMarketInfoMapper(coinType: coinType, currencyCode: currencyCode.lowercased(), timePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes.map { $0.lowercased() }, exchangeImages: exchangeImages)
         return networkManager.single(request: request, mapper: mapper)
     }
 
