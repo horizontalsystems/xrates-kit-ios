@@ -56,6 +56,12 @@ extension CoinMarketsManager: ICoinMarketsManager {
                             platforms: coinInfoResponse.platforms
                     )
 
+                    let defiTvlInfo = defiTvl.map { defiTvl -> DefiTvlInfo in
+                        let ratio = defiTvl.tvl.isZero ? nil : coinInfoResponse.marketCap.map { $0 / defiTvl.tvl}
+
+                        return DefiTvlInfo(tvl: defiTvl.tvl, tvlRank: defiTvl.tvlRank, tvlRatio: ratio)
+                    }
+
                     return CoinMarketInfo(
                             data: data,
                             meta: meta,
@@ -69,7 +75,7 @@ extension CoinMarketsManager: ICoinMarketsManager {
                             marketCap: coinInfoResponse.marketCap,
                             dilutedMarketCap: coinInfoResponse.dilutedMarketCap,
                             marketCapDiff24h: coinInfoResponse.marketCapDiff24h,
-                            defiTvl: defiTvl?.tvl,
+                            defiTvlInfo: defiTvlInfo,
                             rateDiffs: coinInfoResponse.rateDiffs,
                             tickers: coinInfoResponse.tickers
                     )
