@@ -20,6 +20,7 @@ class DefiTvlMapper: IApiMapper {
               let name = map["name"] as? String,
               let code = map["code"] as? String,
               let tvl = Decimal(convertibleValue: map["tvl"]),
+              let tvlRank = map["tvl_rank"] as? Int,
               let coinType = providerCoinsManager.coinTypes(providerId: coinGeckoId, provider: .coinGecko).first else {
 
             return nil
@@ -37,7 +38,7 @@ class DefiTvlMapper: IApiMapper {
         }
 
         let coinData = CoinData(coinType: coinType, code: code, name: name)
-        return DefiTvl(data: coinData, tvl: tvl, tvlDiff: tvlDiff)
+        return DefiTvl(data: coinData, tvl: tvl, tvlRank: tvlRank, tvlDiff: tvlDiff)
     }
 
 }
