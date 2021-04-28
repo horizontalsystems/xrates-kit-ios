@@ -185,3 +185,8 @@ protocol IGlobalMarketPointInfoStorage {
     func deleteGlobalMarketInfo(currencyCode: String, timePeriod: TimePeriod)
     func saveGlobalMarketInfo(info: GlobalCoinMarketInfo)
 }
+
+protocol IExchangeStorage {
+    var exchanges: [Exchange] { get }
+    func update(exchanges: [Exchange])
+}

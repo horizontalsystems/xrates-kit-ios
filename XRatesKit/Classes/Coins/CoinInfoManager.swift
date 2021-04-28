@@ -7,6 +7,7 @@ fileprivate struct CoinsList: Decodable {
     let categories: [CoinCategory]
     let funds: [CoinFund]
     let fundCategories: [CoinFundCategory]
+    let exchanges: [Exchange]
     let coins: [CoinsCoinInfo]
 }
 
@@ -44,10 +45,12 @@ class CoinInfoManager {
 
     private let filename = "coins"
     private let storage: ICoinInfoStorage
+    private let exchangeStorage: IExchangeStorage
     private let parser: JsonFileParser
 
-    init(storage: ICoinInfoStorage, parser: JsonFileParser) {
+    init(storage: ICoinInfoStorage, exchangeStorage: IExchangeStorage, parser: JsonFileParser) {
         self.storage = storage
+        self.exchangeStorage = exchangeStorage
         self.parser = parser
     }
 
@@ -83,6 +86,7 @@ class CoinInfoManager {
             storage.update(coinCategories: list.categories)
             storage.update(coinFunds: list.funds)
             storage.update(coinFundCategories: list.fundCategories)
+            exchangeStorage.update(exchanges: list.exchanges)
             storage.update(coinInfos: coinInfos, categoryMaps: coinCategoryCoinInfos, fundMaps: coinFundCoinInfos, links: links)
             storage.set(coinInfosVersion: list.version)
         } catch {

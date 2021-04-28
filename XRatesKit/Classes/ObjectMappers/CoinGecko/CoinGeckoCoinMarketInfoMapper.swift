@@ -44,16 +44,16 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
     private let currencyCode: String
     private let timePeriods: [TimePeriod]
     private let rateDiffCoinCodes: [String]
-    private let exchangeImages: [String: String]
+    private let exchangeImageMap: [String: String]
     private let smartContractRegex = try! NSRegularExpression(pattern: "^0[xX][A-z0-9]+$")
     private var exchangesPriorities = [String: Int]()
     
-    init(coinType: CoinType, currencyCode: String, timePeriods: [TimePeriod], rateDiffCoinCodes: [String], exchangeImages: [String: String]) {
+    init(coinType: CoinType, currencyCode: String, timePeriods: [TimePeriod], rateDiffCoinCodes: [String], exchangeImageMap: [String: String]) {
         self.coinType = coinType
         self.currencyCode = currencyCode
         self.timePeriods = timePeriods
         self.rateDiffCoinCodes = rateDiffCoinCodes
-        self.exchangeImages = exchangeImages
+        self.exchangeImageMap = exchangeImageMap
 
         for (i, exchange) in CoinGeckoCoinMarketInfoMapper.exchanges.enumerated() {
             exchangesPriorities[exchange] = i
@@ -187,7 +187,7 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
                             return nil
                         }
 
-                        let marketImageUrl = exchangeImages[marketId]
+                        let marketImageUrl = exchangeImageMap[marketId]
                         let ticker = MarketTicker(base: base, target: target, marketName: marketName, marketImageUrl: marketImageUrl, rate: lastRate, volume: volume)
                         return (order: exchangesPriorities[marketId] ?? Int.max, ticker: ticker)
                     }
