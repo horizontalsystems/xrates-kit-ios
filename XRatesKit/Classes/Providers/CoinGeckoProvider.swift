@@ -9,23 +9,17 @@ class CoinGeckoProvider {
     private let provider = InfoProvider.coinGecko
 
     private let providerCoinsManager: ProviderCoinsManager
+    private let exchangeStorage: IExchangeStorage
     private let networkManager: ProviderNetworkManager
     private let expirationInterval: TimeInterval
     private let coinsPerPage = 250
 
-    private let exchangeImages: [String: String]
-
-    init(providerCoinsManager: ProviderCoinsManager, expirationInterval: TimeInterval, parser: JsonFileParser, logger: Logger) {
+    init(providerCoinsManager: ProviderCoinsManager, exchangeStorage: IExchangeStorage, expirationInterval: TimeInterval, logger: Logger) {
         self.providerCoinsManager = providerCoinsManager
+        self.exchangeStorage = exchangeStorage
         self.expirationInterval = expirationInterval
 
         networkManager = ProviderNetworkManager(requestInterval: provider.requestInterval, logger: logger)
-
-        do {
-            exchangeImages = try parser.parse(filename: "exchange_images")
-        } catch {
-            exchangeImages = [:]
-        }
     }
 
     private func marketsRequest(currencyCode: String, fetchDiffPeriod: TimePeriod, category: String? = nil, pageParams: String = "", coinIdsParams: String = "") -> DataRequest {
@@ -42,6 +36,10 @@ class CoinGeckoProvider {
 
         let url = "\(provider.baseUrl)/coins/markets?\(coinIdsParams)&vs_currency=\(currencyCode)\(priceChangePercentage)\(categoryParam)&order=market_cap_desc\(pageParams)"
         return networkManager.session.request(url, method: .get, encoding: JSONEncoding())
+    }
+
+    private var exchangeImageMap: [String: String] {
+        exchangeStorage.exchanges.reduce(into: [String: String]()) { $0[$1.id] = $1.imageUrl }
     }
 
 }
@@ -64,7 +62,7 @@ extension CoinGeckoProvider {
         let url = "\(provider.baseUrl)/coins/\(externalId)?localization=false&tickers=true&developer_data=false&sparkline=false"
         let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
 
-        let mapper = CoinGeckoCoinMarketInfoMapper(coinType: coinType, currencyCode: currencyCode.lowercased(), timePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes.map { $0.lowercased() }, exchangeImages: exchangeImages)
+        let mapper = CoinGeckoCoinMarketInfoMapper(coinType: coinType, currencyCode: currencyCode.lowercased(), timePeriods: rateDiffTimePeriods, rateDiffCoinCodes: rateDiffCoinCodes.map { $0.lowercased() }, exchangeImageMap: exchangeImageMap)
         return networkManager.single(request: request, mapper: mapper)
     }
 

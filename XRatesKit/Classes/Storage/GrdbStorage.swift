@@ -270,6 +270,14 @@ class GrdbStorage {
             }
         }
 
+        migrator.registerMigration("createExchanges") { db in
+            try db.create(table: Exchange.databaseTableName) { t in
+                t.column(Exchange.Columns.id.name, .text).notNull().primaryKey(onConflict: .replace)
+                t.column(Exchange.Columns.name.name, .text).notNull()
+                t.column(Exchange.Columns.imageUrl.name, .integer)
+            }
+        }
+
         return migrator
     }
 
@@ -664,6 +672,26 @@ extension GrdbStorage: IGlobalMarketPointInfoStorage {
                     timestamp: info.timestamp,
                     timePeriod: info.timePeriod)
                 .save(db)
+        }
+    }
+
+}
+
+extension GrdbStorage: IExchangeStorage {
+
+    var exchanges: [Exchange] {
+        try! dbPool.read { db in
+            try Exchange.fetchAll(db)
+        }
+    }
+
+    func update(exchanges: [Exchange]) {
+        _ = try! dbPool.write { db in
+            try Exchange.deleteAll(db)
+
+            for exchange in exchanges {
+                try exchange.insert(db)
+            }
         }
     }
 
