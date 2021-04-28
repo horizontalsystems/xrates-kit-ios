@@ -8,6 +8,7 @@ struct CryptoCompareChartNewsPostResponse: ImmutableMappable {
     let title: String
     let url: String
     let body: String
+    let source: String
     let categories: String
 
     init(map: Map) throws {
@@ -22,6 +23,7 @@ struct CryptoCompareChartNewsPostResponse: ImmutableMappable {
         title = try map.value("title")
         url = try map.value("url")
         body = try map.value("body")
+        source = try map.value("source")
         categories = try map.value("categories")
     }
 

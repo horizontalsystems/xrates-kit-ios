@@ -39,12 +39,10 @@ extension CryptoCompareProvider: INewsProvider {
         }
         let (url, parameters) = urlAndParams(path: "/data/v2/news/", parameters: newsParams)
 
-        print(url)
         let request = networkManager.session
                 .request(url, method: .get, parameters: parameters, interceptor: RateLimitRetrier())
                 .cacheResponse(using: ResponseCacher(behavior: .doNotCache))
 
-        print(request.description)
         return networkManager.single(request: request)
     }
 
