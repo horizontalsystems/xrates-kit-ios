@@ -5,6 +5,7 @@ public class CryptoNewsPost {
     public let title: String
     public let url: String
     public let body: String
+    public let source: String
     public let categories: [String]
 
     init(_ response: CryptoCompareChartNewsPostResponse) {
@@ -14,6 +15,7 @@ public class CryptoNewsPost {
         title = response.title
         url = response.url
         body = response.body
+        source = response.source
         categories = response.categories.split(separator: "|").map { String($0) }
     }
 
