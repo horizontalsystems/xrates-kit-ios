@@ -75,6 +75,7 @@ extension CoinMarketsManager: ICoinMarketsManager {
                             marketCap: coinInfoResponse.marketCap,
                             dilutedMarketCap: coinInfoResponse.dilutedMarketCap,
                             marketCapDiff24h: coinInfoResponse.marketCapDiff24h,
+                            genesisDate: coinInfoResponse.genesisDate,
                             defiTvlInfo: defiTvlInfo,
                             rateDiffs: coinInfoResponse.rateDiffs,
                             tickers: coinInfoResponse.tickers

@@ -2,6 +2,13 @@ import HsToolKit
 import CoinKit
 
 class CoinGeckoCoinMarketInfoMapper: IApiMapper {
+    static private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale.current
+        formatter.dateFormat = "yyyy/MM/dd"
+        return formatter
+    }()
+
     static private let exchanges = [
         "binance",
         "binance_us",
@@ -33,6 +40,7 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
         let marketCap: Decimal?
         let dilutedMarketCap: Decimal?
         let marketCapDiff24h: Decimal?
+        let genesisDate: TimeInterval?
         let description: String
         let rateDiffs: [TimePeriod: [String: Decimal]]
         let links: [LinkType: String]
@@ -97,7 +105,12 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
         let marketCap = fiatValueDecimal(marketData: marketDataMap, key: "market_cap")
         let dilutedMarketCap = fiatValueDecimal(marketData: marketDataMap, key: "fully_diluted_valuation")
         let marketCapDiff24h = Decimal(convertibleValue: marketDataMap["market_cap_change_percentage_24h"])
-        
+
+        var genesisDate: TimeInterval?
+        if let genesisDateString = coinMap["genesis_date"] as? String {
+            genesisDate = Self.dateFormatter.date(from: genesisDateString)?.timeIntervalSince1970
+        }
+
         var description: String = ""
         if let descriptionsMap = coinMap["description"] as? [String: String] {
             description = descriptionsMap["en"] ?? ""
@@ -205,6 +218,7 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
             marketCap: marketCap,
             dilutedMarketCap: dilutedMarketCap,
             marketCapDiff24h: marketCapDiff24h,
+            genesisDate: genesisDate,
             description: description,
             rateDiffs: rateDiffs,
             links: links,
