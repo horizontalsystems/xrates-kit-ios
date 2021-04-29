@@ -13,6 +13,7 @@ public struct CoinMarketInfo {
     public let marketCap: Decimal?
     public let dilutedMarketCap: Decimal?
     public let marketCapDiff24h: Decimal?
+    public let genesisDate: TimeInterval?
     public let defiTvlInfo: DefiTvlInfo?
     public var rateDiffs: [TimePeriod: [String: Decimal]]
     public let tickers: [MarketTicker]
