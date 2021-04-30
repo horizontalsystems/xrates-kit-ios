@@ -82,6 +82,16 @@ class ProviderCoinsManager {
         storage.set(version: Int(Date().timeIntervalSince1970), toType: .providerCoinsPriority)
     }
 
+    private func platformPriority(of coinType: CoinType) -> Int {
+        switch coinType {
+        case .bitcoin, .bitcoinCash, .dash, .litecoin, .zcash, .ethereum, .binanceSmartChain: return 0
+        case .erc20: return 1
+        case .bep20: return 2
+        case .bep2: return 3
+        case .unsupported: return 4
+        }
+    }
+
 }
 
 extension ProviderCoinsManager {
@@ -132,7 +142,9 @@ extension ProviderCoinsManager {
     }
 
     func coinTypes(providerId: String, provider: InfoProvider) -> [CoinType] {
-        storage.ids(providerId: providerId, provider: provider).map { CoinType(id: $0) }
+        storage.ids(providerId: providerId, provider: provider)
+                .map { CoinType(id: $0) }
+                .sorted { platformPriority(of: $0) < platformPriority(of: $1) }
     }
 
     func search(text: String) -> [CoinData] {

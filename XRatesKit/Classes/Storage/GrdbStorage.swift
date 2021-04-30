@@ -603,7 +603,13 @@ extension GrdbStorage: IProviderCoinsStorage {
         try! dbPool.read { db in
             try ProviderCoinRecord
                     .filter(ProviderCoinRecord.Columns.code.like("%\(text)%") || ProviderCoinRecord.Columns.name.like("%\(text)%"))
-                    .order(ProviderCoinRecord.Columns.priority.asc)
+                    .order(literal: .init(sql: """
+                                               CASE 
+                                                 WHEN \(ProviderCoinRecord.Columns.code.name) = '\(text)' COLLATE NOCASE THEN -2
+                                                 WHEN \(ProviderCoinRecord.Columns.name.name) = '\(text)' COLLATE NOCASE THEN -1
+                                                 ELSE \(ProviderCoinRecord.Columns.priority.name)
+                                               END ASC
+                                               """))
                     .fetchAll(db)
                     .map { record in
                         CoinData(coinType: CoinType(id: record.id), code: record.code, name: record.name)
