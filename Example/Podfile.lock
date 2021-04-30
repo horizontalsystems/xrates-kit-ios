@@ -119,7 +119,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   CoinKit.swift:
-    :commit: e60c5cfbb491216d7162eb6d93087737aa89557c
+    :commit: 5c90bb9380bb215f37d0ca7487eed32db68010b9
     :git: https://github.com/horizontalsystems/coin-kit-ios
   HsToolKit.swift:
     :commit: 7a2139d6dc005b90abf3a92fbfdd8e6d41ead5a3
