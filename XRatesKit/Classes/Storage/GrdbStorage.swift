@@ -604,11 +604,9 @@ extension GrdbStorage: IProviderCoinsStorage {
             try ProviderCoinRecord
                     .filter(ProviderCoinRecord.Columns.code.like("%\(text)%") || ProviderCoinRecord.Columns.name.like("%\(text)%"))
                     .order(literal: .init(sql: """
-                                               CASE 
-                                                 WHEN \(ProviderCoinRecord.Columns.code.name) = '\(text)' COLLATE NOCASE THEN -2
-                                                 WHEN \(ProviderCoinRecord.Columns.name.name) = '\(text)' COLLATE NOCASE THEN -1
-                                                 ELSE \(ProviderCoinRecord.Columns.priority.name)
-                                               END ASC
+                                               \(ProviderCoinRecord.Columns.code.name) = '\(text)' COLLATE NOCASE DESC,
+                                               \(ProviderCoinRecord.Columns.name.name) = '\(text)' COLLATE NOCASE DESC,
+                                               \(ProviderCoinRecord.Columns.priority.name) ASC
                                                """))
                     .fetchAll(db)
                     .map { record in
