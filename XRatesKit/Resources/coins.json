@@ -1,5 +1,5 @@
 {
-    "version": 17,
+    "version": 18,
     "categories": [
         {
             "id": "blockchain",
@@ -132,9 +132,14 @@
             "description": "Decentralized on-demand computing solutions."
         },
         {
-            "id": "fun_tokens",
-            "name": "Fun Tokens",
-            "description": " "
+            "id": "fan_tokens",
+            "name": "Fan Tokens",
+            "description": "Digital fan tokens, typically specific to a team or club ."
+        },
+        {
+            "id": "investment_tools",
+            "name": "Investment Tools",
+            "description": "Token-powered analytics and investment instruments."
         }
     ],
     "funds": [
@@ -8729,7 +8734,7 @@
         {
             "code": "BAR",
             "name": "FC Barcelona Fan Token",
-            "categories": ["fun_tokens"],
+            "categories": ["fan_tokens"],
             "active": true,
             "platform": {
                 "name": "",
@@ -8753,7 +8758,7 @@
         {
             "code": "PSG",
             "name": "Paris Saint-Germain Fan Token",
-            "categories": ["fun_tokens"],
+            "categories": ["fan_tokens"],
             "active": true,
             "platform": {
                 "name": "",
@@ -8777,7 +8782,7 @@
         {
             "code": "JUV",
             "name": "Juventus Fan Token",
-            "categories": ["fun_tokens"],
+            "categories": ["fan_tokens"],
             "active": true,
             "platform": {
                 "name": "",
@@ -8801,7 +8806,7 @@
         {
             "code": "GAL",
             "name": "Galatasaray Fan Token",
-            "categories": ["fun_tokens"],
+            "categories": ["fan_tokens"],
             "active": true,
             "platform": {
                 "name": "",
@@ -8825,7 +8830,7 @@
         {
             "code": "ACM",
             "name": "AC Milan Fan Token",
-            "categories": ["fun_tokens"],
+            "categories": ["fan_tokens"],
             "active": true,
             "platform": {
                 "name": "",
@@ -8849,7 +8854,7 @@
         {
             "code": "ATM",
             "name": "Atletico Madrid Fan Token",
-            "categories": ["fun_tokens"],
+            "categories": ["fan_tokens"],
             "active": true,
             "platform": {
                 "name": "",
@@ -8873,7 +8878,7 @@
         {
             "code": "OG",
             "name": "OG Fan Token",
-            "categories": ["fun_tokens"],
+            "categories": ["fan_tokens"],
             "active": true,
             "platform": {
                 "name": "",
@@ -8897,7 +8902,7 @@
         {
             "code": "ASR",
             "name": "AS Roma Fan Token",
-            "categories": ["fun_tokens"],
+            "categories": ["fan_tokens"],
             "active": true,
             "platform": {
                 "name": "",
@@ -8921,7 +8926,7 @@
         {
             "code": "STV",
             "name": "Sint-Truidense Voetbalvereniging Fan Token",
-            "categories": ["fun_tokens"],
+            "categories": ["fan_tokens"],
             "active": true,
             "platform": {
                 "name": "",
@@ -8945,7 +8950,7 @@
         {
             "code": "TH",
             "name": "Team Heretics Fan Token",
-            "categories": ["fun_tokens"],
+            "categories": ["fan_tokens"],
             "active": true,
             "platform": {
                 "name": "",
@@ -8969,7 +8974,7 @@
         {
             "code": "TRA",
             "name": "Trabzonspor Fan Token",
-            "categories": ["fun_tokens"],
+            "categories": ["fan_tokens"],
             "active": true,
             "platform": {
                 "name": "",
@@ -8993,7 +8998,7 @@
         {
             "code": "APL",
             "name": "Apollo",
-            "categories": ["fun_tokens"],
+            "categories": ["fan_tokens"],
             "active": true,
             "platform": {
                 "name": "",
@@ -9017,7 +9022,7 @@
         {
             "code": "NAVI",
             "name": "Natus Vincere Fan Token",
-            "categories": ["fun_tokens"],
+            "categories": ["fan_tokens"],
             "active": true,
             "platform": {
                 "name": "",
@@ -9036,6 +9041,174 @@
             },
             "rating": "",
             "id": "unsupported|natus-vincere-fan-token",
+            "funds": []
+        },
+        {
+            "code": "TKO",
+            "name": "Tokocrypto",
+            "categories": ["exchange_tokens"],
+            "active": true,
+            "platform": {
+                "name": "",
+                "address": "",
+                "type": ""
+            },
+            "description": "",
+            "links": {
+                "website": "",
+                "whitepaper": "",
+                "guide": "",
+                "twitter": "",
+                "github": "",
+                "reddit": "",
+                "telegram": ""
+            },
+            "rating": "",
+            "id": "bep20|0x9f589e3eabe42ebc94a44727b3f3531c0c877809",
+            "funds": []
+        },
+        {
+            "code": "PRQ",
+            "name": "PARSIQ",
+            "categories": ["investment_tools"],
+            "active": true,
+            "platform": {
+                "name": "",
+                "address": "",
+                "type": ""
+            },
+            "description": "",
+            "links": {
+                "website": "",
+                "whitepaper": "",
+                "guide": "",
+                "twitter": "",
+                "github": "",
+                "reddit": "",
+                "telegram": ""
+            },
+            "rating": "",
+            "id": "erc20|0x362bc847a3a9637d3af6624eec853618a43ed7d2",
+            "funds": []
+        },
+        {
+            "code": "DEXT",
+            "name": "DexTools",
+            "categories": ["investment_tools"],
+            "active": true,
+            "platform": {
+                "name": "",
+                "address": "",
+                "type": ""
+            },
+            "description": "",
+            "links": {
+                "website": "",
+                "whitepaper": "",
+                "guide": "",
+                "twitter": "",
+                "github": "",
+                "reddit": "",
+                "telegram": ""
+            },
+            "rating": "",
+            "id": "erc20|0x26ce25148832c04f3d7f26f32478a9fe55197166",
+            "funds": []
+        },
+        {
+            "code": "BDP",
+            "name": "Big Data Protocol",
+            "categories": ["investment_tools"],
+            "active": true,
+            "platform": {
+                "name": "",
+                "address": "",
+                "type": ""
+            },
+            "description": "",
+            "links": {
+                "website": "",
+                "whitepaper": "",
+                "guide": "",
+                "twitter": "",
+                "github": "",
+                "reddit": "",
+                "telegram": ""
+            },
+            "rating": "",
+            "id": "erc20|0xf3dcbc6d72a4e1892f7917b7c43b74131df8480e",
+            "funds": []
+        },
+        {
+            "code": "GLQ",
+            "name": "GraphLinq Protocol",
+            "categories": ["investment_tools"],
+            "active": true,
+            "platform": {
+                "name": "",
+                "address": "",
+                "type": ""
+            },
+            "description": "",
+            "links": {
+                "website": "",
+                "whitepaper": "",
+                "guide": "",
+                "twitter": "",
+                "github": "",
+                "reddit": "",
+                "telegram": ""
+            },
+            "rating": "",
+            "id": "erc20|0x9f9c8ec3534c3ce16f928381372bfbfbfb9f4d24",
+            "funds": []
+        },
+        {
+            "code": "UWL",
+            "name": "UniWhales",
+            "categories": ["investment_tools"],
+            "active": true,
+            "platform": {
+                "name": "",
+                "address": "",
+                "type": ""
+            },
+            "description": "",
+            "links": {
+                "website": "",
+                "whitepaper": "",
+                "guide": "",
+                "twitter": "",
+                "github": "",
+                "reddit": "",
+                "telegram": ""
+            },
+            "rating": "",
+            "id": "erc20|0xdbdd6f355a37b94e6c7d32fef548e98a280b8df5",
+            "funds": []
+        },
+        {
+            "code": "WATCH",
+            "name": "Yieldwatch",
+            "categories": ["investment_tools"],
+            "active": true,
+            "platform": {
+                "name": "",
+                "address": "",
+                "type": ""
+            },
+            "description": "",
+            "links": {
+                "website": "",
+                "whitepaper": "",
+                "guide": "",
+                "twitter": "",
+                "github": "",
+                "reddit": "",
+                "telegram": ""
+            },
+            "rating": "",
+            "id": "bep20|0x7a9f28eb62c791422aa23ceae1da9c847cbec9b0",
             "funds": []
         }
     ],
