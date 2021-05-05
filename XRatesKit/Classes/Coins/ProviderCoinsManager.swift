@@ -52,6 +52,7 @@ class ProviderCoinsManager {
                 ProviderCoinRecord(id: coin.id, code: coin.code.uppercased(), name: coin.name, coingeckoId: coin.externalId.coingecko, cryptocompareId: coin.externalId.cryptocompare)
             }
 
+            storage.set(version: 0, toType: .providerCoinsPriority)
             storage.update(providerCoins: coinRecords)
             storage.set(version: list.version, toType: .providerCoins)
         } catch {
