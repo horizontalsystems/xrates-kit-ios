@@ -128,26 +128,21 @@ extension CoinGeckoProvider: IChartPointProvider {
                         return points
                     }
 
-                    var result = [ChartPoint]()
-                    var nextPointTime: TimeInterval = 0
-                    var aggregatedVolume: Decimal?
+                    var nextTs = TimeInterval.infinity
 
-                    for point in points {
-                        point.volume.flatMap { aggregatedVolume = (aggregatedVolume ?? 0) + $0 }
+                    return points.reversed().compactMap { rateData in
+                        if (rateData.timestamp <= nextTs) {
+                            nextTs = rateData.timestamp - key.chartType.intervalInSeconds
+                            let rate = rateData.value
+                            let volume = key.chartType.resource == "histoday" ? rateData.volume : nil
 
-                        if point.timestamp >= nextPointTime {
-                            let volume = key.chartType.resource == "histoday" ? aggregatedVolume : nil
-                            result.append(ChartPoint(timestamp: point.timestamp, value: point.value, volume: volume))
-
-                            nextPointTime = point.timestamp + key.chartType.intervalInSeconds - 180
-                            aggregatedVolume = nil
+                            return ChartPoint(timestamp: rateData.timestamp, value: rate, volume: volume)
+                        } else {
+                            return nil
                         }
-                    }
-
-                    return result
+                    }.reversed()
                 }
     }
-
 }
 
 extension CoinGeckoProvider: ILatestRatesProvider {
