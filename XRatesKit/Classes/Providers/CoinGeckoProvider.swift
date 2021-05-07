@@ -132,7 +132,7 @@ extension CoinGeckoProvider: IChartPointProvider {
 
                     return points.reversed().compactMap { rateData in
                         if (rateData.timestamp <= nextTs) {
-                            nextTs = rateData.timestamp - key.chartType.intervalInSeconds
+                            nextTs = rateData.timestamp - key.chartType.intervalInSeconds + 180
                             let rate = rateData.value
                             let volume = key.chartType.resource == "histoday" ? rateData.volume : nil
 
