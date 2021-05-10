@@ -103,7 +103,7 @@ class CoinMarketInfoController: UIViewController {
                   defiTvl: \(marketInfo.defiTvlInfo?.tvl ?? -1)
                   tvlRank: \(marketInfo.defiTvlInfo?.tvlRank ?? -1)
 
-                  description: \(marketInfo.meta.description)
+                  description: \(marketInfo.meta.description.description)
 
                   == Categories ==
                   \(marketInfo.meta.categories.joined(separator: "\n"))

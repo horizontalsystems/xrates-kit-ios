@@ -41,12 +41,25 @@ public struct ProviderCoinData {
 }
 
 public struct CoinMeta {
-    public let description: String
+    public let description: CoinMetaDescriptionType
     public let links: [LinkType: String]
     public let rating: String?
     public let categories: [String]
     public let fundCategories: [CoinFundCategory]
     public let platforms: [CoinPlatformType: String]
+}
+
+public enum CoinMetaDescriptionType {
+    case html(String)
+    case markdown(String)
+
+    public var description: String {
+        switch self {
+        case let .html(text): return text
+        case let .markdown(text): return text
+        }
+    }
+
 }
 
 public enum CoinPlatformType: String {
