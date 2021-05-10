@@ -84,15 +84,14 @@ extension CoinGeckoProvider {
                         return Single.just(coinMarkets)
                     }
 
-                    if itemCount <= provider.coinsPerPage, itemCount <= coinMarkets.count {
+                    if itemCount <= provider.coinsPerPage || itemCount <= coinMarkets.count {
                         return Single.just(Array(coinMarkets[0..<itemCount]))
                     }
 
-                    var nextItemCount = itemCount
+                    var nextItemCount = itemCount - provider.coinsPerPage
                     if coinMarkets.count < expectedItemsCount {
                         nextItemCount += expectedItemsCount - coinMarkets.count
                     }
-                    nextItemCount = nextItemCount - provider.coinsPerPage
 
                     return provider
                             .topCoinMarketsSingle(currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod, itemCount: nextItemCount, page: page + 1, defiFilter: defiFilter)
