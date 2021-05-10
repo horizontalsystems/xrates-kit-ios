@@ -513,7 +513,7 @@ extension GrdbStorage: ICoinInfoStorage {
 
             let data = CoinData(coinType: coinType, code: record.code, name: record.name)
             let meta = CoinMeta(
-                    description: record.description ?? "",
+                    description: .markdown(record.description ?? ""),
                     links: linksMap,
                     rating: record.rating,
                     categories: categoryNames,

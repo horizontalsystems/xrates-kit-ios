@@ -47,8 +47,15 @@ extension CoinMarketsManager: ICoinMarketsManager {
                     }
 
                     let data: CoinData = CoinData(coinType: coinType, code: coin?.data.code ?? "", name: coin?.data.name ?? "")
+
+                    let metaDescription: CoinMetaDescriptionType
+                    if let coinDescription = coin?.meta.description {
+                        metaDescription = coinDescription
+                    } else {
+                        metaDescription = .html(coinInfoResponse.description)
+                    }
                     let meta = CoinMeta(
-                            description: coin?.meta.description ?? coinInfoResponse.description,
+                            description: metaDescription,
                             links: links,
                             rating: coin?.meta.rating,
                             categories: coin?.meta.categories ?? [],
