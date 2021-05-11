@@ -85,7 +85,7 @@ extension CoinGeckoProvider {
                     }
 
                     if itemCount <= provider.coinsPerPage || itemCount <= coinMarkets.count {
-                        return Single.just(Array(coinMarkets[0..<itemCount]))
+                        return Single.just(Array(coinMarkets.prefix(itemCount)))
                     }
 
                     var nextItemCount = itemCount - provider.coinsPerPage
