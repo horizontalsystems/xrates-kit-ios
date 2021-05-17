@@ -121,17 +121,25 @@ extension CoinGeckoProvider: IChartPointProvider {
         let url = "\(provider.baseUrl)/coins/\(externalId)/market_chart?vs_currency=\(key.currencyCode)&days=\(key.chartType.coinGeckoDaysParameter)"
         let request = networkManager.session.request(url, method: .get, encoding: JSONEncoding())
 
-        return networkManager.single(request: request, mapper: CoinGeckoMarketChartsMapper())
+        return networkManager.single(request: request, mapper: CoinGeckoMarketChartsMapper(intervalInSeconds: key.chartType.intervalInSeconds))
                 .map { points in
-                    guard key.chartType.coinGeckoPointCount <= points.count else {
+                    guard key.chartType.coinGeckoPointCount <= points.count, let last = points.last else {
                         return points
                     }
 
                     var nextTs = TimeInterval.infinity
 
+                    let hour4: TimeInterval = 4 * 60 * 60
+                    let hour8 = 2 * hour4
+                    switch key.chartType.intervalInSeconds {
+                    case hour4: nextTs = floor(last.timestamp / hour4) * hour4                          // found valid 4h close time
+                    case hour8: nextTs = floor(last.timestamp / hour8) * hour8                          // found valid 8h close time
+                    default: ()
+                    }
+
                     return points.reversed().compactMap { rateData in
                         if (rateData.timestamp <= nextTs) {
-                            nextTs = rateData.timestamp - key.chartType.intervalInSeconds + 180
+                            nextTs = rateData.timestamp - key.chartType.intervalInSeconds
                             let rate = rateData.value
                             let volume = key.chartType.resource == "histoday" ? rateData.volume : nil
 
