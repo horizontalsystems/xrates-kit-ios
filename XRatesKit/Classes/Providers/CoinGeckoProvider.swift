@@ -137,17 +137,28 @@ extension CoinGeckoProvider: IChartPointProvider {
                     default: ()
                     }
 
-                    return points.reversed().compactMap { rateData in
-                        if (rateData.timestamp <= nextTs) {
-                            nextTs = rateData.timestamp - key.chartType.intervalInSeconds
-                            let rate = rateData.value
-                            let volume = key.chartType.resource == "histoday" ? rateData.volume : nil
+                    var lastPoint: ChartPoint?
+                    let isAggregate = key.chartType.resource == "histoday"
+                    var aggregatedVolume: Decimal = 0
 
-                            return ChartPoint(timestamp: rateData.timestamp, value: rate, volume: volume)
+                    var result = [ChartPoint]()
+
+                    for point in points.reversed() {
+                        if point.timestamp <= nextTs {                              // we found point with needed timestamp
+                            if let lastPoint = lastPoint {                          // if we found new point, we must add last one with aggregated volumes
+                                result.append(ChartPoint(timestamp: lastPoint.timestamp, value: lastPoint.value, volume: isAggregate ? aggregatedVolume : nil))
+                                aggregatedVolume = 0
+                            }
+
+                            lastPoint = point                                       // set last point and start aggregate volumes
+                            aggregatedVolume += isAggregate ? point.volume ?? 0 : 0
+                            nextTs = point.timestamp - key.chartType.intervalInSeconds
                         } else {
-                            return nil
+                            aggregatedVolume += isAggregate ? point.volume ?? 0 : 0 // just add volume and drop point
                         }
-                    }.reversed()
+                    }
+
+                    return result.reversed()
                 }
     }
 }
