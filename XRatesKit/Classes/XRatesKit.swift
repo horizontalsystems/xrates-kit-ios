@@ -46,6 +46,10 @@ extension XRatesKit {
         latestRateManager.latestRate(key: PairKey(coinType: coinType, currencyCode: currencyCode))
     }
 
+    public func latestRateMap(coinTypes: [CoinType], currencyCode: String) -> [CoinType: LatestRate] {
+        latestRateManager.latestRateMap(coinTypes: coinTypes, currencyCode: currencyCode)
+    }
+
     public func latestRateObservable(coinType: CoinType, currencyCode: String) -> Observable<LatestRate> {
         latestRateSyncManager.latestRateObservable(key: PairKey(coinType: coinType, currencyCode: currencyCode))
     }

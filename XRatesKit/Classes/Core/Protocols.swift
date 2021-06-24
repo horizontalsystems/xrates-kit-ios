@@ -7,6 +7,7 @@ import Foundation
 protocol ILatestRatesManager {
     func lastSyncTimestamp(coinTypes: [CoinType], currencyCode: String) -> TimeInterval?
     func latestRate(key: PairKey) -> LatestRate?
+    func latestRateMap(coinTypes: [CoinType], currencyCode: String) -> [CoinType: LatestRate]
     func handleUpdated(records: [LatestRateRecord], currencyCode: String)
     func notifyExpired(coinTypes: [CoinType], currencyCode: String)
 }
@@ -26,6 +27,7 @@ protocol ILatestRatesCoinTypeDataSource: AnyObject {
 
 protocol ILatestRatesStorage {
     func latestRateRecord(key: PairKey) -> LatestRateRecord?
+    func latestRateRecords(coinTypes: [CoinType], currencyCode: String) -> [LatestRateRecord]
     func latestRateRecordsSortedByTimestamp(coinTypes: [CoinType], currencyCode: String) -> [LatestRateRecord]
     func save(marketInfoRecords: [LatestRateRecord])
 }
