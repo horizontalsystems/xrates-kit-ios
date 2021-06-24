@@ -291,6 +291,12 @@ extension GrdbStorage: ILatestRatesStorage {
         }
     }
 
+    func latestRateRecords(coinTypes: [CoinType], currencyCode: String) -> [LatestRateRecord] {
+        try! dbPool.read { db in
+            try LatestRateRecord.filter(coinTypes.map { $0.id }.contains(LatestRateRecord.Columns.coinId) && LatestRateRecord.Columns.currencyCode == currencyCode).fetchAll(db)
+        }
+    }
+
     func latestRateRecordsSortedByTimestamp(coinTypes: [CoinType], currencyCode: String) -> [LatestRateRecord] {
         try! dbPool.read { db in
             try LatestRateRecord

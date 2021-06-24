@@ -86,9 +86,7 @@ class LatestRatesController: UITableViewController {
     }
 
     private func fillInitialData() {
-        for coin in coins {
-            latestRates[coin.type] = xRatesKit.latestRate(coinType: coin.type, currencyCode: currencyCode)
-        }
+        latestRates = xRatesKit.latestRateMap(coinTypes: coins.map { $0.type }, currencyCode: currencyCode)
     }
 
 }

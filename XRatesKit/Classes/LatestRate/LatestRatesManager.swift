@@ -52,6 +52,16 @@ extension LatestRatesManager: ILatestRatesManager {
         storage.latestRateRecord(key: key).map { latestRate(record: $0) }
     }
 
+    func latestRateMap(coinTypes: [CoinType], currencyCode: String) -> [CoinType: LatestRate] {
+        var map = [CoinType: LatestRate]()
+
+        for record in storage.latestRateRecords(coinTypes: coinTypes, currencyCode: currencyCode) {
+            map[record.coinType] = latestRate(record: record)
+        }
+
+        return map
+    }
+
     func handleUpdated(records: [LatestRateRecord], currencyCode: String) {
         storage.save(marketInfoRecords: records)
         notify(records: records, currencyCode: currencyCode)
