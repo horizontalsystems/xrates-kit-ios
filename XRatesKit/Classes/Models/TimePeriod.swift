@@ -24,6 +24,19 @@ public enum TimePeriod: String, CaseIterable {
         }
     }
 
+    public var chartType: ChartType {
+        switch self {
+        case .dayStart: return .today
+        case .hour24: return .day
+        case .day7: return .week
+        case .day14: return .week2
+        case .day30: return .month
+        case .day200: return .halfYear
+        case .year1: return .year
+        default: return .day
+        }
+    }
+
     var seconds: TimeInterval {
         switch self {
         case .all: return 0

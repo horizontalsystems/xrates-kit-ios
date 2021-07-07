@@ -38,6 +38,7 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
         let circulatingSupply: Decimal?
         let volume24h: Decimal?
         let marketCap: Decimal?
+        let marketCapRank: Int?
         let dilutedMarketCap: Decimal?
         let marketCapDiff24h: Decimal?
         let genesisDate: TimeInterval?
@@ -103,6 +104,7 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
         let circulatingSupply = Decimal(convertibleValue: marketDataMap["circulating_supply"])
         let volume24h = fiatValueDecimal(marketData: marketDataMap, key: "total_volume")
         let marketCap = fiatValueDecimal(marketData: marketDataMap, key: "market_cap")
+        let marketCapRank = marketDataMap["market_cap_rank"] as? Int
         let dilutedMarketCap = fiatValueDecimal(marketData: marketDataMap, key: "fully_diluted_valuation")
         let marketCapDiff24h = Decimal(convertibleValue: marketDataMap["market_cap_change_percentage_24h"])
 
@@ -207,23 +209,24 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
                     .sorted { t1, t2 in t1.order < t2.order }
                     .map { tuple -> MarketTicker in tuple.ticker }
         }
-        
+
         return CoinGeckoCoinInfoResponse(
-            rate: rate,
-            rateHigh24h: rateHigh24h,
-            rateLow24h: rateLow24h,
-            totalSupply: totalSupply,
-            circulatingSupply: circulatingSupply,
-            volume24h: volume24h,
-            marketCap: marketCap,
-            dilutedMarketCap: dilutedMarketCap,
-            marketCapDiff24h: marketCapDiff24h,
-            genesisDate: genesisDate,
-            description: description,
-            rateDiffs: rateDiffs,
-            links: links,
-            platforms: platforms,
-            tickers: tickers
+                rate: rate,
+                rateHigh24h: rateHigh24h,
+                rateLow24h: rateLow24h,
+                totalSupply: totalSupply,
+                circulatingSupply: circulatingSupply,
+                volume24h: volume24h,
+                marketCap: marketCap,
+                marketCapRank: marketCapRank,
+                dilutedMarketCap: dilutedMarketCap,
+                marketCapDiff24h: marketCapDiff24h,
+                genesisDate: genesisDate,
+                description: description,
+                rateDiffs: rateDiffs,
+                links: links,
+                platforms: platforms,
+                tickers: tickers
         )
     }
 
