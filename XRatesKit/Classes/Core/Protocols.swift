@@ -158,6 +158,7 @@ protocol INewsState {
 // Coins
 
 protocol ICoinInfoStorage {
+    func version(type: DataVersion.DataTypes) -> Int
     var categorizedCoins: [CoinType] { get }
     var coinInfosVersion: Int { get }
     func set(coinInfosVersion: Int)

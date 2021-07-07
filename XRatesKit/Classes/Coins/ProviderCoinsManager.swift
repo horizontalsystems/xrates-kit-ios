@@ -28,36 +28,31 @@ class ProviderCoinsManager {
 
     private let disposeBag = DisposeBag()
 
-    private let filename = "provider.coins"
+    private let url: String
     private let storage: IProviderCoinsStorage & ICoinInfoStorage
-    private let parser: JsonFileParser
+    private let dataProvider: CoinsDataProvider
     private let categorizedCoinOrder = 0
 
     weak var provider: CoinGeckoProvider?
 
-    init(storage: IProviderCoinsStorage & ICoinInfoStorage, parser: JsonFileParser) {
+    init(storage: IProviderCoinsStorage & ICoinInfoStorage, dataProvider: CoinsDataProvider, url: String) {
         self.storage = storage
-        self.parser = parser
+        self.dataProvider = dataProvider
+        self.url = url
     }
 
-    private func updateIds() {
-        do {
-            let list: ProviderCoinsList = try parser.parse(filename: filename)
-
-            guard list.version > storage.version(type: .providerCoins) else {
-                return
-            }
-
-            let coinRecords = list.coins.map { coin in
-                ProviderCoinRecord(id: coin.id, code: coin.code.uppercased(), name: coin.name, coingeckoId: coin.externalId.coingecko, cryptocompareId: coin.externalId.cryptocompare)
-            }
-
-            storage.set(version: 0, toType: .providerCoinsPriority)
-            storage.update(providerCoins: coinRecords)
-            storage.set(version: list.version, toType: .providerCoins)
-        } catch {
-            print(error.localizedDescription)
+    private func updateIds(list: ProviderCoinsList) {
+        guard list.version > storage.version(type: .providerCoins) else {
+            return
         }
+
+        let coinRecords = list.coins.map { coin in
+            ProviderCoinRecord(id: coin.id, code: coin.code.uppercased(), name: coin.name, coingeckoId: coin.externalId.coingecko, cryptocompareId: coin.externalId.cryptocompare)
+        }
+
+        storage.set(version: 0, toType: .providerCoinsPriority)
+        storage.update(providerCoins: coinRecords)
+        storage.set(version: list.version, toType: .providerCoins)
     }
 
     private func updatePriorities(topCoins: [CoinMarket]) {
@@ -98,12 +93,16 @@ class ProviderCoinsManager {
 extension ProviderCoinsManager {
 
     func sync() -> Single<Void> {
-        Single<Void>.create { [weak self] observer in
-            self?.updateIds()
-            observer(.success(()))
-
-            return Disposables.create()
+        guard Date().timeIntervalSince1970 - TimeInterval(storage.version(type: .providerCoins)) > ProviderCoinsManager.priorityUpdateInterval else {
+            return Single.just(())
         }
+
+        return dataProvider.parse(url: URL(string: url)!)
+                .flatMap { [weak self] (list: ProviderCoinsList) -> Single<()> in
+                    self?.updateIds(list: list)
+                    return Single.just(())
+                }
+
     }
 
     func updatePriorities() {
