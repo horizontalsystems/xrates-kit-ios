@@ -80,6 +80,7 @@ extension CoinMarketsManager: ICoinMarketsManager {
                             circulatingSupply: coinInfoResponse.circulatingSupply,
                             volume24h: coinInfoResponse.volume24h,
                             marketCap: coinInfoResponse.marketCap,
+                            marketCapRank: coinInfoResponse.marketCapRank,
                             dilutedMarketCap: coinInfoResponse.dilutedMarketCap,
                             marketCapDiff24h: coinInfoResponse.marketCapDiff24h,
                             genesisDate: coinInfoResponse.genesisDate,
@@ -88,6 +89,10 @@ extension CoinMarketsManager: ICoinMarketsManager {
                             tickers: coinInfoResponse.tickers
                     )
                 }
+    }
+
+    func coinMarketPointsSingle(coinType: CoinType, currencyCode: String, fetchDiffPeriod: TimePeriod) -> Single<[CoinMarketPoint]> {
+        provider.coinMarketPointsSingle(coinType: coinType, currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod)
     }
 
 }

@@ -109,6 +109,30 @@ extension CoinGeckoProvider {
         return networkManager.single(request: request, mapper: mapper)
     }
 
+    func coinMarketPointsSingle(coinType: CoinType, currencyCode: String, fetchDiffPeriod: TimePeriod) -> Single<[CoinMarketPoint]> {
+        guard let externalId = providerCoinsManager.providerId(coinType: coinType, provider: .coinGecko) else {
+            return Single.error(ProviderCoinsManager.ExternalIdError.noMatchingCoinId)
+        }
+
+        let days = Int(fetchDiffPeriod.seconds / (60 * 60 * 24))
+
+        let url = "\(provider.baseUrl)/coins/\(externalId)/market_chart"
+        var parameters: [String: Any] = [
+            "vs_currency": currencyCode,
+            "days": days
+        ]
+
+        if days >= 90 {
+            parameters["interval"] = "daily"
+        }
+
+        let chartType = fetchDiffPeriod.chartType
+        let mapper = CoinGeckoCoinMarketCapPointMapper(intervalInSeconds: chartType.intervalInSeconds, points: chartType.pointCount)
+        let request = networkManager.session.request(url, method: .get, parameters: parameters)
+
+        return networkManager.single(request: request, mapper: mapper)
+    }
+
 }
 
 extension CoinGeckoProvider: IChartPointProvider {

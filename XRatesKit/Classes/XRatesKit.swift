@@ -122,6 +122,10 @@ extension XRatesKit {
         defiMarketsManager.defiTvl(coinType: coinType, currencyCode: currencyCode)
     }
 
+    public func coinMarketPointsSingle(coinType: CoinType, currencyCode: String, fetchDiffPeriod: TimePeriod = .hour24) -> Single<[CoinMarketPoint]> {
+        coinMarketsManager.coinMarketPointsSingle(coinType: coinType, currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod)
+    }
+
     public func search(text: String) -> [CoinData] {
         providerCoinsManager.search(text: text)
     }
