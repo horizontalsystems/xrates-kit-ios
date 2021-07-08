@@ -1,3 +1,4 @@
+import Foundation
 import ObjectMapper
 import CoinKit
 import RxSwift
@@ -43,55 +44,52 @@ fileprivate struct CoinLinks: Decodable {
 
 class CoinInfoManager {
 
-    private let filename = "coins"
+    private let url: String
     private let storage: ICoinInfoStorage
     private let exchangeStorage: IExchangeStorage
-    private let parser: JsonFileParser
+    private let dataProvider: CoinsDataProvider
 
-    init(storage: ICoinInfoStorage, exchangeStorage: IExchangeStorage, parser: JsonFileParser) {
+    private static let coinsUpdateInterval: TimeInterval = 10 * 24 * 60 * 60 // 10 days
+
+    init(storage: ICoinInfoStorage, exchangeStorage: IExchangeStorage, dataProvider: CoinsDataProvider, url: String) {
         self.storage = storage
         self.exchangeStorage = exchangeStorage
-        self.parser = parser
+        self.dataProvider = dataProvider
+        self.url = url
     }
 
-    private func updateCoins() {
-        do {
-            let list: CoinsList = try parser.parse(filename: filename)
-
-            guard list.version > storage.coinInfosVersion else {
-                return
-            }
-
-            var coinInfos = [CoinInfoRecord]()
-            var coinCategoryCoinInfos = [CoinCategoryCoinInfo]()
-            var coinFundCoinInfos = [CoinFundCoinInfo]()
-            var links = [CoinLink]()
-
-            for coin in list.coins {
-                coinInfos.append(CoinInfoRecord(coinType: CoinType(id: coin.id), code: coin.code, name: coin.name, rating: coin.rating, description: coin.description))
-
-                for categoryId in coin.categories {
-                    coinCategoryCoinInfos.append(CoinCategoryCoinInfo(coinCategoryId: categoryId, coinInfoId: coin.id))
-                }
-
-                for fundId in coin.funds {
-                    coinFundCoinInfos.append(CoinFundCoinInfo(coinFundId: fundId, coinInfoId: coin.id))
-                }
-
-                for (linkType, linkValue) in coin.links.links {
-                    links.append(CoinLink(coinInfoId: coin.id, linkType: linkType.rawValue, value: linkValue))
-                }
-            }
-
-            storage.update(coinCategories: list.categories)
-            storage.update(coinFunds: list.funds)
-            storage.update(coinFundCategories: list.fundCategories)
-            exchangeStorage.update(exchanges: list.exchanges)
-            storage.update(coinInfos: coinInfos, categoryMaps: coinCategoryCoinInfos, fundMaps: coinFundCoinInfos, links: links)
-            storage.set(coinInfosVersion: list.version)
-        } catch {
-            print(error.localizedDescription)
+    private func updateCoins(list: CoinsList) {
+        guard list.version > storage.coinInfosVersion else {
+            return
         }
+
+        var coinInfos = [CoinInfoRecord]()
+        var coinCategoryCoinInfos = [CoinCategoryCoinInfo]()
+        var coinFundCoinInfos = [CoinFundCoinInfo]()
+        var links = [CoinLink]()
+
+        for coin in list.coins {
+            coinInfos.append(CoinInfoRecord(coinType: CoinType(id: coin.id), code: coin.code, name: coin.name, rating: coin.rating, description: coin.description))
+
+            for categoryId in coin.categories {
+                coinCategoryCoinInfos.append(CoinCategoryCoinInfo(coinCategoryId: categoryId, coinInfoId: coin.id))
+            }
+
+            for fundId in coin.funds {
+                coinFundCoinInfos.append(CoinFundCoinInfo(coinFundId: fundId, coinInfoId: coin.id))
+            }
+
+            for (linkType, linkValue) in coin.links.links {
+                links.append(CoinLink(coinInfoId: coin.id, linkType: linkType.rawValue, value: linkValue))
+            }
+        }
+
+        storage.update(coinCategories: list.categories)
+        storage.update(coinFunds: list.funds)
+        storage.update(coinFundCategories: list.fundCategories)
+        exchangeStorage.update(exchanges: list.exchanges)
+        storage.update(coinInfos: coinInfos, categoryMaps: coinCategoryCoinInfos, fundMaps: coinFundCoinInfos, links: links)
+        storage.set(coinInfosVersion: list.version)
     }
 
     func coinTypes(forCategoryId categoryId: String) -> [CoinType] {
@@ -102,13 +100,16 @@ class CoinInfoManager {
 
 extension CoinInfoManager {
 
-    func sync() -> Single<Void> {
-        Single<Void>.create { [weak self] observer in
-            self?.updateCoins()
-            observer(.success(()))
-
-            return Disposables.create()
+    func sync() -> Single<()> {
+        guard Date().timeIntervalSince1970 - TimeInterval(storage.version(type: .coinInfos)) > CoinInfoManager.coinsUpdateInterval else {
+            return Single.just(())
         }
+
+        return dataProvider.parse(url: URL(string: url)!)
+                .flatMap { [weak self] (list: CoinsList) -> Single<()> in
+                    self?.updateCoins(list: list)
+                    return Single.just(())
+                }
     }
 
     func coinInfo(coinType: CoinType) -> (data: CoinData, meta: CoinMeta)? {

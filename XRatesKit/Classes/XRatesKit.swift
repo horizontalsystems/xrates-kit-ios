@@ -136,16 +136,19 @@ extension XRatesKit {
 
     public static func instance(currencyCode: String, coinMarketCapApiKey: String? = nil, cryptoCompareApiKey: String? = nil, uniswapSubgraphUrl: String,
                                 indicatorPointCount: Int = 60, marketInfoExpirationInterval: TimeInterval = 60, topMarketsCount: Int = 10,
-                                retryInterval: TimeInterval = 30, minLogLevel: Logger.Level = .error) -> XRatesKit {
+                                retryInterval: TimeInterval = 30,
+                                providerCoinsUrl: String, coinsUrl: String,
+                                minLogLevel: Logger.Level = .error) -> XRatesKit {
         let logger = Logger(minLogLevel: minLogLevel)
         let reachabilityManager = ReachabilityManager()
         let storage = GrdbStorage()
 
-        let jsonParser = JsonFileParser()
-        let providerCoinsManager = ProviderCoinsManager(storage: storage, parser: jsonParser)
-        let coinInfoManager = CoinInfoManager(storage: storage, exchangeStorage: storage, parser: jsonParser)
-
         let networkManager = NetworkManager(logger: logger)
+
+        let coinsDataProvider = CoinsDataProvider(networkManager: networkManager)
+        let providerCoinsManager = ProviderCoinsManager(storage: storage, dataProvider: coinsDataProvider, url: providerCoinsUrl)
+        let coinInfoManager = CoinInfoManager(storage: storage, exchangeStorage: storage, dataProvider: coinsDataProvider, url: coinsUrl)
+
         let coinGeckoProvider = CoinGeckoProvider(providerCoinsManager: providerCoinsManager, exchangeStorage: storage, expirationInterval: marketInfoExpirationInterval, logger: logger)
         let cryptoCompareProvider = CryptoCompareProvider(networkManager: networkManager, apiKey: cryptoCompareApiKey)
 
