@@ -14,12 +14,13 @@ public class XRatesKit {
     private let newsPostsManager: INewsManager
     private let coinInfoManager: CoinInfoManager
     private let providerCoinsManager: ProviderCoinsManager
+    private let tokenInfoManager: TokenInfoManager
     private let coinSyncer: CoinSyncer
 
     init(latestRateManager: ILatestRatesManager, globalMarketInfoManager: GlobalMarketInfoManager, defiMarketsManager: DefiMarketManager,
          latestRateSyncManager: ILatestRateSyncManager, coinMarketsManager: ICoinMarketsManager, historicalRateManager: IHistoricalRateManager,
          chartInfoManager: IChartInfoManager, chartInfoSyncManager: IChartInfoSyncManager, newsPostsManager: INewsManager,
-         coinInfoManager: CoinInfoManager, providerCoinsManager: ProviderCoinsManager, coinSyncer: CoinSyncer) {
+         coinInfoManager: CoinInfoManager, providerCoinsManager: ProviderCoinsManager, tokenInfoManager: TokenInfoManager, coinSyncer: CoinSyncer) {
         self.globalMarketInfoManager = globalMarketInfoManager
         self.defiMarketsManager = defiMarketsManager
         self.latestRateManager = latestRateManager
@@ -31,6 +32,7 @@ public class XRatesKit {
         self.newsPostsManager = newsPostsManager
         self.coinInfoManager = coinInfoManager
         self.providerCoinsManager = providerCoinsManager
+        self.tokenInfoManager = tokenInfoManager
         self.coinSyncer = coinSyncer
     }
 
@@ -126,6 +128,10 @@ extension XRatesKit {
         coinMarketsManager.coinMarketPointsSingle(coinType: coinType, currencyCode: currencyCode, fetchDiffPeriod: fetchDiffPeriod)
     }
 
+    public func topTokenHoldersSingle(coinType: CoinType, itemsCount: Int = 20) -> Single<[TokenHolder]> {
+        tokenInfoManager.topTokenHoldersSingle(coinType: coinType, itemsCount: itemsCount)
+    }
+
     public func search(text: String) -> [CoinData] {
         providerCoinsManager.search(text: text)
     }
@@ -173,6 +179,8 @@ extension XRatesKit {
         chartInfoManager.delegate = chartInfoSyncManager
         providerCoinsManager.provider = coinGeckoProvider
 
+        let tokenInfoManager = TokenInfoManager(provider: horsysProvider)
+
         let newsPostManager = NewsManager(provider: cryptoCompareProvider, state: NewsState(expirationTime: 30 * 60))
         let coinSyncer = CoinSyncer(providerCoinsManager: providerCoinsManager, coinInfoManager: coinInfoManager)
 
@@ -188,6 +196,7 @@ extension XRatesKit {
                 newsPostsManager: newsPostManager,
                 coinInfoManager: coinInfoManager,
                 providerCoinsManager: providerCoinsManager,
+                tokenInfoManager: tokenInfoManager,
                 coinSyncer: coinSyncer
         )
 
