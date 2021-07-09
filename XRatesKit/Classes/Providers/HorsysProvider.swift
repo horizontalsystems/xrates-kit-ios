@@ -84,10 +84,31 @@ extension HorsysProvider: IDefiMarketsProvider {
 
 }
 
+extension HorsysProvider: ITokenInfoProvider {
+
+    func topTokenHoldersSingle(coinType: CoinType, itemsCount: Int) -> Single<[TokenHolder]> {
+        guard case .erc20(let address) = coinType else {
+            return Single.error(TopTokenHoldersError.unsupportedCoinType)
+        }
+
+        let url = "\(provider.baseUrl)tokens/holders/\(address)"
+        let parameters: [String: Any] = ["limit": itemsCount]
+
+        let request = networkManager.session.request(url, method: .get, parameters: parameters)
+
+        return networkManager.single(request: request)
+    }
+
+}
+
 extension HorsysProvider {
 
     enum GlobalCoinMarketError: Error {
         case unsupportedPeriod
+    }
+
+    enum TopTokenHoldersError: Error {
+        case unsupportedCoinType
     }
 
 }

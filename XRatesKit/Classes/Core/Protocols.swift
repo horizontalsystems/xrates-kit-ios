@@ -76,6 +76,9 @@ protocol IGlobalCoinMarketProvider {
     func globalCoinMarketPoints(currencyCode: String, timePeriod: TimePeriod) -> Single<[GlobalCoinMarketPoint]>
 }
 
+protocol ITokenInfoProvider {
+    func topTokenHoldersSingle(coinType: CoinType, itemsCount: Int) -> Single<[TokenHolder]>
+}
 
 protocol IDefiMarketsProvider {
     func topDefiTvl(currencyCode: String, timePeriod: TimePeriod, itemCount: Int) -> Single<[DefiTvl]>
