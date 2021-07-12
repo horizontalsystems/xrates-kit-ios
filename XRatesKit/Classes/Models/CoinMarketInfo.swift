@@ -48,6 +48,7 @@ public struct CoinMeta {
     public let categories: [String]
     public let fundCategories: [CoinFundCategory]
     public let platforms: [CoinPlatformType: String]
+    public let security: CoinSecurity?
 }
 
 public enum CoinMetaDescriptionType {
@@ -79,4 +80,10 @@ public enum LinkType: String, CodingKey, CaseIterable {
     case telegram
     case reddit
     case github
+}
+
+public enum SecurityLevel: String {
+    case low
+    case medium
+    case high
 }

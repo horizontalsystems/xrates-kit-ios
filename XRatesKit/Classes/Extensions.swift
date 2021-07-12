@@ -38,3 +38,19 @@ extension Decimal {
     }
 
 }
+
+extension SecurityLevel: DatabaseValueConvertible {
+
+    public var databaseValue: DatabaseValue {
+        self.rawValue.databaseValue
+    }
+
+    public static func fromDatabaseValue(_ dbValue: DatabaseValue) -> SecurityLevel? {
+        guard case .string(let rawValue) = dbValue.storage else {
+            return nil
+        }
+
+        return SecurityLevel(rawValue: rawValue)
+    }
+
+}

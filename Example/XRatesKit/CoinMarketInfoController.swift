@@ -120,6 +120,9 @@ class CoinMarketInfoController: UIViewController {
                   == Links ==
                   \(marketInfo.meta.links.map { (key, value) in "\(key.rawValue.uppercased()): \(value)" }.joined(separator: "\n"))
 
+                  == Security ==
+                  \(marketInfo.meta.security.map { "Privacy: \($0.privacy)\nDecentralized: \($0.decentralized)\nConfiscation-resistance: \($0.confiscationResistance)\nCensorship-resistance: \($0.censorshipResistance)" } ?? "nil")
+
                   == Rate Diffs ==
                   """
 
