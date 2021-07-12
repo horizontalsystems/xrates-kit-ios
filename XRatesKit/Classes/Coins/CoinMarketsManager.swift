@@ -60,7 +60,8 @@ extension CoinMarketsManager: ICoinMarketsManager {
                             rating: coin?.meta.rating,
                             categories: coin?.meta.categories ?? [],
                             fundCategories: coin?.meta.fundCategories ?? [],
-                            platforms: coinInfoResponse.platforms
+                            platforms: coinInfoResponse.platforms,
+                            security: coin?.meta.security
                     )
 
                     let defiTvlInfo = defiTvl.map { defiTvl -> DefiTvlInfo in

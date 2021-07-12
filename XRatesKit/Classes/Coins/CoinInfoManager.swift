@@ -22,6 +22,14 @@ fileprivate struct CoinsCoinInfo: Decodable {
     let description: String?
     let rating: String?
     let links: CoinLinks
+    let security: CoinSecurityInfo?
+}
+
+fileprivate struct CoinSecurityInfo: Decodable {
+    let privacy: String
+    let decentralized: Bool
+    let confiscationResistance: String
+    let censorshipResistance: String
 }
 
 fileprivate struct CoinLinks: Decodable {
@@ -67,6 +75,7 @@ class CoinInfoManager {
         var coinCategoryCoinInfos = [CoinCategoryCoinInfo]()
         var coinFundCoinInfos = [CoinFundCoinInfo]()
         var links = [CoinLink]()
+        var securities = [CoinSecurity]()
 
         for coin in list.coins {
             coinInfos.append(CoinInfoRecord(coinType: CoinType(id: coin.id), code: coin.code, name: coin.name, rating: coin.rating, description: coin.description))
@@ -82,13 +91,21 @@ class CoinInfoManager {
             for (linkType, linkValue) in coin.links.links {
                 links.append(CoinLink(coinInfoId: coin.id, linkType: linkType.rawValue, value: linkValue))
             }
+
+            if let security = coin.security,
+               let privacy = SecurityLevel(rawValue: security.privacy),
+               let confiscationResistance = SecurityLevel(rawValue: security.confiscationResistance),
+               let censorshipResistance = SecurityLevel(rawValue: security.censorshipResistance)
+            {
+                securities.append(CoinSecurity(coinId: coin.id, privacy: privacy, decentralized: security.decentralized, confiscationResistance: confiscationResistance, censorshipResistance: censorshipResistance))
+            }
         }
 
         storage.update(coinCategories: list.categories)
         storage.update(coinFunds: list.funds)
         storage.update(coinFundCategories: list.fundCategories)
         exchangeStorage.update(exchanges: list.exchanges)
-        storage.update(coinInfos: coinInfos, categoryMaps: coinCategoryCoinInfos, fundMaps: coinFundCoinInfos, links: links)
+        storage.update(coinInfos: coinInfos, categoryMaps: coinCategoryCoinInfos, fundMaps: coinFundCoinInfos, links: links, securities: securities)
         storage.set(coinInfosVersion: list.version)
     }
 

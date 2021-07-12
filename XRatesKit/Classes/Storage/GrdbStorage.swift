@@ -278,6 +278,18 @@ class GrdbStorage {
             }
         }
 
+        migrator.registerMigration("createCoinSecurities") { db in
+            try db.create(table: CoinSecurity.databaseTableName) { t in
+                t.column(CoinSecurity.Columns.coinId.name, .text).notNull()
+                t.column(CoinSecurity.Columns.privacy.name, .text).notNull()
+                t.column(CoinSecurity.Columns.decentralized.name, .boolean).notNull()
+                t.column(CoinSecurity.Columns.confiscationResistance.name, .text).notNull()
+                t.column(CoinSecurity.Columns.censorshipResistance.name, .text).notNull()
+
+                t.primaryKey([CoinSecurity.Columns.coinId.name], onConflict: .replace)
+            }
+        }
+
         return migrator
     }
 
@@ -466,12 +478,13 @@ extension GrdbStorage: ICoinInfoStorage {
         }
     }
 
-    func update(coinInfos: [CoinInfoRecord], categoryMaps: [CoinCategoryCoinInfo], fundMaps: [CoinFundCoinInfo], links: [CoinLink]) {
+    func update(coinInfos: [CoinInfoRecord], categoryMaps: [CoinCategoryCoinInfo], fundMaps: [CoinFundCoinInfo], links: [CoinLink], securities: [CoinSecurity]) {
         _ = try! dbPool.write { db in
             try CoinInfoRecord.deleteAll(db)
             try CoinCategoryCoinInfo.deleteAll(db)
             try CoinFundCoinInfo.deleteAll(db)
             try CoinLink.deleteAll(db)
+            try CoinSecurity.deleteAll(db)
 
             for coinInfo in coinInfos {
                 try coinInfo.insert(db)
@@ -487,6 +500,10 @@ extension GrdbStorage: ICoinInfoStorage {
 
             for link in links {
                 try link.insert(db)
+            }
+
+            for security in securities {
+                try security.insert(db)
             }
         }
     }
@@ -517,6 +534,8 @@ extension GrdbStorage: ICoinInfoStorage {
                 }
             }
 
+            let security = try CoinSecurity.filter(CoinSecurity.Columns.coinId == record.coinType.id).fetchOne(db)
+
             let data = CoinData(coinType: coinType, code: record.code, name: record.name)
             let meta = CoinMeta(
                     description: .markdown(record.description ?? ""),
@@ -524,7 +543,8 @@ extension GrdbStorage: ICoinInfoStorage {
                     rating: record.rating,
                     categories: categoryNames,
                     fundCategories: categories,
-                    platforms: [:]
+                    platforms: [:],
+                    security: security
             )
 
             return (data: data, meta: meta)

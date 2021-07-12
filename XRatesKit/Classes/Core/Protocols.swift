@@ -168,7 +168,7 @@ protocol ICoinInfoStorage {
     func update(coinCategories: [CoinCategory])
     func update(coinFunds: [CoinFund])
     func update(coinFundCategories: [CoinFundCategory])
-    func update(coinInfos: [CoinInfoRecord], categoryMaps: [CoinCategoryCoinInfo], fundMaps: [CoinFundCoinInfo], links: [CoinLink])
+    func update(coinInfos: [CoinInfoRecord], categoryMaps: [CoinCategoryCoinInfo], fundMaps: [CoinFundCoinInfo], links: [CoinLink], securities: [CoinSecurity])
     func providerCoinInfo(coinType: CoinType) -> (data: CoinData, meta: CoinMeta)?
     func coins(forCategoryId: String) -> [CoinInfoRecord]
 }
