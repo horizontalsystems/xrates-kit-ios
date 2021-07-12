@@ -18,8 +18,8 @@ extension DefiMarketManager {
         coinGeckoProvider.topCoinMarketsSingle(currencyCode: currency, fetchDiffPeriod: fetchDiffPeriod, itemCount: itemCount, defiFilter: true)
     }
 
-    func topDefiTvl(currency: String, fetchDiffPeriod: TimePeriod, itemCount: Int) -> Single<[DefiTvl]> {
-        defiMarketsProvider.topDefiTvl(currencyCode: currency, timePeriod: fetchDiffPeriod, itemCount: itemCount)
+    func topDefiTvlSingle(currency: String, fetchDiffPeriod: TimePeriod, itemCount: Int, chain: String?) -> Single<[DefiTvl]> {
+        defiMarketsProvider.topDefiTvlSingle(currencyCode: currency, timePeriod: fetchDiffPeriod, itemCount: itemCount, chain: chain)
     }
 
     func defiTvl(coinType: CoinType, currencyCode: String) -> Single<DefiTvl?> {
