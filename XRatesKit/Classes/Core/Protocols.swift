@@ -81,7 +81,7 @@ protocol ITokenInfoProvider {
 }
 
 protocol IDefiMarketsProvider {
-    func topDefiTvl(currencyCode: String, timePeriod: TimePeriod, itemCount: Int) -> Single<[DefiTvl]>
+    func topDefiTvlSingle(currencyCode: String, timePeriod: TimePeriod, itemCount: Int, chain: String?) -> Single<[DefiTvl]>
     func defiTvl(coinType: CoinType, currencyCode: String) -> Single<DefiTvl?>
     func defiTvlPoints(coinType: CoinType, currencyCode: String, timePeriod: TimePeriod) -> Single<[DefiTvlPoint]>
 }

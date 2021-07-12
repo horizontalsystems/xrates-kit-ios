@@ -21,6 +21,7 @@ class DefiTvlMapper: IApiMapper {
               let code = map["code"] as? String,
               let tvl = Decimal(convertibleValue: map["tvl"]),
               let tvlRank = map["tvl_rank"] as? Int,
+              let chains = map["chains"] as? [String],
               let coinType = providerCoinsManager.coinTypes(providerId: coinGeckoId, provider: .coinGecko).first else {
 
             return nil
@@ -29,7 +30,7 @@ class DefiTvlMapper: IApiMapper {
         let tvlDiff: Decimal
         if let period = period {
             guard let diff = Decimal(convertibleValue: map["tvl_diff_\(period)"]) else {
-                throw NetworkManager.RequestError.invalidResponse(statusCode: statusCode, data: data)
+                return nil
             }
 
             tvlDiff = diff
@@ -38,7 +39,7 @@ class DefiTvlMapper: IApiMapper {
         }
 
         let coinData = CoinData(coinType: coinType, code: code, name: name)
-        return DefiTvl(data: coinData, tvl: tvl, tvlRank: tvlRank, tvlDiff: tvlDiff)
+        return DefiTvl(data: coinData, tvl: tvl, tvlRank: tvlRank, tvlDiff: tvlDiff, chains: chains)
     }
 
 }
