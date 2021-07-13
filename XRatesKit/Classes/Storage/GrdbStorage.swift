@@ -283,8 +283,8 @@ class GrdbStorage {
                 t.column(CoinSecurity.Columns.coinId.name, .text).notNull()
                 t.column(CoinSecurity.Columns.privacy.name, .text).notNull()
                 t.column(CoinSecurity.Columns.decentralized.name, .boolean).notNull()
-                t.column(CoinSecurity.Columns.confiscationResistance.name, .text).notNull()
-                t.column(CoinSecurity.Columns.censorshipResistance.name, .text).notNull()
+                t.column(CoinSecurity.Columns.confiscationResistance.name, .boolean).notNull()
+                t.column(CoinSecurity.Columns.censorshipResistance.name, .boolean).notNull()
 
                 t.primaryKey([CoinSecurity.Columns.coinId.name], onConflict: .replace)
             }
