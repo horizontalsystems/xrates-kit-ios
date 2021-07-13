@@ -5,10 +5,10 @@ public class CoinSecurity: Record {
     let coinId: String
     public let privacy: SecurityLevel
     public let decentralized: Bool
-    public let confiscationResistance: SecurityLevel
-    public let censorshipResistance: SecurityLevel
+    public let confiscationResistance: Bool
+    public let censorshipResistance: Bool
 
-    init(coinId: String, privacy: SecurityLevel, decentralized: Bool, confiscationResistance: SecurityLevel, censorshipResistance: SecurityLevel) {
+    init(coinId: String, privacy: SecurityLevel, decentralized: Bool, confiscationResistance: Bool, censorshipResistance: Bool) {
         self.coinId = coinId
         self.privacy = privacy
         self.decentralized = decentralized

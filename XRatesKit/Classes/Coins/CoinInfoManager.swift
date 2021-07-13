@@ -28,8 +28,8 @@ fileprivate struct CoinsCoinInfo: Decodable {
 fileprivate struct CoinSecurityInfo: Decodable {
     let privacy: String
     let decentralized: Bool
-    let confiscationResistance: String
-    let censorshipResistance: String
+    let confiscationResistance: Bool
+    let censorshipResistance: Bool
 }
 
 fileprivate struct CoinLinks: Decodable {
@@ -92,12 +92,15 @@ class CoinInfoManager {
                 links.append(CoinLink(coinInfoId: coin.id, linkType: linkType.rawValue, value: linkValue))
             }
 
-            if let security = coin.security,
-               let privacy = SecurityLevel(rawValue: security.privacy),
-               let confiscationResistance = SecurityLevel(rawValue: security.confiscationResistance),
-               let censorshipResistance = SecurityLevel(rawValue: security.censorshipResistance)
-            {
-                securities.append(CoinSecurity(coinId: coin.id, privacy: privacy, decentralized: security.decentralized, confiscationResistance: confiscationResistance, censorshipResistance: censorshipResistance))
+            if let security = coin.security, let privacy = SecurityLevel(rawValue: security.privacy) {
+                let coinSecurity = CoinSecurity(
+                        coinId: coin.id,
+                        privacy: privacy,
+                        decentralized: security.decentralized,
+                        confiscationResistance: security.confiscationResistance,
+                        censorshipResistance: security.censorshipResistance
+                )
+                securities.append(coinSecurity)
             }
         }
 
