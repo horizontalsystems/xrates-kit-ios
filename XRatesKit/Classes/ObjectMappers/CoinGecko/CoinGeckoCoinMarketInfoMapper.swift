@@ -9,27 +9,6 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
         return formatter
     }()
 
-    static private let exchanges = [
-        "binance",
-        "binance_us",
-        "binance_dex",
-        "binance_dex_mini",
-        "uniswap_v1",
-        "uniswap",
-        "gdax",
-        "sushiswap",
-        "huobi",
-        "huobi_thailand",
-        "huobi_id",
-        "huobi_korea",
-        "huobi_japan",
-        "ftx_spot",
-        "ftx_us",
-        "one_inch",
-        "one_inch_liquidity_protocol",
-        "one_inch_liquidity_protocol_bsc"
-    ]
-
     struct CoinGeckoCoinInfoResponse {
         let rate: Decimal?
         let rateHigh24h: Decimal?
@@ -55,18 +34,13 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
     private let rateDiffCoinCodes: [String]
     private let exchangeImageMap: [String: String]
     private let smartContractRegex = try! NSRegularExpression(pattern: "^0[xX][A-z0-9]+$")
-    private var exchangesPriorities = [String: Int]()
-    
+
     init(coinType: CoinType, currencyCode: String, timePeriods: [TimePeriod], rateDiffCoinCodes: [String], exchangeImageMap: [String: String]) {
         self.coinType = coinType
         self.currencyCode = currencyCode
         self.timePeriods = timePeriods
         self.rateDiffCoinCodes = rateDiffCoinCodes
         self.exchangeImageMap = exchangeImageMap
-
-        for (i, exchange) in CoinGeckoCoinMarketInfoMapper.exchanges.enumerated() {
-            exchangesPriorities[exchange] = i
-        }
     }
     
     private func fiatValueDecimal(marketData: [String: Any], key: String, currencyCode: String? = nil) -> Decimal? {
@@ -176,38 +150,46 @@ class CoinGeckoCoinMarketInfoMapper: IApiMapper {
         let contractAddresses = platforms.values.map { $0.lowercased() }
 
         if let tickersArray = coinMap["tickers"] as? [[String: Any]] {
-            tickers = tickersArray
-                    .compactMap { tickerMap -> (order: Int, ticker: MarketTicker)? in
-                        guard var base = tickerMap["base"] as? String,
-                              var target = tickerMap["target"] as? String,
-                              let marketMap = tickerMap["market"] as? [String: Any],
-                              let marketName = marketMap["name"] as? String,
-                              let marketId = marketMap["identifier"] as? String,
-                              let lastRate = Decimal(convertibleValue: tickerMap["last"]),
-                              let volume = Decimal(convertibleValue: tickerMap["volume"]),
-                              lastRate > 0, volume > 0 else {
-                            return nil
-                        }
+            tickers = tickersArray.compactMap { tickerMap -> MarketTicker? in
+                guard var base = tickerMap["base"] as? String,
+                      var target = tickerMap["target"] as? String,
+                      let marketMap = tickerMap["market"] as? [String: Any],
+                      let marketName = marketMap["name"] as? String,
+                      let marketId = marketMap["identifier"] as? String,
+                      var lastRate = Decimal(convertibleValue: tickerMap["last"]),
+                      var volume = Decimal(convertibleValue: tickerMap["volume"]),
+                      lastRate > 0, volume > 0 else {
+                    return nil
+                }
 
-                        if !contractAddresses.isEmpty {
-                            if contractAddresses.contains(base.lowercased()) {
-                                base = symbol.uppercased()
-
-                            } else if contractAddresses.contains(target.lowercased()) {
-                                target = symbol.uppercased()
-                            }
-                        }
-
-                        if isSmartContractAddress(symbol: base) || isSmartContractAddress(symbol: target) {
-                            return nil
-                        }
-
-                        let marketImageUrl = exchangeImageMap[marketId]
-                        let ticker = MarketTicker(base: base, target: target, marketName: marketName, marketImageUrl: marketImageUrl, rate: lastRate, volume: volume)
-                        return (order: exchangesPriorities[marketId] ?? Int.max, ticker: ticker)
+                if !contractAddresses.isEmpty {
+                    if contractAddresses.contains(base.lowercased()) {
+                        base = symbol.uppercased()
+                    } else if contractAddresses.contains(target.lowercased()) {
+                        target = symbol.uppercased()
                     }
-                    .sorted { t1, t2 in t1.order < t2.order }
-                    .map { tuple -> MarketTicker in tuple.ticker }
+                }
+
+                if isSmartContractAddress(symbol: base) || isSmartContractAddress(symbol: target) {
+                    return nil
+                }
+
+                if base.lowercased() == symbol.lowercased() {
+                    base = symbol.uppercased()
+                    target = target.uppercased()
+                } else if target.lowercased() == symbol.lowercased() {
+                    target = base.uppercased()
+                    base = symbol.uppercased()
+
+                    volume = volume * lastRate
+                    lastRate = 1 / lastRate
+                } else {
+                    return nil
+                }
+
+                let marketImageUrl = exchangeImageMap[marketId]
+                return MarketTicker(base: base, target: target, marketName: marketName, marketImageUrl: marketImageUrl, rate: lastRate, volume: volume)
+            }
         }
 
         return CoinGeckoCoinInfoResponse(
