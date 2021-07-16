@@ -132,6 +132,10 @@ extension XRatesKit {
         tokenInfoManager.topTokenHoldersSingle(coinType: coinType, itemsCount: itemsCount)
     }
 
+    public func auditReportsSingle(coinType: CoinType) -> Single<[Auditor]> {
+        tokenInfoManager.auditReportsSingle(coinType: coinType)
+    }
+
     public func search(text: String) -> [CoinData] {
         providerCoinsManager.search(text: text)
     }
@@ -140,7 +144,7 @@ extension XRatesKit {
 
 extension XRatesKit {
 
-    public static func instance(currencyCode: String, coinMarketCapApiKey: String? = nil, cryptoCompareApiKey: String? = nil, uniswapSubgraphUrl: String,
+    public static func instance(currencyCode: String, coinMarketCapApiKey: String? = nil, cryptoCompareApiKey: String? = nil, defiYieldApiKey: String? = nil, uniswapSubgraphUrl: String,
                                 indicatorPointCount: Int = 60, marketInfoExpirationInterval: TimeInterval = 60, topMarketsCount: Int = 10,
                                 retryInterval: TimeInterval = 30,
                                 providerCoinsUrl: String, coinsUrl: String,
@@ -160,6 +164,7 @@ extension XRatesKit {
 
         let horsysProvider = HorsysProvider(networkManager: networkManager, providerCoinsManager: providerCoinsManager)
         let coinGeckoManager = CoinMarketsManager(coinInfoManager: coinInfoManager, provider: coinGeckoProvider, defiMarketsProvider: horsysProvider)
+        let defiYieldProvider = DefiYieldProvider(networkManager: networkManager, apiKey: defiYieldApiKey)
 
         let latestRatesManager = LatestRatesManager(storage: storage, expirationInterval: marketInfoExpirationInterval)
         let globalMarketInfoManager = GlobalMarketInfoManager(globalMarketInfoProvider: horsysProvider, storage: storage)
@@ -179,7 +184,7 @@ extension XRatesKit {
         chartInfoManager.delegate = chartInfoSyncManager
         providerCoinsManager.provider = coinGeckoProvider
 
-        let tokenInfoManager = TokenInfoManager(provider: horsysProvider)
+        let tokenInfoManager = TokenInfoManager(tokenInfoProvider: horsysProvider, auditInfoProvider: defiYieldProvider)
 
         let newsPostManager = NewsManager(provider: cryptoCompareProvider, state: NewsState(expirationTime: 30 * 60))
         let coinSyncer = CoinSyncer(providerCoinsManager: providerCoinsManager, coinInfoManager: coinInfoManager)

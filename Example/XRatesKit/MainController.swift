@@ -22,7 +22,13 @@ class MainController: UITabBarController {
     init() {
         super.init(nibName: nil, bundle: nil)
 
-        let xRatesKit = XRatesKit.instance(currencyCode: currencyCode, uniswapSubgraphUrl: "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2", providerCoinsUrl: "https://raw.githubusercontent.com/horizontalsystems/cryptocurrencies/master/provider.coins.json", coinsUrl: "https://raw.githubusercontent.com/horizontalsystems/cryptocurrencies/master/coins.json", minLogLevel: .error)
+        let xRatesKit = XRatesKit.instance(
+                currencyCode: currencyCode,
+                uniswapSubgraphUrl: "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2",
+                providerCoinsUrl: "https://raw.githubusercontent.com/horizontalsystems/cryptocurrencies/master/provider.coins.json",
+                coinsUrl: "https://raw.githubusercontent.com/horizontalsystems/cryptocurrencies/master/coins.json",
+                minLogLevel: .error
+        )
 
         let topMarketInfoController = TopMarketController(xRatesKit: xRatesKit, storage: UserDefaultsStorage(), currencyCode: currencyCode)
         topMarketInfoController.tabBarItem = UITabBarItem(title: "Top Markets", image: UIImage(systemName: "dollarsign.circle"), tag: 0)
