@@ -197,3 +197,9 @@ protocol IExchangeStorage {
     var exchanges: [Exchange] { get }
     func update(exchanges: [Exchange])
 }
+
+// Audits
+
+protocol IAuditInfoProvider {
+    func auditReportsSingle(coinType: CoinType) -> Single<[Auditor]>
+}

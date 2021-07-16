@@ -2,14 +2,20 @@ import CoinKit
 import RxSwift
 
 class TokenInfoManager {
-    private let provider: ITokenInfoProvider
+    private let tokenInfoProvider: ITokenInfoProvider
+    private let auditInfoProvider: IAuditInfoProvider
 
-    init(provider: ITokenInfoProvider) {
-        self.provider = provider
+    init(tokenInfoProvider: ITokenInfoProvider, auditInfoProvider: IAuditInfoProvider) {
+        self.tokenInfoProvider = tokenInfoProvider
+        self.auditInfoProvider = auditInfoProvider
     }
 
     func topTokenHoldersSingle(coinType: CoinType, itemsCount: Int) -> Single<[TokenHolder]> {
-        provider.topTokenHoldersSingle(coinType: coinType, itemsCount: itemsCount)
+        tokenInfoProvider.topTokenHoldersSingle(coinType: coinType, itemsCount: itemsCount)
+    }
+
+    func auditReportsSingle(coinType: CoinType) -> Single<[Auditor]> {
+        auditInfoProvider.auditReportsSingle(coinType: coinType)
     }
 
 }
