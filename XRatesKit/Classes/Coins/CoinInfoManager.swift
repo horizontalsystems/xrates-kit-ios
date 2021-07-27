@@ -53,6 +53,7 @@ fileprivate struct CoinLinks: Decodable {
 class CoinInfoManager {
 
     private let url: String
+    private let filename = "coins"
     private let storage: ICoinInfoStorage
     private let exchangeStorage: IExchangeStorage
     private let dataProvider: CoinsDataProvider
@@ -121,11 +122,19 @@ class CoinInfoManager {
 extension CoinInfoManager {
 
     func sync() -> Single<()> {
-        guard Date().timeIntervalSince1970 - TimeInterval(storage.version(type: .coinInfos)) > CoinInfoManager.coinsUpdateInterval else {
-            return Single.just(())
-        }
+        let version = storage.version(type: .coinInfos)
 
-        return dataProvider.parse(url: URL(string: url)!)
+        let remoteSingle: Single<CoinsList> = dataProvider.parse(url: URL(string: url)!)
+        return dataProvider.parse(filename: filename)
+                .flatMap { [weak self] (list: CoinsList) -> Single<CoinsList> in
+                    guard Date().timeIntervalSince1970 - TimeInterval(version) > CoinInfoManager.coinsUpdateInterval else {
+                        return Single.just(list)
+                    }
+
+                    self?.updateCoins(list: list)
+
+                    return remoteSingle
+                }
                 .flatMap { [weak self] (list: CoinsList) -> Single<()> in
                     self?.updateCoins(list: list)
                     return Single.just(())
