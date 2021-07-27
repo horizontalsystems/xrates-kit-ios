@@ -29,6 +29,7 @@ class ProviderCoinsManager {
     private let disposeBag = DisposeBag()
 
     private let url: String
+    private let filename = "provider.coins"
     private let storage: IProviderCoinsStorage & ICoinInfoStorage
     private let dataProvider: CoinsDataProvider
     private let categorizedCoinOrder = 0
@@ -93,16 +94,23 @@ class ProviderCoinsManager {
 extension ProviderCoinsManager {
 
     func sync() -> Single<Void> {
-        guard Date().timeIntervalSince1970 - TimeInterval(storage.version(type: .providerCoins)) > ProviderCoinsManager.priorityUpdateInterval else {
-            return Single.just(())
-        }
+        let version = storage.version(type: .providerCoins)
 
-        return dataProvider.parse(url: URL(string: url)!)
+        let remoteSingle: Single<ProviderCoinsList> = dataProvider.parse(url: URL(string: url)!)
+        return dataProvider.parse(filename: filename)
+                .flatMap { [weak self] (list: ProviderCoinsList) -> Single<ProviderCoinsList> in
+                    guard Date().timeIntervalSince1970 - TimeInterval(version) > ProviderCoinsManager.priorityUpdateInterval else {
+                        return Single.just(list)
+                    }
+
+                    self?.updateIds(list: list)
+
+                    return remoteSingle
+                }
                 .flatMap { [weak self] (list: ProviderCoinsList) -> Single<()> in
                     self?.updateIds(list: list)
                     return Single.just(())
                 }
-
     }
 
     func updatePriorities() {
