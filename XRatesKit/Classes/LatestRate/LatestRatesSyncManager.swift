@@ -129,7 +129,9 @@ extension LatestRatesSyncManager: ILatestRateSyncManager {
     }
 
     func refresh(currencyCode: String) {
-        schedulers[currencyCode]?.forceSchedule()
+        queue.async {
+            self.schedulers[currencyCode]?.forceSchedule()
+        }
     }
 
     func latestRateObservable(key: PairKey) -> Observable<LatestRate> {
@@ -151,22 +153,27 @@ extension LatestRatesSyncManager: ILatestRateSyncManager {
 extension LatestRatesSyncManager: ILatestRatesManagerDelegate {
 
     var coinTypes: [String: [CoinType]] {       // collect all coinTypes from subscribers
-        var result = [String: [CoinType]]()
+        queue.sync {
+            var result = [String: [CoinType]]()
 
-        observingCurrencies.forEach { currencyCode in
-            result[currencyCode] = Array(observingCoinTypes(currencyCode: currencyCode))
+            observingCurrencies.forEach { currencyCode in
+                result[currencyCode] = Array(observingCoinTypes(currencyCode: currencyCode))
+            }
+
+            return result
         }
-
-        return result
     }
 
     func didUpdate(latestRates: [CoinType: LatestRate], currencyCode: String) {
-        subjects.forEach { key, subject in          // send new rates for all subject which has at least one coinType in key
-            if key.currencyCode == currencyCode {
-                let rates = latestRates.filter { rateKey, _ in key.coinTypes.contains(rateKey) }
+        queue.async {
+            self.subjects.forEach { key, subject in
+                // send new rates for all subject which has at least one coinType in key
+                if key.currencyCode == currencyCode {
+                    let rates = latestRates.filter { rateKey, _ in
+                        key.coinTypes.contains(rateKey)
+                    }
 
-                if !rates.isEmpty {
-                    queue.async {
+                    if !rates.isEmpty {
                         subject.onNext(rates)
                     }
                 }
