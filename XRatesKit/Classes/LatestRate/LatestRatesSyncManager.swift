@@ -113,7 +113,9 @@ class LatestRatesSyncManager {
 extension LatestRatesSyncManager: ILatestRatesCoinTypeDataSource {
 
     func coinTypes(currencyCode: String) -> [CoinType] {
-        Array(observingCoinTypes(currencyCode: currencyCode))
+        queue.sync {
+            Array(observingCoinTypes(currencyCode: currencyCode))
+        }
     }
 
 }
