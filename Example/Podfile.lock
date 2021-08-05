@@ -119,7 +119,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   CoinKit.swift:
-    :commit: 5e92331c39f5cfe6e2cd9bc8c0bd32451f20e0ec
+    :commit: 2959a41846593a337824fc9d47f85260e9315d73
     :git: https://github.com/horizontalsystems/coin-kit-ios
   HsToolKit.swift:
     :commit: ff75e00d0812e30a64d5eb74c73262273e96dc5f
@@ -156,4 +156,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 3767a598979ee85231cc184d20ad6e40ff2e047d
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.10.2
