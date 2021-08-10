@@ -67,7 +67,7 @@ PODS:
     - CNIOSHA1 (= 2.28.0)
     - SwiftNIO (= 2.28.0)
     - SwiftNIOHTTP1 (= 2.28.0)
-  - XRatesKit.swift (0.9.0):
+  - XRatesKit.swift (0.10.0):
     - CoinKit.swift (~> 0.1)
     - GRDB.swift (~> 5.0)
     - HsToolKit.swift (~> 1.1)
@@ -152,7 +152,7 @@ SPEC CHECKSUMS:
   SwiftNIOSSL: 6a212ff5802c39cdee830c613501fcb414218427
   SwiftNIOTLS: 3b943c5ec04773df1f88eb63cebb015df11071bb
   SwiftNIOWebSocket: 0b40578624e5f26b0485f1f34660b3ea892f586e
-  XRatesKit.swift: c9a8167ef989f80e461cd8d79efeaf4a8529f917
+  XRatesKit.swift: 7013e3b93f5749d42bb65bebb532c1c62a916e8e
 
 PODFILE CHECKSUM: 3767a598979ee85231cc184d20ad6e40ff2e047d
 

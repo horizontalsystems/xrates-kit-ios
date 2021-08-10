@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ## Current Version
 
+## 0.10.0
+
+* Get coins information from given providers [ **non-back-compatible api change** ]
+* Coin info API enhancements
+
 ## 0.9.0
 
 * Increase minimum iOS version to 13.0 [ **non-back-compatible api change** ]
